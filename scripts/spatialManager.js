@@ -15,10 +15,12 @@ e.g. general collision detection.
 0        1         2         3         4         5         6         7         8
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
+var g_canvas = document.getElementById("myCanvas");
+var g_ctx = g_canvas.getContext("2d");
 
 var VERTICES_PER_ROW = 20,
     GRID_OFFSET = 50,
-    VERTEX_MARGIN = (600 - (2 * GRID_OFFSET)) / (VERTICES_PER_ROW - 1);
+    VERTEX_MARGIN = (g_canvas.width - (2 * GRID_OFFSET)) / (VERTICES_PER_ROW - 1);
 
 // Each "cell" in our spatialManager is a vertex in our physical grid.
 // Collisions only happen on vertices, and so each entity registers itself

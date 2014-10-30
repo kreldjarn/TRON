@@ -19,7 +19,6 @@ function Player(descr) {
     this.setup(descr);
 
     this.rememberResets();
-
 };
 
 Player.prototype = new Entity();
@@ -49,7 +48,6 @@ Player.prototype.velY = 0;
     
 Player.prototype.update = function(du)
 {
-    spatialManager.unregister(this);
 
     this.handleInputs();
 
@@ -57,14 +55,14 @@ Player.prototype.update = function(du)
     this.timestep -= du;
     if (this.timestep <= 0)
     {
+        spatialManager.unregister(this);
         this.cx += this.velX;
         this.cy += this.velY;
         this.timestep = this.reset_timestep;
+        // TODO: HANDLE COLLISIONS
+        spatialManager.register(this);
     }
 
-    // TODO: HANDLE COLLISIONS
-
-    spatialManager.register(this, this.cx, this.cy);
     if (this._isDeadNow) return entityManager.KILL_ME_NOW;
 };
 

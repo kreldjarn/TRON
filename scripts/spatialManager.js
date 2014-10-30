@@ -24,14 +24,27 @@ var VERTICES_PER_ROW = 20,
 // Collisions only happen on vertices, and so each entity registers itself
 // to a vertex, every time it moves.
 function Vertex() {
-    this._color = '#FFF',
-    this.isWall = false,
+    this._entities = [];
+    this.color = '#FFF';
+    this.std_color = '#FFF';
+    this.isWall = false;
+    this.register = function(entity) {
+        var ID = entity.getSpatialID();
+        this._entities[ID] = entity;
+        this.color = entity.color;
+        this.isWall = true;
+    };
+    this.unregister = function(entity) {
+        var ID = entity.getSpatialID();
+        delete this._entities[ID];
+        //this.color = this.std_color;
+    };
     this.render = function (ctx) {
         ctx.save();
         ctx.strokeStyle = this._color;
         //util.fillCircle(ctx, )
         ctx.restore();
-    }
+    };
 }
 
 var spatialManager = {
@@ -71,16 +84,15 @@ var spatialManager = {
     
     register: function(entity, x, y) {
         var pos = entity.getPos();
-        var spatialID = entity.getSpatialID();
-        
+        this._vertices[pos.x][pos.y].register(entity);
         // TODO: Find the vertex with coordinates (x, y) and register entity
         // to it
 
     },
     
     unregister: function(entity, x, y) {
-        var spatialID = entity.getSpatialID();
-
+        var pos = entity.getPos();
+        this._vertices[pos.x][pos.y].unregister(entity);
         // TODO: Find the vertex with coordinates (x, y) and unregister entity
         // from it
 
@@ -93,8 +105,9 @@ var spatialManager = {
             {
                 var pos = this.getWorldCoordinates(j, i);
                 ctx.save();
-                ctx.fillStyle = '#FFF';
-                util.fillCircle(ctx, pos.x, pos.y, 2);
+                var v = this._vertices[j][i];
+                ctx.fillStyle = v.color;
+                util.fillCircle(ctx, pos.x, pos.y, (v.isWall) ? 4 : 2);
                 ctx.restore();
             }
         }

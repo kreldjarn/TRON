@@ -101,6 +101,16 @@ fillBox: function (ctx, x, y, w, h, style) {
     ctx.fillStyle = style;
     ctx.fillRect(x, y, w, h);
     ctx.fillStyle = oldStyle;
+},
+
+drawLine: function(ctx, x1, y1, x2, y2, style) {
+    var oldStyle = ctx.fillStyle;
+    ctx.fillStyle = style;
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x2,y2);
+    ctx.stroke();
+    ctx.fillStyle = oldStyle;
 }
 
 };

@@ -44,7 +44,7 @@ Player.prototype.cx = 0;
 Player.prototype.cy = 0;
 Player.prototype.velX = 1;
 Player.prototype.velY = 0;
-
+Player.prototype.maxWallLength = 5;
     
 Player.prototype.update = function(du)
 {
@@ -56,9 +56,13 @@ Player.prototype.update = function(du)
     if (this.timestep <= 0)
     {
         spatialManager.unregister(this);
+        var last_cx = this.cx;
+        var last_cy = this.cy;
         this.cx += this.velX;
         this.cy += this.velY;
         this.timestep = this.reset_timestep;
+        this.generateWall(last_cx,last_cy);
+        this.checkCorrectWallLength();
         // TODO: HANDLE COLLISIONS
         spatialManager.register(this);
     }
@@ -90,6 +94,20 @@ Player.prototype.handleInputs = function()
     }
 };
 
+Player.prototype.generateWall = function (x, y)
+{
+    entityManager.generateWall({cx: x, cy: y, color: this.color});
+    spatialManager.register(entityManager._walls[entityManager._walls.length-1]);
+    //spatialManager.register(Wall.getLatestWallEntity());
+};
+
+Player.prototype.checkCorrectWallLength = function ()
+{
+    if (entityManager._walls.length > this.maxWallLength) {
+        spatialManager.unregister(entityManager._walls[0]);
+        entityManager._walls.splice(0,1);
+    }
+};
 
 Player.prototype.getRadius = function ()
 {

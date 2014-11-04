@@ -28,6 +28,7 @@ var entityManager = {
     // "PRIVATE" DATA
     
     _players : [],
+    _walls : [],
     
     // "PRIVATE" METHODS
     
@@ -64,6 +65,11 @@ var entityManager = {
     generatePlayer : function(descr) {
         this._players.push(new Player(descr));
         console.log(this._players);
+    },
+
+    generateWall : function(descr) {
+        this._walls.push(new Wall(descr));
+        //console.log(this._walls);
     },
     
     update: function(du) {

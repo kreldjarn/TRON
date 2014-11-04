@@ -45,17 +45,27 @@ Player.prototype.cy = 0;
 Player.prototype.velX = 1;
 Player.prototype.velY = 0;
 
+//At the vertex, we determine the vertex we are headed for
+//and save this information to dx and dy
+Player.prototype.requestedVelX = 1;
+Player.prototype.requestedVelY = 0;
+
     
 Player.prototype.update = function(du)
 {
 
     this.handleInputs();
 
+    //At the vertex, we determine the vertex we are headed for
+    //and save this information to dx and dy
+
     // We only move the actual entity once every reset_timestep
     this.timestep -= du;
     if (this.timestep <= 0)
     {
         spatialManager.unregister(this);
+        this.velX = this.requestedVelX;
+        this.velY = this.requestedVelY;
         this.cx += this.velX;
         this.cy += this.velY;
         this.timestep = this.reset_timestep;
@@ -70,25 +80,30 @@ Player.prototype.handleInputs = function()
 {
     if (keys.getState(this.KEY_UP))
     {
-        this.velX = 0;
-        this.velY = -1;
+        this.requestedVelX = 0;
+        this.requestedVelY = -1;
     }
     else if (keys.getState(this.KEY_DN))
     {
-        this.velX = 0;
-        this.velY = 1;
+        this.requestedVelX = 0;
+        this.requestedVelY = 1;
     }
     else if (keys.getState(this.KEY_LT))
     {
-        this.velX = -1;
-        this.velY = 0;
+        this.requestedVelX = -1;
+        this.requestedVelY = 0;
     }
     else if (keys.getState(this.KEY_RT))
     {
-        this.velX = 1;
-        this.velY = 0;
+        this.requestedVelX = 1;
+        this.requestedVelY = 0;
     }
 };
+
+Player.prototype.isColliding = function()
+{
+    //TODO
+}
 
 
 Player.prototype.getRadius = function ()
@@ -113,13 +128,30 @@ Player.prototype.reset = function()
 
 Player.prototype.render = function (ctx)
 {
-    var pos = spatialManager.getWorldCoordinates(this.cx, this.cy);
+    //current vertex position
+    var currPos = spatialManager.getWorldCoordinates(this.cx, this.cy);
+    
+    //destination vertex position
+    var revTimestep = (this.timestep - 10)*(-1);
+    var destX = this.cx + (1/revTimestep)*(this.velX);
+    var destY = this.cy + (1/revTimestep)*(this.velY);
+    var destPos = spatialManager.getWorldCoordinates(destX, destY);
     //console.log(pos);
+    
+    ctx.save();
+    ctx.strokeStyle = this.color;
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    ctx.moveTo(currPos.x, currPos.y);
+    ctx.lineTo(destPos.x,destPos.y);
+    ctx.stroke();
+    ctx.restore();    
+
     ctx.save();
     ctx.strokeStyle = '#FFF';
     ctx.lineWidth = 2;
     util.strokeCircle (
-	   ctx, pos.x, pos.y, 10
+	   ctx, currPos.x, currPos.y, 10
     );
     ctx.restore();
 };

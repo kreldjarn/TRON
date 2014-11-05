@@ -14,7 +14,6 @@
 
 // A generic contructor which accepts an arbitrary descriptor object
 function Player(descr) {
-    console.log(descr);
     // Common inherited setup logic from Entity
     this.setup(descr);
 
@@ -38,12 +37,7 @@ Player.prototype.keys = {
     LT: 'A'.charCodeAt(0),
     RT: 'D'.charCodeAt(0),
 }
-/*
-Player.prototype.KEY_UP = 'W'.charCodeAt(0);
-Player.prototype.KEY_DN = 'S'.charCodeAt(0);
-Player.prototype.KEY_LT = 'A'.charCodeAt(0);
-Player.prototype.KEY_RT = 'D'.charCodeAt(0);
-*/
+
 Player.prototype.KEY_TURBO   = ' '.charCodeAt(0);
 
 // Initial, inheritable, default values
@@ -62,7 +56,6 @@ Player.prototype.anxiousness = 0;
     
 Player.prototype.update = function(du)
 {
-
     this.handleInputs();
 
     //At the vertex, we determine the vertex we are headed for
@@ -87,6 +80,8 @@ Player.prototype.update = function(du)
         this.checkCorrectWallLength();
         // TODO: HANDLE COLLISIONS
         spatialManager.register(this);
+        
+        if (this.AI) this.makeMove(15);
     }
 
     if (this._isDeadNow) return entityManager.KILL_ME_NOW;
@@ -199,20 +194,27 @@ Player.prototype.makeMove = function(N)
     {
         this.makeRandomMove();
     }
+
     var nextX = this.cx + this.velX;
     var nextY = this.cy + this.velY;
-    var vertex = spatialManager.getVertex(x, y);
-    if (vertex.isWall && N)
+    var vertex = spatialManager.getVertex(nextX, nextY);
+
+    if (N && (!vertex || vertex.isWall))
     {
         this.makeRandomMove();
+        this.handleInputs();
+        this.velX = this.requestedVelX;
+        this.velY = this.requestedVelY;
         this.makeMove(N - 1);
     }
+
 };
 
 Player.prototype.makeRandomMove = function()
 {
     for (var key in this.keys)
-        keys.clearKey(this.keys[key])
+        keys.clearKey(this.keys[key]);
+    
     var pivot = Math.random();
     if (pivot < 0.25)
         keys.setKey(this.keys['UP']);

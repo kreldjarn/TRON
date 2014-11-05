@@ -75,16 +75,17 @@ Player.prototype.update = function(du)
     {
         //spatialManager.unregister(this);
         spatialManager.unregister(this, this.cx, this.cy);
-
         var last_cx = this.cx;
         var last_cy = this.cy;
-
         this.cx += this.velX;
         this.cy += this.velY;
+        if (this.wallVerticies.length === 0) this.refreshWall(last_cx, last_cy);
+        this.refreshWall(this.cx, this.cy);
         this.velX = this.requestedVelX;
         this.velY = this.requestedVelY;
         this.timestep = this.reset_timestep;
-        this.refreshWall(last_cx, last_cy);
+        //this.refreshWall(last_cx, last_cy);
+
         // TODO: HANDLE COLLISIONS
         //spatialManager.register(this);
         spatialManager.register(this, this.cx, this.cy);
@@ -119,9 +120,7 @@ Player.prototype.handleInputs = function()
 
 Player.prototype.refreshWall = function(x,y)
 {
-    console.log(this.wallVerticies);
     this.wallVerticies.push({cx: x, cy: y});
-    console.log(this.wallVerticies[0].cx);
     spatialManager.register(this, x, y);
     if (this.wallVerticies.length>this.maxWallLength)
     {
@@ -137,7 +136,7 @@ Player.prototype.isColliding = function()
 
 Player.prototype.getRadius = function ()
 {
-    return 3;
+    return 8;
 };
 
 Player.prototype.getPos = function()
@@ -158,11 +157,20 @@ Player.prototype.render = function (ctx)
 {
     for(var i = 1; i <this.wallVerticies.length; i++)
     {
-        util.drawLine(ctx,
+        var wx1 = spatialManager.getWorldCoordinates(this.wallVerticies[i-1].cx,
+                                                    this.wallVerticies[i-1].cy).x;
+        var wy1 = spatialManager.getWorldCoordinates(this.wallVerticies[i-1].cx,
+                                                    this.wallVerticies[i-1].cy).y;
+        var wx2 = spatialManager.getWorldCoordinates(this.wallVerticies[i].cx,
+                                                    this.wallVerticies[i].cy).x;
+        var wy2 = spatialManager.getWorldCoordinates(this.wallVerticies[i].cx,
+                                                    this.wallVerticies[i].cy).y;
+        util.drawLine(ctx,/*
             this.wallVerticies[i-1].cx,
             this.wallVerticies[i-1].cy,
             this.wallVerticies[i].cx,
-            this.wallVerticies[i].cy,
+            this.wallVerticies[i].cy,*/
+            wx1, wy1, wx2, wy2,
             this.getRadius(),
             this.color);
     }

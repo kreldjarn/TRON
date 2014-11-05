@@ -104,9 +104,10 @@ fillBox: function (ctx, x, y, w, h, style) {
 },
 
 drawLine: function(ctx, x1, y1, x2, y2, lineWidth, style) {
-    console.log("drawline runs");
-    console.log("x1: "+ x1 + " y1: " + y1 + " x2: " + x2 + " y2: " + y2 + " lw: " + lineWidth + " style: " + style);
+    //console.log("drawline runs");
+    //console.log("x1: "+ x1 + " y1: " + y1 + " x2: " + x2 + " y2: " + y2 + " lw: " + lineWidth + " style: " + style);
     var oldStyle = ctx.fillStyle;
+    var oldLineWidth = ctx.lineWidth;
     ctx.fillStyle = style;
     ctx.beginPath();
     ctx.moveTo(x1,y1);
@@ -114,6 +115,7 @@ drawLine: function(ctx, x1, y1, x2, y2, lineWidth, style) {
     ctx.lineWidth = lineWidth;
     ctx.stroke();
     ctx.fillStyle = oldStyle;
+    ctx.lineWidth = oldLineWidth;
 }
 
 };

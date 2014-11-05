@@ -178,11 +178,11 @@ Player.prototype.render = function (ctx)
     ctx.lineWidth = 8;
     ctx.beginPath();
     ctx.moveTo(currPos.x, currPos.y);
-    ctx.lineTo(destPos.x,destPos.y);
+    ctx.lineTo(destPos.x, destPos.y);
     ctx.stroke();
     ctx.restore();    
 
-
+    /*
     ctx.save();
     ctx.strokeStyle = '#FFF';
     ctx.lineWidth = 2;
@@ -190,6 +190,7 @@ Player.prototype.render = function (ctx)
 	   ctx, currPos.x, currPos.y, 10
     );
     ctx.restore();
+    */
 };
 
 Player.prototype.makeMove = function(N)

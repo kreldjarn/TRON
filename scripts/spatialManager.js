@@ -126,29 +126,29 @@ var spatialManager = {
         // from it
 
     },
-    
+
     drawGrid: function(ctx,levelArray) {
-        ctx.strokeStyle = '#0000FF';
-        var vx = this.getWorldCoordinates(0,0).x;
-        var vy = this.getWorldCoordinates(0,0).y;
+        ctx.strokeStyle = '#FFF';
+        var vx = this.getWorldCoordinates(0, 0).x;
+        var vy = this.getWorldCoordinates(0, 0).y;
 
         //Draw horizontal lines of grid
         for (var j = 0; j < VERTICES_PER_ROW; ++j)
+        {
+            for (var i = 0; i < VERTICES_PER_ROW - 1; ++i)
             {
-                for (var i = 0; i < VERTICES_PER_ROW - 1; ++i)
-                    {
-                        ctx.beginPath();
-                        ctx.moveTo(vx, vy);
-                        if (levelArray[j][i] === 1 && levelArray[j][i + 1] === 1)
-                        {
-                            ctx.lineTo(vx + VERTEX_MARGIN, vy);
-                            ctx.stroke();
-                        }
-                        vx = vx + VERTEX_MARGIN;
-                    }
-                vy = vy + VERTEX_MARGIN;
-                vx = 2 * VERTEX_MARGIN;
-           }
+                ctx.beginPath();
+                ctx.moveTo(vx, vy);
+                if (levelArray[j][i] === 1 && levelArray[j][i + 1] === 1)
+                {
+                    ctx.lineTo(vx + VERTEX_MARGIN, vy);
+                    ctx.stroke();
+                }
+                vx = vx + VERTEX_MARGIN;
+            }
+            vy = vy + VERTEX_MARGIN;
+            vx = 2 * VERTEX_MARGIN - 2;
+        }
 
         //Reset to first vertix
         var vx = this.getWorldCoordinates(0, 0).x;
@@ -163,18 +163,17 @@ var spatialManager = {
                 ctx.moveTo(vx, vy);
                 if (levelArray[n][m] === 1 && levelArray[n + 1][m] === 1)
                 {
-                ctx.lineTo(vx, vy + VERTEX_MARGIN);
-                ctx.stroke();
-            }
+                    ctx.lineTo(vx, vy + VERTEX_MARGIN);
+                    ctx.stroke();
+                }
                 vy = vy + VERTEX_MARGIN;
             }
             vx = vx + VERTEX_MARGIN;
-            vy = 2 * VERTEX_MARGIN;
+            vy = 2 * VERTEX_MARGIN - 2;
         } 
-        
     },
 
-    drawFloor: function (ctx,levelArray) {
+    drawFloor: function (ctx, levelArray) {
             var floorGrad = ctx.createRadialGradient(300,300,300,300,300,100);
             floorGrad.addColorStop(0,'#33334C');
             floorGrad.addColorStop(1,'#8585AD');
@@ -190,7 +189,7 @@ var spatialManager = {
                         ctx.moveTo(vx,vy);
                         if(levelArray[j][i]===1 && levelArray[j+1][i]===1 && levelArray[j+1][i+1]===1 && levelArray[j][i+1]===1)
                             {
-                                ctx.fillRect(vx,vy,VERTEX_MARGIN,VERTEX_MARGIN);
+                                //ctx.fillRect(vx,vy,VERTEX_MARGIN,VERTEX_MARGIN);
                             }
                         vx = vx + VERTEX_MARGIN;
                     }

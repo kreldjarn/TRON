@@ -35,7 +35,7 @@ var entityManager = {
     _generatePlayers : function() {
         this.generatePlayer({cx: 0,
                              cy: 0,
-                             timestep: 100,
+                             timestep: 10,
                              color: '#00FC00',
                              keys: {
                                  UP: 'W'.charCodeAt(0),

@@ -127,6 +127,12 @@ var spatialManager = {
                 var v = this._vertices[j][i].reset();
             }
         }
+    },
+
+    getVertex: function(x, y) {
+        var v = this._vertices[x][y];
+        v.color = '#F00';
+        return v;
     }
 
 }

@@ -32,11 +32,18 @@ Player.prototype.rememberResets = function () {
     this.reset_timestep = this.timestep;
 };
 
+Player.prototype.keys = {
+    UP: 'W'.charCodeAt(0),
+    DN: 'S'.charCodeAt(0),
+    LT: 'A'.charCodeAt(0),
+    RT: 'D'.charCodeAt(0),
+}
+/*
 Player.prototype.KEY_UP = 'W'.charCodeAt(0);
 Player.prototype.KEY_DN = 'S'.charCodeAt(0);
 Player.prototype.KEY_LT = 'A'.charCodeAt(0);
 Player.prototype.KEY_RT = 'D'.charCodeAt(0);
-
+*/
 Player.prototype.KEY_TURBO   = ' '.charCodeAt(0);
 
 // Initial, inheritable, default values
@@ -44,6 +51,7 @@ Player.prototype.cx = 0;
 Player.prototype.cy = 0;
 Player.prototype.velX = 1;
 Player.prototype.velY = 0;
+Player.prototype.anxiousness = 0;
 
     
 Player.prototype.update = function(du)
@@ -68,28 +76,27 @@ Player.prototype.update = function(du)
 
 Player.prototype.handleInputs = function()
 {
-    if (keys.getState(this.KEY_UP))
+    if (keys.getState(this.keys['UP']))
     {
         this.velX = 0;
         this.velY = -1;
     }
-    else if (keys.getState(this.KEY_DN))
+    else if (keys.getState(this.keys['DN']))
     {
         this.velX = 0;
         this.velY = 1;
     }
-    else if (keys.getState(this.KEY_LT))
+    else if (keys.getState(this.keys['LT']))
     {
         this.velX = -1;
         this.velY = 0;
     }
-    else if (keys.getState(this.KEY_RT))
+    else if (keys.getState(this.keys['RT']))
     {
         this.velX = 1;
         this.velY = 0;
     }
 };
-
 
 Player.prototype.getRadius = function ()
 {
@@ -110,16 +117,45 @@ Player.prototype.reset = function()
     spatialManager.register(this);
 };
 
-
 Player.prototype.render = function (ctx)
 {
     var pos = spatialManager.getWorldCoordinates(this.cx, this.cy);
-    //console.log(pos);
     ctx.save();
     ctx.strokeStyle = '#FFF';
     ctx.lineWidth = 2;
     util.strokeCircle (
-	   ctx, pos.x, pos.y, 10
+	    ctx, pos.x, pos.y, 10
     );
     ctx.restore();
 };
+
+Player.prototype.makeMove = function(N)
+{
+    if (Math.random() < this.anxiousness)
+    {
+        this.makeRandomMove();
+    }
+    var nextX = this.cx + this.velX;
+    var nextY = this.cy + this.velY;
+    var vertex = spatialManager.getVertex(x, y);
+    if (vertex.isWall && N)
+    {
+        this.makeRandomMove();
+        this.makeMove(N - 1);
+    }
+};
+
+Player.prototype.makeRandomMove = function()
+{
+    for (var key in this.keys)
+        keys.clearKey(this.keys[key])
+    var pivot = Math.random();
+    if (pivot < 0.25)
+        keys.setKey(this.keys['UP']);
+    else if (pivot < 0.5)
+        keys.setKey(this.keys['DN']);
+    else if (pivot < 0.75)
+        keys.setKey(this.keys['LT']);
+    else
+        keys.setKey(this.keys['RT']);
+}

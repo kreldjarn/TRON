@@ -41,12 +41,16 @@ function Vertex() {
         delete this._entities[ID];
         //this.color = this.std_color;
     };
-    this.render = function (ctx) {
+    this.render = function(ctx) {
         ctx.save();
         ctx.strokeStyle = this._color;
         //util.fillCircle(ctx, )
         ctx.restore();
     };
+    this.reset = function() {
+        this.color = this.std_color;
+        this.isWall = false;
+    }
 }
 
 var spatialManager = {
@@ -111,6 +115,16 @@ var spatialManager = {
                 ctx.fillStyle = v.color;
                 util.fillCircle(ctx, pos.x, pos.y, (v.isWall) ? 4 : 2);
                 ctx.restore();
+            }
+        }
+    },
+
+    reset: function() {
+        for (var i = 0; i < VERTICES_PER_ROW; ++i)
+        {
+            for (var j = 0; j < VERTICES_PER_ROW; ++j)
+            {
+                var v = this._vertices[j][i].reset();
             }
         }
     }

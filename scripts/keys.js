@@ -9,11 +9,11 @@ var keys = (function()
     var state = {};
     var handleKeydown = function(e)
     {
-        state[e.keyCode] = true;
+        setKey(e.keyCode);
     };
     var handleKeyup = function(e)
     {
-        state[e.keyCode] = false;
+        clearKey(e.keyCode);
     };
     window.addEventListener("keydown", handleKeydown);
     window.addEventListener("keyup", handleKeyup);
@@ -31,9 +31,20 @@ var keys = (function()
     {
         return state[keyCode];
     };
+    // setKey and clearKey are called by AI functions
+    var setKey = function(keyCode)
+    {
+        state[keyCode] = true;
+    };
+    var clearKey = function(keyCode)
+    {
+        state[keyCode] = false;
+    };
 
     return {
         getState : getState,
+        setKey   : setKey,
+        clearKey : clearKey,
         eatKey   : eatKey
     };
 })();

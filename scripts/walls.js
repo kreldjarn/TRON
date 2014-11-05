@@ -13,7 +13,6 @@
 
 // A generic contructor which accepts an arbitrary descriptor object
 function Wall(descr) {
-    console.log(descr);
     // Common inherited setup logic from Entity
     this.setup(descr);
 

@@ -27,6 +27,7 @@ Wall.prototype = new Entity();
 Wall.prototype.cx = 0;
 Wall.prototype.cy = 0;
 Wall.prototype.color = '';
+Wall.prototype.verticies = [];
 
 
 Wall.prototype.getPos = function()
@@ -64,5 +65,4 @@ Wall.prototype.render = function(ctx)
 	util.drawLine(ctx, g_prevCX, g_prevCY, this.cx, this.cy, this.color);
 	g_prevCX = this.cx;
 	g_prevCY = this.cy;
-
 };

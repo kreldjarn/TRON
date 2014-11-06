@@ -182,6 +182,7 @@ var spatialManager = {
 
         // DEBUG
         // =====
+        /*
         ctx.strokeStyle = '#FFF';
         for (var i = 0; i < VERTICES_PER_ROW; ++i)
         {
@@ -194,6 +195,7 @@ var spatialManager = {
                 }
             }
         }
+        */
     },
 
     drawFloor: function (ctx, levelArray) {

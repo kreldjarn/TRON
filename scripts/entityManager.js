@@ -49,7 +49,7 @@ var entityManager = {
                              cy: 6,
                              velX: 0,
                              velY: 1,
-                             timestep: 20,
+                             timestep: 10,
                              color: '#FC00AC',
                              wallVerticies: [{cx: 6, cy: 6}],
                              keys: {

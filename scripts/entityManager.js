@@ -35,7 +35,7 @@ var entityManager = {
     _generatePlayers : function() {
         this.generatePlayer({cx: 0,
                              cy: 0,
-                             timestep: 100,
+                             timestep: 10,
                              color: '#00FC00',
                              keys: {
                                  UP: 'W'.charCodeAt(0),
@@ -43,7 +43,21 @@ var entityManager = {
                                  LT: 'A'.charCodeAt(0),
                                  RT: 'D'.charCodeAt(0),
                              },
-                             AI: false})
+                             AI: false});
+        this.generatePlayer({cx: 6,
+                             cy: 6,
+                             velX: 0,
+                             velY: 1,
+                             timestep: 20,
+                             color: '#00FC00',
+                             keys: {
+                                 UP: 1000,
+                                 DN: 1001,
+                                 LT: 1002,
+                                 RT: 1003,
+                             },
+                             AI: true,
+                             anxiousness: 0.2});
     },
     
     _forEachOf: function(aCategory, fn) {
@@ -74,7 +88,6 @@ var entityManager = {
 
     generatePlayer : function(descr) {
         this._players.push(new Player(descr));
-        console.log(this._players);
     },
 
     /*generateWall : function(descr) {

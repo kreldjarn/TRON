@@ -64,7 +64,7 @@ Player.prototype.introUpdate = function(du)
     if (this.AI) this.timestep -=du;
     if (this.timestep <= 0) 
     {
-        spatialManager.unregister(this);
+        spatialManager.unregister(this, this.cx, this.cy);
 
         var last_cx = this.cx;
         var last_cy = this.cy;
@@ -108,9 +108,7 @@ Player.prototype.introUpdate = function(du)
         }
 
         this.timestep = this.reset_timestep;
-        this.generateWall(last_cx, last_cy);
-        this.checkCorrectWallLength();
-        spatialManager.register(this);
+        spatialManager.register(this, this.cx, this.cy);
         this.introCount++;
     }
 }
@@ -134,9 +132,10 @@ Player.prototype.update = function(du)
         spatialManager.unregister(this, this.cx, this.cy);
         var last_cx = this.cx;
         var last_cy = this.cy;
+        console.log("player update:"+ this.color + " " + this.cx + " " +this.cy);
         this.cx += this.velX;
         this.cy += this.velY;
-        if (this.wallVerticies.length === 0) this.refreshWall(last_cx, last_cy);
+        if (this.wallVerticies.length === 0)this.refreshWall(last_cx, last_cy);
         this.refreshWall(this.cx, this.cy);
         this.velX = this.requestedVelX;
         this.velY = this.requestedVelY;
@@ -183,12 +182,17 @@ Player.prototype.handleInputs = function()
 
 Player.prototype.refreshWall = function(x,y)
 {
+    //console.log(this.wallVerticies);
     this.wallVerticies.push({cx: x, cy: y});
     spatialManager.register(this, x, y);
     if (this.wallVerticies.length > this.maxWallLength)
     {
         spatialManager.unregister(this, this.wallVerticies[0].cx, this.wallVerticies[0].cy);
         this.wallVerticies.splice(0,1);
+    }
+    for (var i = 0; i < this.wallVerticies.length; i++)
+    {
+        console.log(this.color + " " + this.wallVerticies[i].cx +  " " + this.wallVerticies[i].cy);
     }
 };
 
@@ -213,7 +217,7 @@ Player.prototype.getPos = function()
 
 Player.prototype.reset = function()
 {
-    spatialManager.unregister(this);
+    spatialManager.unregister(this, this.cx, this.cy);
     
     this.cx = this.reset_cx;
     this.cy = this.reset_cy;
@@ -228,7 +232,7 @@ Player.prototype.reset = function()
     for (var key in this.keys)
         keys.clearKey(this.keys[key]);
 
-    spatialManager.register(this);
+    spatialManager.register(this, this.cx, this.cy);
 };
 
 Player.prototype.render = function (ctx)
@@ -243,11 +247,8 @@ Player.prototype.render = function (ctx)
                                                     this.wallVerticies[i].cy).x;
         var wy2 = spatialManager.getWorldCoordinates(this.wallVerticies[i].cx,
                                                     this.wallVerticies[i].cy).y;
-        util.drawLine(ctx,/*
-            this.wallVerticies[i-1].cx,
-            this.wallVerticies[i-1].cy,
-            this.wallVerticies[i].cx,
-            this.wallVerticies[i].cy,*/
+        
+        util.drawLine(ctx,
             wx1, wy1, wx2, wy2,
             this.getRadius(),
             this.color);

@@ -62,6 +62,7 @@ function Vertex() {
     };
     this.unregister = function(entity) {
         var ID = entity.getSpatialID();
+        this.isWall = false;
         delete this._entities[ID];
         //this.color = this.std_color;
     };
@@ -125,16 +126,9 @@ var spatialManager = {
     },
     
     unregister: function(entity, x, y) {
-<<<<<<< HEAD
-        var pos = entity.getPos();
-        if (this.getVertex(x,y)){
-            this._vertices[pos.x][pos.y].unregister(entity);
-        }
-=======
         //var pos = entity.getPos();
         //this._vertices[pos.x][pos.y].unregister(entity);
         this._vertices[x][y].unregister(entity);
->>>>>>> master
         // TODO: Find the vertex with coordinates (x, y) and unregister entity
         // from it
 
@@ -188,6 +182,7 @@ var spatialManager = {
         /*
         // DEBUG
         // =====
+        /*
         ctx.strokeStyle = '#FFF';
         for (var i = 0; i < VERTICES_PER_ROW; ++i)
         {

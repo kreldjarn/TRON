@@ -44,10 +44,10 @@ var entityManager = {
                                  RT: 'D'.charCodeAt(0),
                              },
                              AI: false});
-        this.generatePlayer({cx: 6,
-                             cy: 6,
-                             velX: 0,
-                             velY: 1,
+        this.generatePlayer({cx: VERTICES_PER_ROW-1,
+                             cy: VERTICES_PER_ROW-1,
+                             velX: -1,
+                             velY: 0,
                              timestep: 20,
                              color: '#00FC00',
                              keys: {

@@ -125,7 +125,9 @@ var spatialManager = {
     
     unregister: function(entity, x, y) {
         var pos = entity.getPos();
-        this._vertices[pos.x][pos.y].unregister(entity);
+        if (this.getVertex(x,y)){
+            this._vertices[pos.x][pos.y].unregister(entity);
+        }
         // TODO: Find the vertex with coordinates (x, y) and unregister entity
         // from it
 
@@ -176,7 +178,7 @@ var spatialManager = {
             vy = 2 * VERTEX_MARGIN - 2;
         }
 
-
+        /*
         // DEBUG
         // =====
         ctx.strokeStyle = '#FFF';
@@ -191,6 +193,7 @@ var spatialManager = {
                 }
             }
         }
+        */
     },
 
     drawFloor: function (ctx, levelArray) {
@@ -243,7 +246,9 @@ var spatialManager = {
         {
             for (var j = 0; j < VERTICES_PER_ROW; ++j)
             {
-                var v = this._vertices[j][i].reset();
+                if (this.getVertex(j, i)){
+                    var v = this._vertices[j][i].reset();
+                }
             }
         }
     },

@@ -62,6 +62,7 @@ function Vertex() {
     };
     this.unregister = function(entity) {
         var ID = entity.getSpatialID();
+        this.isWall = false;
         delete this._entities[ID];
         //this.color = this.std_color;
     };

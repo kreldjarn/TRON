@@ -53,6 +53,7 @@ Player.prototype.requestedVelX = 1;
 Player.prototype.requestedVelY = 0;
 
 Player.prototype.maxWallLength = 5;
+Player.prototype.wallVerticies = [];
 Player.prototype.anxiousness = 0;
 
 Player.prototype.introCount = 0;
@@ -129,26 +130,26 @@ Player.prototype.update = function(du)
     
     if (this.timestep <= 0)
     {
-        spatialManager.unregister(this);
-
+        //spatialManager.unregister(this);
+        spatialManager.unregister(this, this.cx, this.cy);
         var last_cx = this.cx;
         var last_cy = this.cy;
-
         this.cx += this.velX;
         this.cy += this.velY;
+        if (this.wallVerticies.length === 0) this.refreshWall(last_cx, last_cy);
+        this.refreshWall(this.cx, this.cy);
         this.velX = this.requestedVelX;
         this.velY = this.requestedVelY;
-
         this.timestep = this.reset_timestep;
-        this.generateWall(last_cx, last_cy);
-        this.checkCorrectWallLength();
+        //this.refreshWall(last_cx, last_cy);
+
         // TODO: HANDLE COLLISIONS
         if (this.isColliding(this.cx, this.cy)) 
         {
             this.reset();
             spatialManager.reset();
         }
-        else spatialManager.register(this);
+        else  spatialManager.register(this, this.cx, this.cy);
         
         if (this.AI) this.makeMove(15);
     }
@@ -180,19 +181,14 @@ Player.prototype.handleInputs = function()
     }
 };
 
-
-Player.prototype.generateWall = function (x, y)
+Player.prototype.refreshWall = function(x,y)
 {
-    entityManager.generateWall({cx: x, cy: y, color: this.color});
-    spatialManager.register(entityManager._walls[entityManager._walls.length-1]);
-    //spatialManager.register(Wall.getLatestWallEntity());
-};
-
-Player.prototype.checkCorrectWallLength = function ()
-{
-    if (entityManager._walls.length > this.maxWallLength) {
-        spatialManager.unregister(entityManager._walls[0]);
-        entityManager._walls.splice(0,1);
+    this.wallVerticies.push({cx: x, cy: y});
+    spatialManager.register(this, x, y);
+    if (this.wallVerticies.length > this.maxWallLength)
+    {
+        spatialManager.unregister(this, this.wallVerticies[0].cx, this.wallVerticies[0].cy);
+        this.wallVerticies.splice(0,1);
     }
 };
 
@@ -201,14 +197,13 @@ Player.prototype.isColliding = function(nextX, nextY)
     var vertex = spatialManager.getVertex(nextX, nextY);
     //Check whether 
     if (!vertex || vertex.isWall) return true;
-    else return false;
-}
-
+    return false;
+};
 
 
 Player.prototype.getRadius = function ()
 {
-    return 1;
+    return 8;
 };
 
 Player.prototype.getPos = function()
@@ -238,6 +233,25 @@ Player.prototype.reset = function()
 
 Player.prototype.render = function (ctx)
 {
+    for(var i = 1; i < this.wallVerticies.length; i++)
+    {
+        var wx1 = spatialManager.getWorldCoordinates(this.wallVerticies[i-1].cx,
+                                                    this.wallVerticies[i-1].cy).x;
+        var wy1 = spatialManager.getWorldCoordinates(this.wallVerticies[i-1].cx,
+                                                    this.wallVerticies[i-1].cy).y;
+        var wx2 = spatialManager.getWorldCoordinates(this.wallVerticies[i].cx,
+                                                    this.wallVerticies[i].cy).x;
+        var wy2 = spatialManager.getWorldCoordinates(this.wallVerticies[i].cx,
+                                                    this.wallVerticies[i].cy).y;
+        util.drawLine(ctx,/*
+            this.wallVerticies[i-1].cx,
+            this.wallVerticies[i-1].cy,
+            this.wallVerticies[i].cx,
+            this.wallVerticies[i].cy,*/
+            wx1, wy1, wx2, wy2,
+            this.getRadius(),
+            this.color);
+    }
     //current vertex position
     var currPos = spatialManager.getWorldCoordinates(this.cx, this.cy);
     
@@ -265,7 +279,7 @@ Player.prototype.render = function (ctx)
     ctx.strokeStyle = '#FFF';
     ctx.lineWidth = 2;
     util.strokeCircle (
-	   ctx, currPos.x, currPos.y, 10
+       ctx, currPos.x, currPos.y, 10
     );
     ctx.restore();
     */
@@ -307,4 +321,4 @@ Player.prototype.makeRandomMove = function()
         keys.setKey(this.keys['LT']);
     else
         keys.setKey(this.keys['RT']);
-}
+};

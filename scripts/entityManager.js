@@ -28,7 +28,7 @@ var entityManager = {
     // "PRIVATE" DATA
     
     _players : [],
-    _walls : [],
+    //_walls : [],
     
     // "PRIVATE" METHODS
     
@@ -90,10 +90,10 @@ var entityManager = {
         this._players.push(new Player(descr));
     },
 
-    generateWall : function(descr) {
+    /*generateWall : function(descr) {
         this._walls.push(new Wall(descr));
         //console.log(this._walls);
-    },
+    },*/
     
     update: function(du) {
         for (var c = 0; c < this._categories.length; ++c) {

@@ -116,18 +116,25 @@ var spatialManager = {
     },
     
     register: function(entity, x, y) {
-        var pos = entity.getPos();
-        this._vertices[pos.x][pos.y].register(entity);
+        //var pos = entity.getPos();
+        //this._vertices[pos.x][pos.y].register(entity);
+        this._vertices[x][y].register(entity);
         // TODO: Find the vertex with coordinates (x, y) and register entity
         // to it
 
     },
     
     unregister: function(entity, x, y) {
+<<<<<<< HEAD
         var pos = entity.getPos();
         if (this.getVertex(x,y)){
             this._vertices[pos.x][pos.y].unregister(entity);
         }
+=======
+        //var pos = entity.getPos();
+        //this._vertices[pos.x][pos.y].unregister(entity);
+        this._vertices[x][y].unregister(entity);
+>>>>>>> master
         // TODO: Find the vertex with coordinates (x, y) and unregister entity
         // from it
 

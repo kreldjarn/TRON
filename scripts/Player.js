@@ -26,6 +26,8 @@ Player.prototype.rememberResets = function () {
     // Remember my reset positions
     this.reset_cx = this.cx;
     this.reset_cy = this.cy;
+    this.reset_velX = this.velX;
+    this.reset_velY = this.velY;
     this.last_cx = this.cx - this.velX;
     this.last_cy = this.cy - this.velY;
     this.reset_timestep = this.timestep;
@@ -54,16 +56,78 @@ Player.prototype.maxWallLength = 5;
 Player.prototype.wallVerticies = [];
 Player.prototype.anxiousness = 0;
 
+Player.prototype.introCount = 0;
+
+Player.prototype.introUpdate = function(du) 
+{
+    this.timestep -= du;
+    if (this.AI) this.timestep -=du;
+    if (this.timestep <= 0) 
+    {
+        spatialManager.unregister(this);
+
+        var last_cx = this.cx;
+        var last_cy = this.cy;
+
+        this.cx += this.velX;
+        this.cy += this.velY;
+
+         if (this.isColliding(this.cx, this.cy)) 
+        {
+            //Are we at NE corner?
+            if (this.velX == 1 && this.velY == 0) 
+            { 
+                this.velX = 0;
+                this.velY = 1;
+                this.cx = last_cx + this.velX;
+                this.cy = last_cy + this.velY;
+            }
+            //Are we at SW corner?
+            else if (this.velX == -1 && this.velY == 0)
+            {
+                this.velX = 0;
+                this.velY = -1;
+                this.cx = last_cx + this.velX;
+                this.cy = last_cy + this.velY;
+            }
+            //Are we at NW corner?
+            else if(this.velX == 0 &&  this.velY == -1) 
+            {
+                this.velX = 1;
+                this.velY = 0;
+                this.cx = last_cx + this.velX;
+                this.cy = last_cy + this.velY;
+            }
+            else 
+            {
+               this.velX = -1;
+                this.velY = 0;
+                this.cx = last_cx + this.velX;
+                this.cy = last_cy + this.velY; 
+            }
+        }
+
+        this.timestep = this.reset_timestep;
+        this.generateWall(last_cx, last_cy);
+        this.checkCorrectWallLength();
+        spatialManager.register(this);
+        this.introCount++;
+    }
+}
     
 Player.prototype.update = function(du)
 {
+
+    if(this.introCount < (VERTICES_PER_ROW)*2 - 1) {
+        return this.introUpdate(du);
+    }
+
+    this.timestep -= du;
+
     this.handleInputs();
 
-    //At the vertex, we determine the vertex we are headed for
-    //and save this information to dx and dy
-
     // We only move the actual entity once every reset_timestep
-    this.timestep -= du;
+    
     if (this.timestep <= 0)
     {
         //spatialManager.unregister(this);
@@ -80,8 +144,12 @@ Player.prototype.update = function(du)
         //this.refreshWall(last_cx, last_cy);
 
         // TODO: HANDLE COLLISIONS
-        //spatialManager.register(this);
-        spatialManager.register(this, this.cx, this.cy);
+        if (this.isColliding(this.cx, this.cy)) 
+        {
+            this.reset();
+            spatialManager.reset();
+        }
+        else  spatialManager.register(this, this.cx, this.cy);
         
         if (this.AI) this.makeMove(15);
     }
@@ -124,10 +192,14 @@ Player.prototype.refreshWall = function(x,y)
     }
 };
 
-Player.prototype.isColliding = function()
+Player.prototype.isColliding = function(nextX, nextY)
 {
-    //TODO
+    var vertex = spatialManager.getVertex(nextX, nextY);
+    //Check whether 
+    if (!vertex || vertex.isWall) return true;
+    return false;
 };
+
 
 Player.prototype.getRadius = function ()
 {
@@ -142,9 +214,20 @@ Player.prototype.getPos = function()
 Player.prototype.reset = function()
 {
     spatialManager.unregister(this);
+    
     this.cx = this.reset_cx;
     this.cy = this.reset_cy;
+    this.velX = this.reset_velX;
+    this.velY = this.reset_velY;
+    this.requestedVelX = this.velX;
+    this.requestedVelY = this.velY;
     this.timestep = this.reset_timestep;
+
+    //Prevent the fresh-born player to inherit its ancestor's velocities
+    //by clearing the state in keys
+    for (var key in this.keys)
+        keys.clearKey(this.keys[key]);
+
     spatialManager.register(this);
 };
 

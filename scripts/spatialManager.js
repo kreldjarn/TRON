@@ -122,7 +122,7 @@ Vertex.prototype.pin = function(px, py)
 
 Vertex.prototype.update = function(du)
 {
-    if (this.pinX && this.pinY) return;
+    //if (this.pinX && this.pinY) return;
     this.px = this.x;
     this.py = this.y;
 
@@ -158,14 +158,14 @@ Vertex.prototype.update = function(du)
 };
 
 Vertex.prototype.render = function(ctx, vtx)
-{/*
+{
     if (this.constraints.length === 0) return;
-
+    /*
     for (var i = 0; i < this.constraints.length; ++i)
     {
         this.constraints[i].render(ctx);
-    }*/
-
+    }
+    */
     if (this.constraints.length < 2 || !vtx) return;
     ctx.beginPath();
     ctx.moveTo(vtx.x, vtx.y);
@@ -184,6 +184,8 @@ Vertex.prototype.render = function(ctx, vtx)
         coef = 220;
     ctx.fillStyle = "rgba(" + coef + ", 65, " + (220 - coef) + ", " + util.linearInterpolate(0.25, 1, coef/255.0) + ")";
     ctx.fill();
+    ctx.strokeStyle = '#000';
+    ctx.stroke();
 };
 
 Vertex.prototype.applyConstraints = function(du)
@@ -297,7 +299,7 @@ var spatialManager = {
     {
         // Acc denotes accuracy of physics simulation.
         // lower for better performance
-        var Acc = 3;
+        var Acc = 5;
         for (var n = 0; n < Acc; ++n)
         {
             for (var j = 0; j < VERTICES_PER_ROW; ++j)
@@ -452,9 +454,9 @@ var spatialManager = {
         ctx.strokeStyle = '#FFF';
         //ctx.beginPath();
 
-        for (var j = 0; j < VERTICES_PER_ROW; ++j)
+        for (var j = 1; j < VERTICES_PER_ROW; ++j)
         {
-            for (var i = 0; i < VERTICES_PER_ROW; ++i)
+            for (var i = 1; i < VERTICES_PER_ROW; ++i)
             {
                 this.getVertex(i, j).render(ctx, this.getVertex(i-1, j-1));
             }

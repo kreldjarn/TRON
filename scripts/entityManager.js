@@ -47,8 +47,8 @@ var entityManager = {
                              AI: false});
         this.generatePlayer({cx: VERTICES_PER_ROW-1,
                              cy: VERTICES_PER_ROW-1,
-                             velX: 0,
-                             velY: 1,
+                             velX: -1,
+                             velY: 0,
                              timestep: 10,
                              color: '#FC00AC',
                              wallVerticies: [{cx: VERTICES_PER_ROW-1, cy: VERTICES_PER_ROW-1}],

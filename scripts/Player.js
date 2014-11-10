@@ -61,7 +61,7 @@ Player.prototype.introCount = 0;
 Player.prototype.introUpdate = function(du) 
 {
     this.timestep -= du;
-    if (this.AI) this.timestep -=du;
+    //if (this.AI) this.timestep -=du;
     if (this.timestep <= 0) 
     {
         spatialManager.unregister(this, this.cx, this.cy);
@@ -116,9 +116,9 @@ Player.prototype.introUpdate = function(du)
 Player.prototype.update = function(du)
 {
 
-    if(this.introCount < (VERTICES_PER_ROW)*2 - 1) {
+    /*if(this.introCount < (VERTICES_PER_ROW)*2 - 1) {
         return this.introUpdate(du);
-    }
+    }*/
 
     this.timestep -= du;
 
@@ -143,7 +143,7 @@ Player.prototype.update = function(du)
         //this.refreshWall(last_cx, last_cy);
 
         // TODO: HANDLE COLLISIONS
-        if (this.isColliding(this.cx, this.cy)) 
+        if (this.isColliding(this.cx + this.velX, this.cy + this.velY)) 
         {
             this.reset();
             spatialManager.reset();
@@ -184,7 +184,7 @@ Player.prototype.refreshWall = function(x,y)
 {
     //console.log(this.wallVerticies);
     this.wallVerticies.push({cx: x, cy: y});
-    spatialManager.register(this, x, y);
+    //spatialManager.register(this, x, y);
     if (this.wallVerticies.length > this.maxWallLength)
     {
         spatialManager.unregister(this, this.wallVerticies[0].cx, this.wallVerticies[0].cy);
@@ -219,6 +219,8 @@ Player.prototype.reset = function()
 {
     spatialManager.unregister(this, this.cx, this.cy);
     
+    this.wallVerticies.splice(0, this.wallVerticies.length);
+
     this.cx = this.reset_cx;
     this.cy = this.reset_cy;
     this.velX = this.reset_velX;

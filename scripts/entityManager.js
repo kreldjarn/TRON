@@ -45,13 +45,13 @@ var entityManager = {
                                  RT: 'D'.charCodeAt(0),
                              },
                              AI: false});
-        this.generatePlayer({cx: 6,
-                             cy: 6,
+        this.generatePlayer({cx: VERTICES_PER_ROW-1,
+                             cy: VERTICES_PER_ROW-1,
                              velX: 0,
                              velY: 1,
                              timestep: 7,
                              color: '#FC00AC',
-                             wallVerticies: [{cx: 6, cy: 6}],
+                             wallVerticies: [{cx: VERTICES_PER_ROW-1, cy: VERTICES_PER_ROW-1}],
                              keys: {
                                  UP: 1000,
                                  DN: 1001,

@@ -404,7 +404,7 @@ var spatialManager = {
             vy = 2 * VERTEX_MARGIN - 2;
         }
 
-
+        /*
         // DEBUG
         // =====
         /*
@@ -485,7 +485,9 @@ var spatialManager = {
         {
             for (var j = 0; j < VERTICES_PER_ROW; ++j)
             {
-                var v = this._vertices[j][i].reset();
+                if (this.getVertex(j, i)){
+                    var v = this._vertices[j][i].reset();
+                }
             }
         }
     },

@@ -19,7 +19,7 @@ function Player(descr) {
 
     this.rememberResets();
 
-    spatialManager._vertices[this.cx][this.cy].isWally = true;
+    spatialManager.getVertex(this.cx, this.cy).isWally = true;
 };
 
 Player.prototype = new Entity();
@@ -111,7 +111,7 @@ Player.prototype.introUpdate = function(du)
         this.timestep = this.reset_timestep;
         spatialManager.register(this, this.cx, this.cy);
         this.introCount++;
-        console.log(this.introCount);
+        //console.log(this.introCount);
     }
 }
     
@@ -189,6 +189,9 @@ Player.prototype.handleInputs = function()
 Player.prototype.refreshWall = function(x, y)
 {
     this.wallVertices.push({cx: x, cy: y});
+    spatialManager.register(this,
+                            this.wallVertices[0].cx,
+                            this.wallVertices[0].cy);
     //spatialManager.addRift(x, y);
     if (this.wallVertices.length > this.maxWallLength)
     {
@@ -230,7 +233,7 @@ Player.prototype.reset = function()
 {
     spatialManager.unregister(this, this.cx, this.cy);
     
-    this.wallVertices.splice(0, this.wallVertices.length);
+    this.wallVertices = [];
 
     this.cx = this.reset_cx;
     this.cy = this.reset_cy;
@@ -250,7 +253,7 @@ Player.prototype.reset = function()
 
 Player.prototype.render = function (ctx)
 {
-    
+    // Draw tail
     for(var i = 1; i < this.wallVertices.length; i++)
     {
         var v1 = this.wallVertices[i-1];
@@ -264,7 +267,7 @@ Player.prototype.render = function (ctx)
             this.getRadius(),
             this.color);
     }
-    
+    /*
     //current vertex position
     var currPos = getWorldCoordinates(this.cx, this.cy);
     
@@ -275,17 +278,25 @@ Player.prototype.render = function (ctx)
     var destPos = getWorldCoordinates(destX, destY);
     //console.log(pos);
     
-    /*
+    */
+    var currPos = spatialManager.getVertex(this.cx, this.cy).getPos();
+    var nextPos = spatialManager.getVertex(this.cx + this.velX,
+                                           this.cy + this.velY).getPos();
+
+    var progress = (this.reset_timestep - this.timestep) / this.reset_timestep;
+    var destX = currPos.x + progress * (nextPos.x - currPos.x);
+    var destY = currPos.y + progress * (nextPos.y - currPos.y);
+    
     ctx.save();
     ctx.strokeStyle = this.color;
     ctx.lineWidth = 8;
     ctx.beginPath();
     ctx.moveTo(currPos.x, currPos.y);
-    ctx.lineTo(destPos.x, destPos.y);
+    ctx.lineTo(destX, destY);
     ctx.stroke();
     ctx.restore();    
-    */
-
+    
+    /*
     var currPos = spatialManager.getVertex(this.cx, this.cy).getPos();
     
     ctx.save();
@@ -295,7 +306,7 @@ Player.prototype.render = function (ctx)
        ctx, currPos.x, currPos.y, 10
     );
     ctx.restore();
-    
+    */
 };
 
 Player.prototype.makeMove = function(N)

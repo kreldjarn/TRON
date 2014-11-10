@@ -63,7 +63,7 @@ Player.prototype.introCount = 0;
 
 Player.prototype.introUpdate = function(du) 
 {
-    this.timestep -= du;
+    this.timestep = 0;
     //if (this.AI) this.timestep -=du;
     if (this.timestep <= 0) 
     {
@@ -119,7 +119,8 @@ Player.prototype.update = function(du)
 {
 
     if(this.introCount < (VERTICES_PER_ROW)*2 - 3) {
-        return this.introUpdate(du);
+        this.introUpdate(du);
+        return;
     }
     this.handleInputs();
     this.timestep -= du;

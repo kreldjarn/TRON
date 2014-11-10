@@ -118,6 +118,11 @@ drawLine: function(ctx, x1, y1, x2, y2, lineWidth, style) {
     ctx.restore();
     ctx.fillStyle = oldStyle;
     ctx.lineWidth = oldLineWidth;
-}
+},
+
+linearInterpolate : function(a, b, p)
+{
+    return (b-a)*p + a;
+},
 
 };

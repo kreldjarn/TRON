@@ -46,10 +46,11 @@ var VERTICES_PER_ROW = 25,
     ];
 
 
-var gravity = 5;
+var gravity = 2;
 
 // Maps grid coordinates to world coordinates
-function getWorldCoordinates(gx, gy) {
+function getWorldCoordinates(gx, gy)
+{
     var wx = GRID_OFFSET + gx * VERTEX_MARGIN;
     var wy = GRID_OFFSET + gy * VERTEX_MARGIN / 2;
     return {x: wx, y: wy};
@@ -58,7 +59,8 @@ function getWorldCoordinates(gx, gy) {
 // Each "cell" in our spatialManager is a vertex in our physical grid.
 // Collisions only happen on vertices, and so each entity registers itself
 // to a vertex, every time it moves.
-function Vertex(x, y) {
+function Vertex(x, y)
+{
     this._entities = [];
     this.color = '#FFF';
     this.std_color = '#FFF';
@@ -77,24 +79,29 @@ function Vertex(x, y) {
     this.pinX = null;
     this.pinY = null;
     this.constraints = [];
-
-    this.register = function(entity) {
-        var ID = entity.getSpatialID();
-        this._entities[ID] = entity;
-        this.color = entity.color;
-        this.isWall = true;
-    };
-    this.unregister = function(entity) {
-        var ID = entity.getSpatialID();
-        this.isWall = false;
-        delete this._entities[ID];
-        //this.color = this.std_color;
-    };
-    this.reset = function() {
-        this.color = this.std_color;
-        this.isWall = false;
-    };
 }
+
+Vertex.prototype.register = function(entity)
+{
+    var ID = entity.getSpatialID();
+    this._entities[ID] = entity;
+    this.color = entity.color;
+    this.isWall = true;
+};
+
+Vertex.prototype.unregister = function(entity)
+{
+    var ID = entity.getSpatialID();
+    this.isWall = false;
+    delete this._entities[ID];
+    //this.color = this.std_color;
+};
+
+Vertex.prototype.reset = function()
+{
+    this.color = this.std_color;
+    this.isWall = false;
+};
 
 Vertex.prototype.getPos = function()
 {
@@ -136,9 +143,9 @@ Vertex.prototype.update = function(du)
     }
 
     this.applyForce(0, gravity * du);
-    du *= du;
-    var nx = this.x + ((this.x - this.px) * 0.99) + ((this.vx / 4) * du);
-    var ny = this.y + ((this.y - this.py) * 0.99) + ((this.vy / 4) * du);
+    //du *= du;
+    var nx = this.x + ((this.x - this.px) * 0.99) + ((this.vx / 2) * du);
+    var ny = this.y + ((this.y - this.py) * 0.99) + ((this.vy / 2) * du);
 
     this.px = this.x;
     this.py = this.y;
@@ -175,7 +182,7 @@ Vertex.prototype.render = function(ctx, vtx)
     var coef = Math.round((Math.abs(off)/VERTEX_MARGIN) * 255);
     if (coef > 220)
         coef = 220;
-    ctx.fillStyle = "rgba(" + coef + ", 65, " + (220 - coef) + ", 1)";
+    ctx.fillStyle = "rgba(" + coef + ", 65, " + (220 - coef) + ", " + util.linearInterpolate(0.25, 1, coef/255.0) + ")";
     ctx.fill();
 };
 
@@ -195,7 +202,7 @@ Vertex.prototype.applyConstraints = function(du)
     }
 
     this.x = util.clampRange(this.x, 0, g_canvas.width);
-    this.y = util.clampRange(this.y, 0, g_canvas.width);
+    this.y = util.clampRange(this.y, 0, g_canvas.height);
 };
 
 Vertex.prototype.constrainBy = function(vertex)
@@ -224,7 +231,7 @@ function Constraint(vtx1, vtx2)
 
 Constraint.prototype.assert = function(du)
 {
-    if (this.vtx1.pinX && this.vtx1.pinY) return;
+    //if (this.vtx1.pinX && this.vtx1.pinY) return;
     var pos1 = this.vtx1.getPos(),
         pos2 = this.vtx2.getPos();
 
@@ -233,8 +240,8 @@ Constraint.prototype.assert = function(du)
         dist = Math.sqrt(dX * dX + dY * dY),
         delta = (this.length - dist) / dist;
 
-    var px = dX * delta * 0.4 * du;
-    var py = dY * delta * 0.4 * du;
+    var px = dX * delta * 0.4;// * du;
+    var py = dY * delta * 0.4;// * du;
 
     this.vtx1.setPos(pos1.x + px, pos1.y + py);
     this.vtx2.setPos(pos2.x - px, pos2.y - py);

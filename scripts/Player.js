@@ -18,6 +18,8 @@ function Player(descr) {
     this.setup(descr);
 
     this.rememberResets();
+
+    spatialManager._vertices[this.cx][this.cy].isWally = true;
 };
 
 Player.prototype = new Entity();
@@ -52,7 +54,7 @@ Player.prototype.velY = 0;
 Player.prototype.requestedVelX = 1;
 Player.prototype.requestedVelY = 0;
 
-Player.prototype.maxWallLength = 5;
+Player.prototype.maxWallLength = 5+39;
 Player.prototype.wallVerticies = [];
 Player.prototype.anxiousness = 0;
 
@@ -72,58 +74,56 @@ Player.prototype.introUpdate = function(du)
         this.cx += this.velX;
         this.cy += this.velY;
 
-         if (this.isColliding(this.cx, this.cy)) 
+        if (this.wallVerticies.length === 0)this.refreshWall(last_cx, last_cy);
+        this.refreshWall(this.cx, this.cy);
+
+         if (this.isColliding(this.cx + this.velX, this.cy + this.velY)) 
         {
             //Are we at NE corner?
             if (this.velX == 1 && this.velY == 0) 
             { 
                 this.velX = 0;
                 this.velY = 1;
-                this.cx = last_cx + this.velX;
-                this.cy = last_cy + this.velY;
             }
             //Are we at SW corner?
             else if (this.velX == -1 && this.velY == 0)
             {
                 this.velX = 0;
                 this.velY = -1;
-                this.cx = last_cx + this.velX;
-                this.cy = last_cy + this.velY;
             }
             //Are we at NW corner?
             else if(this.velX == 0 &&  this.velY == -1) 
             {
                 this.velX = 1;
                 this.velY = 0;
-                this.cx = last_cx + this.velX;
-                this.cy = last_cy + this.velY;
             }
-            else 
+            //Are we at SW corner?
+            else if(this.velX == 0 && this.velY == 1)
             {
                this.velX = -1;
                 this.velY = 0;
-                this.cx = last_cx + this.velX;
-                this.cy = last_cy + this.velY; 
             }
         }
 
+        this.requestedVelX = this.velX;
+        this.requestedVelY = this.velY;
         this.timestep = this.reset_timestep;
         spatialManager.register(this, this.cx, this.cy);
         this.introCount++;
+        console.log(this.introCount);
     }
 }
     
 Player.prototype.update = function(du)
 {
 
-    /*if(this.introCount < (VERTICES_PER_ROW)*2 - 1) {
+    if(this.introCount < (VERTICES_PER_ROW)*2 - 3) {
         return this.introUpdate(du);
-    }*/
+    }
 
     this.timestep -= du;
 
-    this.handleInputs();
-
+    
     // We only move the actual entity once every reset_timestep
     
     if (this.timestep <= 0)
@@ -132,7 +132,6 @@ Player.prototype.update = function(du)
         spatialManager.unregister(this, this.cx, this.cy);
         var last_cx = this.cx;
         var last_cy = this.cy;
-        console.log("player update:"+ this.color + " " + this.cx + " " +this.cy);
         this.cx += this.velX;
         this.cy += this.velY;
         if (this.wallVerticies.length === 0)this.refreshWall(last_cx, last_cy);
@@ -182,25 +181,26 @@ Player.prototype.handleInputs = function()
 
 Player.prototype.refreshWall = function(x,y)
 {
-    //console.log(this.wallVerticies);
     this.wallVerticies.push({cx: x, cy: y});
     //spatialManager.register(this, x, y);
     if (this.wallVerticies.length > this.maxWallLength)
     {
         spatialManager.unregister(this, this.wallVerticies[0].cx, this.wallVerticies[0].cy);
+        spatialManager._vertices[x][y].isWally = false;
         this.wallVerticies.splice(0,1);
-    }
-    for (var i = 0; i < this.wallVerticies.length; i++)
-    {
-        console.log(this.color + " " + this.wallVerticies[i].cx +  " " + this.wallVerticies[i].cy);
     }
 };
 
 Player.prototype.isColliding = function(nextX, nextY)
 {
+    
     var vertex = spatialManager.getVertex(nextX, nextY);
     //Check whether 
-    if (!vertex || vertex.isWall) return true;
+    if (!vertex || vertex.isWally) {
+        console.log("colliding!");
+        console.log(nextX, nextY);
+        return true;
+    }
     return false;
 };
 

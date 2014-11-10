@@ -53,12 +53,14 @@ function Vertex() {
     this.color = '#FFF';
     this.std_color = '#FFF';
     this.isWall = false;
+    this.isWally = false;
     this.debug = false;
     this.register = function(entity) {
         var ID = entity.getSpatialID();
         this._entities[ID] = entity;
         this.color = entity.color;
         this.isWall = true;
+        this.isWally = true;
     };
     this.unregister = function(entity) {
         var ID = entity.getSpatialID();
@@ -75,6 +77,7 @@ function Vertex() {
     this.reset = function() {
         this.color = this.std_color;
         this.isWall = false;
+        this.isWally = false;
     }
 }
 

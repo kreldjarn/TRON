@@ -37,7 +37,7 @@ var entityManager = {
                              cy: 0,
                              timestep: 7,
                              color: '#FFF',
-                             wallVerticies: [{cx: 0, cy: 0}],
+                             wallVertices: [{cx: 0, cy: 0}],
                              keys: {
                                  UP: 'W'.charCodeAt(0),
                                  DN: 'S'.charCodeAt(0),
@@ -51,7 +51,7 @@ var entityManager = {
                              velY: 0,
                              timestep: 7,
                              color: '#FFF',
-                             wallVerticies: [{cx: VERTICES_PER_ROW-1, cy: VERTICES_PER_ROW-1}],
+                             wallVertices: [{cx: VERTICES_PER_ROW-1, cy: VERTICES_PER_ROW-1}],
                              keys: {
                                  UP: 1000,
                                  DN: 1001,

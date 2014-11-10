@@ -77,7 +77,7 @@ function gatherInputs() {
 function updateSimulation(du)
 {
     processDiagnostics();
-    
+    spatialManager.update(du);
     entityManager.update(du);
 }
 
@@ -152,6 +152,13 @@ function preloadDone() {
 
     main.init();
 }
+
+// retina
+var dpr = window.devicePixelRatio || 1;
+g_canvas.width *= dpr;
+g_canvas.height *= dpr;
+g_canvas.getContext("2d").scale(dpr, dpr);
+
 
 // Kick it off
 //requestPreloads();

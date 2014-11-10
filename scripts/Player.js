@@ -50,8 +50,8 @@ Player.prototype.velY = 0;
 Player.prototype.requestedVelX = 1;
 Player.prototype.requestedVelY = 0;
 
-Player.prototype.maxWallLength = 5;
-Player.prototype.wallVerticies = [];
+Player.prototype.maxWallLength = 15;
+Player.prototype.wallVertices = [];
 Player.prototype.anxiousness = 0;
 
     
@@ -70,10 +70,10 @@ Player.prototype.update = function(du)
         spatialManager.unregister(this, this.cx, this.cy);
         var last_cx = this.cx;
         var last_cy = this.cy;
-        console.log("player update:"+ this.color + " " + this.cx + " " +this.cy);
+    
         this.cx += this.velX;
         this.cy += this.velY;
-        if (this.wallVerticies.length === 0)this.refreshWall(last_cx, last_cy);
+        if (this.wallVertices.length === 0) this.refreshWall(last_cx, last_cy);
         this.refreshWall(this.cx, this.cy);
         this.velX = this.requestedVelX;
         this.velY = this.requestedVelY;
@@ -112,21 +112,26 @@ Player.prototype.handleInputs = function()
         this.requestedVelX = 1;
         this.requestedVelY = 0;
     }
+
+    // Disallow turning on the spot
+    if (this.requestedVelX === -this.velX || this.requestedVelY === -this.velY)
+    {
+        this.requestedVelX = this.velX;
+        this.requestedVelY = this.velY;
+    }
 };
 
-Player.prototype.refreshWall = function(x,y)
+Player.prototype.refreshWall = function(x, y)
 {
-    //console.log(this.wallVerticies);
-    this.wallVerticies.push({cx: x, cy: y});
+    //console.log(this.wallVertices);
+    this.wallVertices.push({cx: x, cy: y});
     spatialManager.register(this, x, y);
-    if (this.wallVerticies.length > this.maxWallLength)
+    //spatialManager.addRift(x, y);
+    if (this.wallVertices.length > this.maxWallLength)
     {
-        spatialManager.unregister(this, this.wallVerticies[0].cx, this.wallVerticies[0].cy);
-        this.wallVerticies.splice(0,1);
-    }
-    for (var i = 0; i < this.wallVerticies.length; i++)
-    {
-        console.log(this.color + " " + this.wallVerticies[i].cx +  " " + this.wallVerticies[i].cy);
+        spatialManager.unregister(this, this.wallVertices[0].cx, this.wallVertices[0].cy);
+        //spatialManager.removeRift(this.wallVertices[0].cx, this.wallVertices[0].cy);
+        this.wallVertices.splice(0, 1);
     }
 };
 
@@ -145,6 +150,11 @@ Player.prototype.getPos = function()
     return {x: this.cx, y: this.cy};
 };
 
+Player.prototype.getVel = function()
+{
+    return {x: this.velX, y: this.velY};
+}
+
 Player.prototype.reset = function()
 {
     spatialManager.unregister(this);
@@ -156,35 +166,32 @@ Player.prototype.reset = function()
 
 Player.prototype.render = function (ctx)
 {
-    for(var i = 1; i < this.wallVerticies.length; i++)
+    /*
+    for(var i = 1; i < this.wallVertices.length; i++)
     {
-        var wx1 = spatialManager.getWorldCoordinates(this.wallVerticies[i-1].cx,
-                                                    this.wallVerticies[i-1].cy).x;
-        var wy1 = spatialManager.getWorldCoordinates(this.wallVerticies[i-1].cx,
-                                                    this.wallVerticies[i-1].cy).y;
-        var wx2 = spatialManager.getWorldCoordinates(this.wallVerticies[i].cx,
-                                                    this.wallVerticies[i].cy).x;
-        var wy2 = spatialManager.getWorldCoordinates(this.wallVerticies[i].cx,
-                                                    this.wallVerticies[i].cy).y;
+        var v1 = this.wallVertices[i-1];
+        var pos1 = spatialManager.getVertex(v1.cx, v1.cy).getPos();
+        var v2 = this.wallVertices[i];
+        var pos2 = spatialManager.getVertex(v2.cx, v2.cy).getPos();
+        
         
         util.drawLine(ctx,
-            wx1, wy1, wx2, wy2,
+            pos1.x, pos1.y, pos2.x, pos2.y,
             this.getRadius(),
             this.color);
     }
+    */
     //current vertex position
-    var currPos = spatialManager.getWorldCoordinates(this.cx, this.cy);
+    var currPos = getWorldCoordinates(this.cx, this.cy);
     
     //destination vertex position
-    //var revTimestep = (this.timestep - 10)*(-1);
-    //var destX = this.cx + (1/revTimestep)*(this.velX);
-    //var destY = this.cy + (1/revTimestep)*(this.velY);
     var progress = (this.reset_timestep - this.timestep) / this.reset_timestep;
     var destX = this.cx + (progress * this.velX);
     var destY = this.cy + (progress * this.velY);
-    var destPos = spatialManager.getWorldCoordinates(destX, destY);
+    var destPos = getWorldCoordinates(destX, destY);
     //console.log(pos);
     
+    /*
     ctx.save();
     ctx.strokeStyle = this.color;
     ctx.lineWidth = 8;
@@ -193,8 +200,10 @@ Player.prototype.render = function (ctx)
     ctx.lineTo(destPos.x, destPos.y);
     ctx.stroke();
     ctx.restore();    
+    */
 
-    /*
+    var currPos = spatialManager.getVertex(this.cx, this.cy).getPos();
+    
     ctx.save();
     ctx.strokeStyle = '#FFF';
     ctx.lineWidth = 2;
@@ -202,7 +211,7 @@ Player.prototype.render = function (ctx)
        ctx, currPos.x, currPos.y, 10
     );
     ctx.restore();
-    */
+    
 };
 
 Player.prototype.makeMove = function(N)

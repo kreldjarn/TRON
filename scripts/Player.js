@@ -18,6 +18,8 @@ function Player(descr) {
     this.setup(descr);
 
     this.rememberResets();
+
+    spatialManager._vertices[this.cx][this.cy].isWally = true;
 };
 
 Player.prototype = new Entity();
@@ -52,8 +54,9 @@ Player.prototype.velY = 0;
 Player.prototype.requestedVelX = 1;
 Player.prototype.requestedVelY = 0;
 
-Player.prototype.maxWallLength = 15;
 Player.prototype.wallVertices = [];
+Player.prototype.maxWallLength = 5+39;
+
 Player.prototype.anxiousness = 0;
 
 Player.prototype.introCount = 0;
@@ -61,7 +64,7 @@ Player.prototype.introCount = 0;
 Player.prototype.introUpdate = function(du) 
 {
     this.timestep -= du;
-    if (this.AI) this.timestep -=du;
+    //if (this.AI) this.timestep -=du;
     if (this.timestep <= 0) 
     {
         spatialManager.unregister(this, this.cx, this.cy);
@@ -72,67 +75,62 @@ Player.prototype.introUpdate = function(du)
         this.cx += this.velX;
         this.cy += this.velY;
 
-         if (this.isColliding(this.cx, this.cy)) 
+        if (this.wallVertices.length === 0)this.refreshWall(last_cx, last_cy);
+        this.refreshWall(this.cx, this.cy);
+
+         if (this.isColliding(this.cx + this.velX, this.cy + this.velY)) 
         {
             //Are we at NE corner?
             if (this.velX == 1 && this.velY == 0) 
             { 
                 this.velX = 0;
                 this.velY = 1;
-                this.cx = last_cx + this.velX;
-                this.cy = last_cy + this.velY;
             }
             //Are we at SW corner?
             else if (this.velX == -1 && this.velY == 0)
             {
                 this.velX = 0;
                 this.velY = -1;
-                this.cx = last_cx + this.velX;
-                this.cy = last_cy + this.velY;
             }
             //Are we at NW corner?
             else if(this.velX == 0 &&  this.velY == -1) 
             {
                 this.velX = 1;
                 this.velY = 0;
-                this.cx = last_cx + this.velX;
-                this.cy = last_cy + this.velY;
             }
-            else 
+            //Are we at SW corner?
+            else if(this.velX == 0 && this.velY == 1)
             {
-               this.velX = -1;
+                this.velX = -1;
                 this.velY = 0;
-                this.cx = last_cx + this.velX;
-                this.cy = last_cy + this.velY; 
             }
         }
 
+        this.requestedVelX = this.velX;
+        this.requestedVelY = this.velY;
         this.timestep = this.reset_timestep;
         spatialManager.register(this, this.cx, this.cy);
         this.introCount++;
+        console.log(this.introCount);
     }
 }
     
 Player.prototype.update = function(du)
 {
 
-    if(this.introCount < (VERTICES_PER_ROW)*2 - 1) {
+    if(this.introCount < (VERTICES_PER_ROW)*2 - 3) {
         return this.introUpdate(du);
     }
-
+    this.handleInputs();
     this.timestep -= du;
 
-    this.handleInputs();
-
     // We only move the actual entity once every reset_timestep
-    
     if (this.timestep <= 0)
     {
-        //spatialManager.unregister(this);
         spatialManager.unregister(this, this.cx, this.cy);
         var last_cx = this.cx;
         var last_cy = this.cy;
-    
+
         this.cx += this.velX;
         this.cy += this.velY;
         if (this.wallVertices.length === 0) this.refreshWall(last_cx, last_cy);
@@ -142,13 +140,13 @@ Player.prototype.update = function(du)
         this.timestep = this.reset_timestep;
         //this.refreshWall(last_cx, last_cy);
 
-        // TODO: HANDLE COLLISIONS
-        if (this.isColliding(this.cx, this.cy)) 
+        if (this.isColliding(this.cx + this.velX, this.cy + this.velY)) 
         {
             this.reset();
             spatialManager.reset();
+            return;
         }
-        else  spatialManager.register(this, this.cx, this.cy);
+        spatialManager.register(this, this.cx, this.cy);
         
         if (this.AI) this.makeMove(15);
     }
@@ -180,7 +178,8 @@ Player.prototype.handleInputs = function()
     }
 
     // Disallow turning on the spot
-    if (this.requestedVelX === -this.velX || this.requestedVelY === -this.velY)
+    if ((this.velX && this.requestedVelX === -this.velX) ||
+        (this.velY && this.requestedVelY === -this.velY))
     {
         this.requestedVelX = this.velX;
         this.requestedVelY = this.velY;
@@ -189,13 +188,14 @@ Player.prototype.handleInputs = function()
 
 Player.prototype.refreshWall = function(x, y)
 {
-    //console.log(this.wallVertices);
     this.wallVertices.push({cx: x, cy: y});
-    spatialManager.register(this, x, y);
     //spatialManager.addRift(x, y);
     if (this.wallVertices.length > this.maxWallLength)
     {
-        spatialManager.unregister(this, this.wallVertices[0].cx, this.wallVertices[0].cy);
+        spatialManager.unregister(this,
+                                  this.wallVertices[0].cx,
+                                  this.wallVertices[0].cy);
+        spatialManager._vertices[x][y].isWally = false;
         //spatialManager.removeRift(this.wallVertices[0].cx, this.wallVertices[0].cy);
         this.wallVertices.splice(0, 1);
     }
@@ -204,8 +204,9 @@ Player.prototype.refreshWall = function(x, y)
 Player.prototype.isColliding = function(nextX, nextY)
 {
     var vertex = spatialManager.getVertex(nextX, nextY);
-    //Check whether 
-    if (!vertex || vertex.isWall) return true;
+    if (!vertex || vertex.isWally) {
+        return true;
+    }
     return false;
 };
 
@@ -229,6 +230,8 @@ Player.prototype.reset = function()
 {
     spatialManager.unregister(this, this.cx, this.cy);
     
+    this.wallVertices.splice(0, this.wallVertices.length);
+
     this.cx = this.reset_cx;
     this.cy = this.reset_cy;
     this.velX = this.reset_velX;
@@ -237,8 +240,8 @@ Player.prototype.reset = function()
     this.requestedVelY = this.velY;
     this.timestep = this.reset_timestep;
 
-    //Prevent the fresh-born player to inherit its ancestor's velocities
-    //by clearing the state in keys
+    // Prevent the fresh-born player to inherit its ancestor's velocities
+    // by clearing the state in keys
     for (var key in this.keys)
         keys.clearKey(this.keys[key]);
 
@@ -247,7 +250,7 @@ Player.prototype.reset = function()
 
 Player.prototype.render = function (ctx)
 {
-    /*
+    
     for(var i = 1; i < this.wallVertices.length; i++)
     {
         var v1 = this.wallVertices[i-1];
@@ -261,7 +264,7 @@ Player.prototype.render = function (ctx)
             this.getRadius(),
             this.color);
     }
-    */
+    
     //current vertex position
     var currPos = getWorldCoordinates(this.cx, this.cy);
     

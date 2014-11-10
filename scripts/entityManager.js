@@ -47,8 +47,8 @@ var entityManager = {
                              AI: false});
         this.generatePlayer({cx: VERTICES_PER_ROW-1,
                              cy: VERTICES_PER_ROW-1,
-                             velX: 0,
-                             velY: 1,
+                             velX: -1,
+                             velY: 0,
                              timestep: 7,
                              color: '#FC00AC',
                              wallVerticies: [{cx: VERTICES_PER_ROW-1, cy: VERTICES_PER_ROW-1}],
@@ -60,21 +60,6 @@ var entityManager = {
                              },
                              AI: true,
                              anxiousness: 0.2});
-        this.generatePlayer({cx: 16,
-                             cy: 16,
-                             velX: 0,
-                             velY: 1,
-                             timestep: 7,
-                             color: '#FC00AC',
-                             wallVerticies: [{cx: 16, cy: 16}],
-                             keys: {
-                                 UP: 1004,
-                                 DN: 1005,
-                                 LT: 1006,
-                                 RT: 1007,
-                             },
-                             AI: true,
-                             anxiousness: 0.1});
     },
     
     _forEachOf: function(aCategory, fn) {

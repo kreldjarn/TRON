@@ -52,7 +52,7 @@ var gravity = 2;
 function getWorldCoordinates(gx, gy)
 {
     var wx = GRID_OFFSET + gx * VERTEX_MARGIN;
-    var wy = GRID_OFFSET + gy * VERTEX_MARGIN / 2;
+    var wy = GRID_OFFSET + gy * VERTEX_MARGIN;
     return {x: wx, y: wy};
 }
 
@@ -62,9 +62,8 @@ function getWorldCoordinates(gx, gy)
 function Vertex(x, y)
 {
     this._entities = [];
-    this.color = '#FFF';
-    this.std_color = '#FFF';
     this.isWall = false;
+    this.isWally = false;
     this.debug = false;
 
     /*******************
@@ -99,8 +98,8 @@ Vertex.prototype.unregister = function(entity)
 
 Vertex.prototype.reset = function()
 {
-    this.color = this.std_color;
     this.isWall = false;
+    this.isWally = false;
 };
 
 Vertex.prototype.getPos = function()

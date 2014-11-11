@@ -1,4 +1,4 @@
-var gravity = 3;
+var gravity = 4;
 
 function Vertex(x, y)
 {
@@ -89,9 +89,10 @@ Vertex.prototype.update = function(du)
     /******************
      *  VERLET STUFF  *
      ******************/
-    du *= du;
-    var nx = this.x + ((this.x - this.pullX) * 0.99) + ((this.velX / 2) * du);
-    var ny = this.y + ((this.y - this.pullY) * 0.99) + ((this.velY / 2) * du);
+    duSq = du * du;
+
+    var nx = this.x + ((this.x - this.pullX) * 0.99) + ((this.velX / 2) * duSq);
+    var ny = this.y + ((this.y - this.pullY) * 0.99) + ((this.velY / 2) * duSq);
 
     this.pullX = this.x;
     this.pullY = this.y;
@@ -132,9 +133,9 @@ Vertex.prototype.render = function(ctx, vtx)
     offset *= 0.25;
 
     var coeficcient = Math.round((Math.abs(offset)/VERTEX_MARGIN) * 255);
-    if (coeficcient > 220)
-        coeficcient = 220;
-    ctx.fillStyle = "rgba(" + coeficcient + ", 65, " + (220 - coeficcient) +
+    if (coeficcient > 200)
+        coeficcient = 200;
+    ctx.fillStyle = "rgba(" + coeficcient + ", 65, " + (200 - coeficcient) +
                     ", " + util.linearInterpolate(0.25, 2, coeficcient/255.0) +
                     ")";
     ctx.fill();
@@ -154,7 +155,7 @@ Vertex.prototype.applyConstraints = function(du)
 
     for (var i = 0; i < this.constraints.length; ++i)
     {
-        this.constraints[i].assert(du);
+        this.constraints[i].apply(du);
     }
 
     this.x = util.clampRange(this.x, 0, g_canvas.width);
@@ -185,7 +186,7 @@ function Constraint(vtx1, vtx2)
     this.length = VERTEX_MARGIN;
 }
 
-Constraint.prototype.assert = function(du)
+Constraint.prototype.apply = function(du)
 {
     var pos1 = this.vtx1.getPos(),
         pos2 = this.vtx2.getPos();
@@ -195,8 +196,8 @@ Constraint.prototype.assert = function(du)
         dist = Math.sqrt(dX * dX + dY * dY),
         delta = (this.length - dist) / dist;
 
-    var px = dX * delta * 0.7 * du;
-    var py = dY * delta * 0.7 * du;
+    var px = dX * delta * 6 * du;
+    var py = dY * delta * 6 * du;
 
     // This is a hack to make up for the fact that the top (pinned) row does
     // not assert any force on the next row below.

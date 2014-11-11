@@ -69,17 +69,18 @@ var spatialManager = {
         // Acc denotes accuracy of physics simulation.
         // lower for better performance
         var Acc = 10;
+        var duAlt = du/Acc;
         for (var n = 0; n < Acc; ++n)
         {
             for (var j = 0; j < VERTICES_PER_ROW; ++j)
             {
                 for (var i = 0; i < VERTICES_PER_ROW; ++i)
                 {
-                    this._vertices[i][j].applyConstraints(du);
+                    this._vertices[i][j].applyConstraints(duAlt);
                 }
             }
         }
-
+        
         for (var j = 0; j < VERTICES_PER_ROW; ++j)
         {
             for (var i = 0; i < VERTICES_PER_ROW; ++i)
@@ -87,6 +88,7 @@ var spatialManager = {
                 this._vertices[i][j].update(du);
             }
         }
+        
     },
 
     

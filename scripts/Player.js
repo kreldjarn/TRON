@@ -255,31 +255,22 @@ Player.prototype.reset = function()
 Player.prototype.render = function (ctx)
 {
     // Draw tail
+    ctx.save();
+    ctx.beginPath();
+    var v = this.wallVertices[0];
+    // If a tail exists, we start drawing from the tip of it
+    if (v)
+    {
+        var pos = spatialManager.getVertex(v.cx, v.cy).getPos();
+        ctx.moveTo(pos.x, pos.y);
+    }
     for(var i = 1; i < this.wallVertices.length; i++)
     {
-        var v1 = this.wallVertices[i-1];
-        var pos1 = spatialManager.getVertex(v1.cx, v1.cy).getPos();
-        var v2 = this.wallVertices[i];
-        var pos2 = spatialManager.getVertex(v2.cx, v2.cy).getPos();
-        
-        
-        util.drawLine(ctx,
-            pos1.x, pos1.y, pos2.x, pos2.y,
-            this.getRadius(),
-            this.color);
+        v = this.wallVertices[i];
+        pos = spatialManager.getVertex(v.cx, v.cy).getPos();
+        ctx.lineTo(pos.x, pos.y);
     }
-    /*
-    //current vertex position
-    var currPos = getWorldCoordinates(this.cx, this.cy);
-    
-    //destination vertex position
-    var progress = (this.reset_timestep - this.timestep) / this.reset_timestep;
-    var destX = this.cx + (progress * this.velX);
-    var destY = this.cy + (progress * this.velY);
-    var destPos = getWorldCoordinates(destX, destY);
-    //console.log(pos);
-    
-    */
+
     var currPos = spatialManager.getVertex(this.cx, this.cy).getPos();
     var nextPos = spatialManager.getVertex(this.cx + this.velX,
                                            this.cy + this.velY).getPos();
@@ -288,15 +279,33 @@ Player.prototype.render = function (ctx)
     var destX = currPos.x + progress * (nextPos.x - currPos.x);
     var destY = currPos.y + progress * (nextPos.y - currPos.y);
     
-    ctx.save();
-    ctx.strokeStyle = this.color;
-    ctx.lineWidth = 8;
-    ctx.beginPath();
-    ctx.moveTo(currPos.x, currPos.y);
+    // If the player doesn't have a tail yet, we draw a line from its current
+    // vertex to its perceived position
+    if (!v)
+        ctx.moveTo(currPos.x, currPos.y);
     ctx.lineTo(destX, destY);
+
+    ctx.strokeStyle = this.color;
+    ctx.lineWidth = 7;
+    ctx.lineCap = 'round';
     ctx.stroke();
+
+
+    // Sampling to create a halo effect
+    // TODO: Generalise this, and make it use the player's own colour
+    ctx.strokeStyle = 'rgba(255, 255, 150, 0.2)';
+    ctx.lineWidth = 12;
+    ctx.stroke();
+
+    ctx.lineWidth = 14;
+    ctx.stroke();
+
+    ctx.lineWidth = 18;
+    ctx.stroke();
+
     ctx.restore();    
     
+    // Draw the head
     /*
     var currPos = spatialManager.getVertex(this.cx, this.cy).getPos();
     

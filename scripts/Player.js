@@ -149,7 +149,7 @@ Player.prototype.update = function(du)
         }
         spatialManager.register(this, this.cx, this.cy);
         
-        if (this.AI) this.makeMove(15);
+        if (this.AI) this.makeMove(5);
     }
 
     if (this._isDeadNow) return entityManager.KILL_ME_NOW;
@@ -292,7 +292,7 @@ Player.prototype.render = function (ctx)
         pos = spatialManager.getVertex(v.cx, v.cy).getPos();
         ctx.lineTo(pos.x, pos.y);
     }
-    
+
     var destX = currPos.x + progress * (nextPos.x - currPos.x);
     var destY = currPos.y + progress * (nextPos.y - currPos.y);
     
@@ -351,7 +351,7 @@ Player.prototype.makeMove = function(N)
     var nextY = this.cy + this.velY;
     var vertex = spatialManager.getVertex(nextX, nextY);
 
-    if (N && (!vertex || vertex.isWall))
+    if (N && (!vertex || vertex.isWally))
     {
         this.makeRandomMove();
         this.handleInputs();

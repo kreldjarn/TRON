@@ -285,22 +285,26 @@ Player.prototype.render = function (ctx)
         ctx.moveTo(currPos.x, currPos.y);
     ctx.lineTo(destX, destY);
 
-    ctx.strokeStyle = this.color;
-    ctx.lineWidth = 7;
+    
     ctx.lineCap = 'round';
-    ctx.stroke();
+    
 
-
+    var pulse = this.timestep / this.reset_timestep;
+    pulse = Math.sin(Math.PI * pulse);
     // Sampling to create a halo effect
     // TODO: Generalise this, and make it use the player's own colour
-    ctx.strokeStyle = 'rgba(255, 255, 150, 0.2)';
-    ctx.lineWidth = 12;
+    ctx.strokeStyle = 'rgba(255, 150, 255, 0.2)';
+    ctx.lineWidth = 10 + 2*pulse;
     ctx.stroke();
 
-    ctx.lineWidth = 14;
+    ctx.lineWidth = 12 + 2*pulse;
     ctx.stroke();
 
-    ctx.lineWidth = 18;
+    ctx.lineWidth = 14 + 4*pulse;
+    ctx.stroke();
+
+    ctx.strokeStyle = '#FFF';
+    ctx.lineWidth = 7;
     ctx.stroke();
 
     ctx.restore();    

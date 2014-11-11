@@ -2,18 +2,8 @@ var gravity = 3;
 
 function Vertex(x, y)
 {
-    this._entities = [];
-    this.isWall = false;
-    this.isWally = false;
-    this.debug = false;
-
     this.x = x;
     this.y = y;
-    /*******************
-     *  VERTLET STUFF  *
-     *******************/
-    this.pullX = x;
-    this.pullY = y;
     this.velX = 0;
     this.velY = 0;
     this.pinX = null;
@@ -21,36 +11,7 @@ function Vertex(x, y)
     this.constraints = [];
 }
 
-Vertex.prototype.register = function(entity)
-{
-    var ID = entity.getSpatialID();
-    this._entities[ID] = entity;
-    this.isWall = true;
-};
-
-Vertex.prototype.unregister = function(entity)
-{
-    var ID = entity.getSpatialID();
-    this.isWall = false;
-    delete this._entities[ID];
-};
-
-Vertex.prototype.reset = function()
-{
-    this.isWall = false;
-    this.isWally = false;
-};
-
-Vertex.prototype.getPos = function()
-{
-    return {x: this.x, y: this.y};
-};
-
-Vertex.prototype.setPos = function(x, y)
-{
-    this.x = x;
-    this.y = y;
-};
+Vertex.prototype = new SpatialVertex();
 
 Vertex.prototype.pin = function(px, py)
 {
@@ -62,12 +23,9 @@ Vertex.prototype.update = function(du)
 {
     if (this.pinX && this.pinY)
     {
-        this.x = this.pinX;
-        this.y = this.pinY;
+        this.setPos(this.pinX, this.pinY);
         return;
     }
-    this.pullX = this.x;
-    this.pullY = this.y;
 
     var players = entityManager.getPlayers();
     for (var i = 0; i < players.length; ++i)
@@ -80,25 +38,22 @@ Vertex.prototype.update = function(du)
         {
             var scale = (dist > 2000) ? (8000/dist) : 4;
             var vel = players[i].getVel();
-            this.pullX -= vel.x * du * scale;
-            this.pullY -= vel.y * du * scale;
+            //this.pullX -= vel.x * du * scale;
+            //this.pullY -= vel.y * du * scale;
+            this.applyForce(vel.x * du * scale * 2,
+                            vel.y * du * scale * 2);
         }
     }
 
     this.applyForce(0, gravity * du);
-    /******************
-     *  VERLET STUFF  *
-     ******************/
+
     duSq = du * du;
 
-    var nx = this.x + ((this.x - this.pullX) * 0.99) + ((this.velX / 2) * duSq);
-    var ny = this.y + ((this.y - this.pullY) * 0.99) + ((this.velY / 2) * duSq);
+    var nextX = this.x + ((this.velX / 2) * duSq),
+        nextY = this.y + ((this.velY / 2) * duSq);
 
-    this.pullX = this.x;
-    this.pullY = this.y;
-
-    this.x = nx;
-    this.y = ny;
+    this.x = nextX;
+    this.y = nextY;
 
     this.velX = 0;
     this.velY = 0;
@@ -106,18 +61,6 @@ Vertex.prototype.update = function(du)
 
 Vertex.prototype.render = function(ctx, vtx)
 {
-    if (this.constraints.length === 0) return;
-    /*
-    // If we don't pass a second vertex into the render function, we only render
-    // the constraints that bind the vertices together.
-    if (!vtx)
-    {
-        for (var i = 0; i < this.constraints.length; ++i)
-        {
-            this.constraints[i].render(ctx);
-        }
-    }
-    */
     if (this.constraints.length < 2 || !vtx) return;
     ctx.beginPath();
     ctx.moveTo(vtx.x, vtx.y);
@@ -128,7 +71,8 @@ Vertex.prototype.render = function(ctx, vtx)
 
     // Ideally, we would want to calculate a normal vector to the plane and use
     // this to pick the color on the plane (i.e. whether the it is 'in shadow'
-    // or not). Instead we fake it.
+    // or not). With this approach we could even interpolate between them.
+    // Instead we fake it with a hack.
     var offset = (this.x - vtx.x) + (this.y - vtx.y);
     offset *= 0.25;
 
@@ -146,7 +90,7 @@ Vertex.prototype.render = function(ctx, vtx)
 Vertex.prototype.applyConstraints = function(du)
 {
     // ATTN
-    // Currently, cannot be pinned to a falsy coord
+    // Currently cannot be pinned to a falsy coord
     if (this.pinX && this.pinY)
     {
         this.setPos(this.pinX, this.pinY);
@@ -194,10 +138,10 @@ Constraint.prototype.apply = function(du)
     var dX = pos1.x - pos2.x,
         dY = pos1.y - pos2.y,
         dist = Math.sqrt(dX * dX + dY * dY),
-        delta = (this.length - dist) / dist;
+        deltaFrac = (this.length - dist) / dist;
 
-    var px = dX * delta * PHYS_ACC/2 * du;
-    var py = dY * delta * PHYS_ACC/2 * du;
+    var px = dX * deltaFrac * PHYS_ACC/2 * du;
+    var py = dY * deltaFrac * PHYS_ACC/2 * du;
 
     // This is a hack to make up for the fact that the top (pinned) row does
     // not assert any force on the next row below.
@@ -211,12 +155,4 @@ Constraint.prototype.apply = function(du)
         this.vtx2.setPos(pos2.x - px, pos2.y - py);
     }
     
-};
-
-Constraint.prototype.render = function(ctx)
-{
-    var pos1 = this.vtx1.getPos(),
-        pos2 = this.vtx2.getPos();
-    ctx.moveTo(pos1.x, pos1.y);
-    ctx.lineTo(pos2.x, pos2.y);
 };

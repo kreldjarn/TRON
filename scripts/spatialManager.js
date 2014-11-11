@@ -27,9 +27,6 @@ function getWorldCoordinates(gx, gy)
 // Each "cell" in our spatialManager is a vertex in our physical grid.
 // Collisions only happen on vertices, and so each entity registers itself
 // to a vertex, every time it moves.
-
-
-
 var spatialManager = {
 
     // "PRIVATE" DATA

@@ -196,8 +196,8 @@ Constraint.prototype.apply = function(du)
         dist = Math.sqrt(dX * dX + dY * dY),
         delta = (this.length - dist) / dist;
 
-    var px = dX * delta * 6 * du;
-    var py = dY * delta * 6 * du;
+    var px = dX * delta * 4 * du;
+    var py = dY * delta * 4 * du;
 
     // This is a hack to make up for the fact that the top (pinned) row does
     // not assert any force on the next row below.

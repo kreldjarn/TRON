@@ -68,7 +68,7 @@ var spatialManager = {
     {
         // Acc denotes accuracy of physics simulation.
         // lower for better performance
-        var Acc = 10;
+        var Acc = 8;
         var duAlt = du/Acc;
         for (var n = 0; n < Acc; ++n)
         {

@@ -135,7 +135,7 @@ Vertex.prototype.render = function(ctx, vtx)
     if (coeficcient > 220)
         coeficcient = 220;
     ctx.fillStyle = "rgba(" + coeficcient + ", 65, " + (220 - coeficcient) +
-                    ", " + util.linearInterpolate(0.25, 1, coeficcient/255.0) +
+                    ", " + util.linearInterpolate(0.25, 2, coeficcient/255.0) +
                     ")";
     ctx.fill();
     ctx.strokeStyle = '#333';
@@ -195,14 +195,14 @@ Constraint.prototype.assert = function(du)
         dist = Math.sqrt(dX * dX + dY * dY),
         delta = (this.length - dist) / dist;
 
-    var px = dX * delta * 0.8 * du;
-    var py = dY * delta * 0.8 * du;
+    var px = dX * delta * 0.7 * du;
+    var py = dY * delta * 0.7 * du;
 
     // This is a hack to make up for the fact that the top (pinned) row does
     // not assert any force on the next row below.
     if (this.vtx2.pinX && this.vtx2.pinY)
     {
-        this.vtx1.setPos(pos1.x + px, pos1.y + py * 2);
+        this.vtx1.setPos(pos1.x + px * 2, pos1.y + py * 2);
     }
     else
     {

@@ -65,12 +65,9 @@ var spatialManager = {
     // PUBLIC METHODS
 
     update: function(du)
-    {
-        // Acc denotes accuracy of physics simulation.
-        // lower for better performance
-        var Acc = 8;
-        var duAlt = du/Acc;
-        for (var n = 0; n < Acc; ++n)
+    {   
+        var duAlt = du/PHYS_ACC;
+        for (var n = 0; n < PHYS_ACC; ++n)
         {
             for (var j = 0; j < VERTICES_PER_ROW; ++j)
             {

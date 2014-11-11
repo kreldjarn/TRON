@@ -254,6 +254,12 @@ Player.prototype.reset = function()
 
 Player.prototype.render = function (ctx)
 {
+    var currPos = spatialManager.getVertex(this.cx, this.cy).getPos();
+    var nextPos = spatialManager.getVertex(this.cx + this.velX,
+                                           this.cy + this.velY).getPos();
+    // The elapsed portion of the timestep
+    var progress = (this.reset_timestep - this.timestep) / this.reset_timestep;
+
     // Draw tail
     ctx.save();
     ctx.beginPath();
@@ -262,7 +268,23 @@ Player.prototype.render = function (ctx)
     if (v)
     {
         var pos = spatialManager.getVertex(v.cx, v.cy).getPos();
-        ctx.moveTo(pos.x, pos.y);
+        var orgX, orgY;
+        // If the wall has reached its maximum length, we ease the tip of the
+        // tail between vertices
+        if (this.wallVertices[this.maxWallLength - 1])
+        {
+            var v1 = this.wallVertices[1];
+            var pos1 = spatialManager.getVertex(v1.cx, v1.cy).getPos();
+            orgX = pos.x + progress * (pos1.x - pos.x);
+            orgY = pos.y + progress * (pos1.y - pos.y);
+        }
+        else
+        {
+            orgX = pos.x;
+            orgY = pos.y;
+        }
+        
+        ctx.moveTo(orgX, orgY);
     }
     for(var i = 1; i < this.wallVertices.length; i++)
     {
@@ -270,12 +292,7 @@ Player.prototype.render = function (ctx)
         pos = spatialManager.getVertex(v.cx, v.cy).getPos();
         ctx.lineTo(pos.x, pos.y);
     }
-
-    var currPos = spatialManager.getVertex(this.cx, this.cy).getPos();
-    var nextPos = spatialManager.getVertex(this.cx + this.velX,
-                                           this.cy + this.velY).getPos();
-
-    var progress = (this.reset_timestep - this.timestep) / this.reset_timestep;
+    
     var destX = currPos.x + progress * (nextPos.x - currPos.x);
     var destY = currPos.y + progress * (nextPos.y - currPos.y);
     

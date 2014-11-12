@@ -157,7 +157,7 @@ Player.prototype.update = function(du)
         if (this.isColliding(this.cx + this.velX, this.cy + this.velY)) 
         {
             this.reset();
-            spatialManager.reset();
+            //spatialManager.reset();
             return;
         }
         spatialManager.register(this, this.cx, this.cy);
@@ -202,7 +202,7 @@ Player.prototype.handleInputs = function()
 
 Player.prototype.refreshWall = function(x, y)
 {
-    this.wallVertices.push({cx: x, cy: y});
+    /*this.wallVertices.push({cx: x, cy: y});
     spatialManager.register(this,
                             this.wallVertices[0].cx,
                             this.wallVertices[0].cy);
@@ -214,6 +214,21 @@ Player.prototype.refreshWall = function(x, y)
                                   this.wallVertices[0].cy);
         spatialManager._vertices[x][y].isWally = false;
         //spatialManager.removeRift(this.wallVertices[0].cx, this.wallVertices[0].cy);
+        this.wallVertices.splice(0, 1);
+    }*/
+    this.wallVertices.push({cx: x, cy: y});
+    var wallLength = this.wallVertices.length;
+    spatialManager.register(this, x, y);
+    spatialManager._vertices[x][y].isWally = true;
+    //spatialManager.addRift(x, y);
+    if (this.wallVertices.length > this.maxWallLength)
+    {
+        var freeUpVertexX = this.wallVertices[0].cx;
+        var freeUpVertexY = this.wallVertices[0].cy;
+        spatialManager.unregister(this,
+                                  freeUpVertexX,
+                                  freeUpVertexY);
+        spatialManager._vertices[freeUpVertexX][freeUpVertexY].isWally = false;
         this.wallVertices.splice(0, 1);
     }
 };
@@ -246,7 +261,12 @@ Player.prototype.getVel = function()
 Player.prototype.reset = function()
 {
     spatialManager.unregister(this, this.cx, this.cy);
-    
+    for(var i = 0; i < this.wallVertices.length; i++)
+    {
+        var wallX = this.wallVertices[i].cx;
+        var wallY = this.wallVertices[i].cy;
+        spatialManager._vertices[wallX][wallY].isWally = false;
+    }
     this.wallVertices = [];
 
     this.cx = this.reset_cx;
@@ -420,14 +440,14 @@ Player.prototype.aggressiveMove = function()
     // Turn in front of your nemesis
     if (this.velX !== 0 && this.velX === player1VelX && Math.abs(distanceX) > Math.abs(distanceY))
     {
-        if (this.cx > player1X && this.freeVertexNorth() > 0) return 'North';
-        if (this.cx < player1X && this.freeVertexSouth() > 0) return 'South';
+        if (this.cy > player1Y && this.freeVertexNorth() > 0) return 'North';
+        if (this.cy < player1Y && this.freeVertexSouth() > 0) return 'South';
     }
 
     if (this.velY !== 0 && this.velY === player1VelY && Math.abs(distanceY) > Math.abs(distanceX))
     {
-        if (this.cy > player1Y && this.freeVertexWest() > 0) return'West';
-        if (this.cy < player1Y && this.freeVertexEast() > 0) return 'East';
+        if (this.cx > player1X && this.freeVertexWest() > 0) return'West';
+        if (this.cx < player1X && this.freeVertexEast() > 0) return 'East';
     }
 
     // If your oponent is heading into you sideways carry on

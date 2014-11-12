@@ -18,6 +18,7 @@ function Player(descr) {
     this.setup(descr);
 
     this.rememberResets();
+    this.halo = halo(this.cx, this.cy, '255, 255, 255');
 
     spatialManager.getVertex(this.cx, this.cy).isWally = true;
 };
@@ -117,6 +118,14 @@ Player.prototype.introUpdate = function(du)
     
 Player.prototype.update = function(du)
 {
+    var currPos = spatialManager.getVertex(this.cx, this.cy).getPos();
+    var nextPos = spatialManager.getVertex(this.cx + this.velX,
+                                           this.cy + this.velY).getPos();
+    // The elapsed portion of the timestep
+    var progress = (this.reset_timestep - this.timestep) / this.reset_timestep;
+    var destX = currPos.x + progress * (nextPos.x - currPos.x);
+    var destY = currPos.y + progress * (nextPos.y - currPos.y);
+    this.halo.update(destX, destY);
 
     if(this.introCount < (VERTICES_PER_ROW)*2 - 3) {
         this.introUpdate(du);
@@ -124,6 +133,10 @@ Player.prototype.update = function(du)
     }
     this.handleInputs();
     this.timestep -= du;
+
+
+    
+
 
     // We only move the actual entity once every reset_timestep
     if (this.timestep <= 0)
@@ -324,7 +337,9 @@ Player.prototype.render = function (ctx)
     ctx.lineWidth = 7;
     ctx.stroke();
 
-    ctx.restore();    
+    ctx.restore(); 
+
+    this.halo.render(ctx);   
     
     // Draw the head
     /*

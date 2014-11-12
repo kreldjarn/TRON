@@ -121,7 +121,7 @@ drawLine: function(ctx, x1, y1, x2, y2, lineWidth, style) {
 
 linearInterpolate : function(a, b, p)
 {
-    return (b-a)*p + a;
+    return (b - a) * p + a;
 },
 
 };

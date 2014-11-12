@@ -24,6 +24,8 @@ function Player(descr) {
 
 Player.prototype = new Entity();
 
+var g_numberOfEnemies = 1;
+
 Player.prototype.rememberResets = function () {
     // Remember my reset positions
     this.reset_cx = this.cx;
@@ -111,7 +113,7 @@ Player.prototype.introUpdate = function(du)
         this.timestep = this.reset_timestep;
         spatialManager.register(this, this.cx, this.cy);
         this.introCount++;
-        console.log(this.introCount);
+        //console.log(this.introCount);
     }
 }
     

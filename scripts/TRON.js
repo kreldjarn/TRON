@@ -112,8 +112,10 @@ function processDiagnostics()
 
 function renderSimulation(ctx)
 {
-    spatialManager.render(ctx);
-    entityManager.render(ctx);
+    
+            spatialManager.render(ctx);
+            entityManager.render(ctx);
+
 
     //if (g_renderSpatialDebug) spatialManager.render(ctx);
 }
@@ -128,9 +130,17 @@ var g_images = {};
 function requestPreloads() {
 
     var requiredImages = {
-        ship   : "https://notendur.hi.is/~pk/308G/images/ship.png",
-        ship2  : "https://notendur.hi.is/~pk/308G/images/ship_2.png",
-        rock   : "https://notendur.hi.is/~pk/308G/images/rock.png"
+        grid   : "https://notendur.hi.is/tap4/tronImages/gridBG600x800.jpg",
+        titleN   : "https://notendur.hi.is/tap4/tronImages/title_NoN_s.png",
+        titleNoInnerO  : "https://notendur.hi.is/tap4/tronImages/title_no_inner_o_s.png",
+        titleNoOuterO  : "https://notendur.hi.is/tap4/tronImages/title_no_outer_o_s.png",
+        titleNoT   : "https://notendur.hi.is/tap4/tronImages/title_no_T_s.png",
+        titleReg: "https://notendur.hi.is/tap4/tronImages/title_Reg_s.png",
+        titleS100H50   : "https://notendur.hi.is/tap4/tronImages/title_s100_h50_s.png",
+        gridTransparent : "https://notendur.hi.is/tap4/tronImages/gridTransparent.png"
+        //ship   : "https://notendur.hi.is/~pk/308G/images/ship.png",
+        //ship2  : "https://notendur.hi.is/~pk/308G/images/ship_2.png",
+        //rock   : "https://notendur.hi.is/~pk/308G/images/rock.png"
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -140,15 +150,22 @@ var g_sprites = {};
 
 function preloadDone() {
 
-    g_sprites.ship  = new Sprite(g_images.ship);
-    g_sprites.ship2 = new Sprite(g_images.ship2);
-    g_sprites.rock  = new Sprite(g_images.rock);
+    g_sprites.grid = new Sprite(g_images.grid);
+    g_sprites.titleN = new Sprite(g_images.titleN);
+    g_sprites.titleNoInnerO = new Sprite(g_images.titleNoInnerO);
+    g_sprites.titleNoOuterO = new Sprite(g_images.titleNoOuterO);
+    g_sprites.titleNoT = new Sprite(g_images.titleNoT);
+    g_sprites.titleReg = new Sprite(g_images.titleReg);
+    g_sprites.titleS100H50 = new Sprite (g_images.titleS100H50);
+    g_sprites.gridTransparent = new Sprite (g_images.gridTransparent);
+    //g_sprites.ship  = new Sprite(g_images.ship);
+    //g_sprites.ship2 = new Sprite(g_images.ship2);
+    //g_sprites.rock  = new Sprite(g_images.rock);
+    //g_sprites.bullet = new Sprite(g_images.ship);
+    //g_sprites.bullet.scale = 0.25;
 
-    g_sprites.bullet = new Sprite(g_images.ship);
-    g_sprites.bullet.scale = 0.25;
-
-    entityManager.init();
-    createInitialShips();
+    //entityManager.init();
+    //createInitialShips();
 
     main.init();
 }
@@ -161,5 +178,5 @@ function preloadDone() {
 //
 
 // Kick it off
-//requestPreloads();
-main.init();
+requestPreloads();
+//main.init();

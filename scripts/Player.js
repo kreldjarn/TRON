@@ -18,7 +18,7 @@ function Player(descr) {
     this.setup(descr);
 
     this.rememberResets();
-    this.halo = halo(this.cx, this.cy, '255, 255, 255');
+    this.halo = halo('255, 255, 255');
 
     spatialManager.getVertex(this.cx, this.cy).isWally = true;
 };
@@ -324,13 +324,13 @@ Player.prototype.render = function (ctx)
     // Sampling to create a halo effect
     // TODO: Generalise this, and make it use the player's own colour
     ctx.strokeStyle = 'rgba(255, 150, 255, 0.2)';
-    ctx.lineWidth = 10 + 2*pulse;
+    ctx.lineWidth = 10 + 2 * pulse;
     ctx.stroke();
 
-    ctx.lineWidth = 12 + 2*pulse;
+    ctx.lineWidth = 12 + 2 * pulse;
     ctx.stroke();
 
-    ctx.lineWidth = 14 + 4*pulse;
+    ctx.lineWidth = 14 + 4 * pulse;
     ctx.stroke();
 
     ctx.strokeStyle = '#FFF';

@@ -10,7 +10,7 @@ function particle(_x, _y, _r, _dX, _dY, _colour)
         dX = _dX,
         dY = _dY,
         colour = _colour,
-        alpha = 0.5 + Math.random() * 0.5;
+        alpha = 0.3 + Math.random() * 0.5;
     // degrade is the magnitude by which alpha and size changes
     // each tick
     var degrade = -0.01;
@@ -51,21 +51,17 @@ function particle(_x, _y, _r, _dX, _dY, _colour)
 }
 
 
-function halo(_x, _y, _colour)
+function halo(_colour)
 {
     // Private
     // =======
-    var x = _x,
-        y = _y,
-        colour = _colour,
-        r = 100,
-        pulse = 0.1,
+    var colour = _colour,
         particles = [];
 
     // Public
     // ======
     res = {};
-    res.spawnParticle = function()
+    res.spawnParticle = function(x, y)
     {
         // We randomize the velocity vector of the particles to make
         // them look more natural.
@@ -73,12 +69,9 @@ function halo(_x, _y, _colour)
         velY = (Math.random() < 0.5) ? Math.random() : - Math.random();
         particles.push(particle(x, y, 1 + Math.random()*2, velX, velY, colour));
     };
-    res.update = function(_x, _y)
+    res.update = function(x, y)
     {
-        this.spawnParticle();
-
-        x = _x;
-        y = _y;
+        this.spawnParticle(x, y);
 
         for (var i = 0; i < particles.length;)
         {

@@ -36,20 +36,6 @@ with it correctly, so that they can participate in collisions.
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
-
-// ====================
-// CREATE INITIAL SHIPS
-// ====================
-
-function createInitialShips() {
-
-    entityManager.generateShip({
-        cx : 200,
-        cy : 200
-    });
-    
-}
-
 // =============
 // GATHER INPUTS
 // =============
@@ -77,8 +63,13 @@ function gatherInputs() {
 function updateSimulation(du)
 {
     processDiagnostics();
-    spatialManager.update(du);
     entityManager.update(du);
+    while (du > 1) {
+        spatialManager.update(1);
+        du -= 1;
+    }
+    spatialManager.update(du);
+    
 }
 
 // GAME-SPECIFIC DIAGNOSTICS

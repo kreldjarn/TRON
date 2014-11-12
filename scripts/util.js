@@ -5,7 +5,6 @@
 
 "use strict";
 
-
 var util = {
 
 
@@ -79,7 +78,7 @@ wrappedDistSq: function(x1, y1, x2, y2, xWrap, yWrap) {
 
 clearCanvas: function (ctx) {
     var prevfillStyle = ctx.fillStyle;
-    ctx.fillStyle = "black";
+    ctx.fillStyle = '#333';
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     ctx.fillStyle = prevfillStyle;
 },
@@ -122,7 +121,7 @@ drawLine: function(ctx, x1, y1, x2, y2, lineWidth, style) {
 
 linearInterpolate : function(a, b, p)
 {
-    return (b-a)*p + a;
+    return (b - a) * p + a;
 },
 
 };

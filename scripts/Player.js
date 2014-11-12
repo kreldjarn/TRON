@@ -18,6 +18,7 @@ function Player(descr) {
     this.setup(descr);
 
     this.rememberResets();
+    this.halo = halo('255, 255, 255');
 
     spatialManager.getVertex(this.cx, this.cy).isWally = true;
 };
@@ -63,7 +64,7 @@ Player.prototype.introCount = 0;
 
 Player.prototype.introUpdate = function(du) 
 {
-    this.timestep -= du;
+    this.timestep = 0;
     //if (this.AI) this.timestep -=du;
     if (this.timestep <= 0) 
     {
@@ -117,12 +118,25 @@ Player.prototype.introUpdate = function(du)
     
 Player.prototype.update = function(du)
 {
+    var currPos = spatialManager.getVertex(this.cx, this.cy).getPos();
+    var nextPos = spatialManager.getVertex(this.cx + this.velX,
+                                           this.cy + this.velY).getPos();
+    // The elapsed portion of the timestep
+    var progress = (this.reset_timestep - this.timestep) / this.reset_timestep;
+    var destX = currPos.x + progress * (nextPos.x - currPos.x);
+    var destY = currPos.y + progress * (nextPos.y - currPos.y);
+    this.halo.update(destX, destY);
 
     if(this.introCount < (VERTICES_PER_ROW)*2 - 3) {
-        return this.introUpdate(du);
+        this.introUpdate(du);
+        return;
     }
     this.handleInputs();
     this.timestep -= du;
+
+
+    
+
 
     // We only move the actual entity once every reset_timestep
     if (this.timestep <= 0)
@@ -148,7 +162,7 @@ Player.prototype.update = function(du)
         }
         spatialManager.register(this, this.cx, this.cy);
         
-        if (this.AI) this.makeMove(15);
+        if (this.AI) this.makeMove(5);
     }
 
     if (this._isDeadNow) return entityManager.KILL_ME_NOW;
@@ -253,49 +267,81 @@ Player.prototype.reset = function()
 
 Player.prototype.render = function (ctx)
 {
-    // Draw tail
-    for(var i = 1; i < this.wallVertices.length; i++)
-    {
-        var v1 = this.wallVertices[i-1];
-        var pos1 = spatialManager.getVertex(v1.cx, v1.cy).getPos();
-        var v2 = this.wallVertices[i];
-        var pos2 = spatialManager.getVertex(v2.cx, v2.cy).getPos();
-        
-        
-        util.drawLine(ctx,
-            pos1.x, pos1.y, pos2.x, pos2.y,
-            this.getRadius(),
-            this.color);
-    }
-    /*
-    //current vertex position
-    var currPos = getWorldCoordinates(this.cx, this.cy);
-    
-    //destination vertex position
-    var progress = (this.reset_timestep - this.timestep) / this.reset_timestep;
-    var destX = this.cx + (progress * this.velX);
-    var destY = this.cy + (progress * this.velY);
-    var destPos = getWorldCoordinates(destX, destY);
-    //console.log(pos);
-    
-    */
     var currPos = spatialManager.getVertex(this.cx, this.cy).getPos();
     var nextPos = spatialManager.getVertex(this.cx + this.velX,
                                            this.cy + this.velY).getPos();
-
+    // The elapsed portion of the timestep
     var progress = (this.reset_timestep - this.timestep) / this.reset_timestep;
+
+    // Draw tail
+    ctx.save();
+    ctx.beginPath();
+    var v = this.wallVertices[0];
+    // If a tail exists, we start drawing from the tip of it
+    if (v)
+    {
+        var pos = spatialManager.getVertex(v.cx, v.cy).getPos();
+        var orgX, orgY;
+        // If the wall has reached its maximum length, we ease the tip of the
+        // tail between vertices
+        if (this.wallVertices[this.maxWallLength - 1])
+        {
+            var v1 = this.wallVertices[1];
+            var pos1 = spatialManager.getVertex(v1.cx, v1.cy).getPos();
+            orgX = pos.x + progress * (pos1.x - pos.x);
+            orgY = pos.y + progress * (pos1.y - pos.y);
+        }
+        else
+        {
+            orgX = pos.x;
+            orgY = pos.y;
+        }
+        
+        ctx.moveTo(orgX, orgY);
+    }
+    for(var i = 1; i < this.wallVertices.length; i++)
+    {
+        v = this.wallVertices[i];
+        pos = spatialManager.getVertex(v.cx, v.cy).getPos();
+        ctx.lineTo(pos.x, pos.y);
+    }
+
     var destX = currPos.x + progress * (nextPos.x - currPos.x);
     var destY = currPos.y + progress * (nextPos.y - currPos.y);
     
-    ctx.save();
-    ctx.strokeStyle = this.color;
-    ctx.lineWidth = 8;
-    ctx.beginPath();
-    ctx.moveTo(currPos.x, currPos.y);
+    // If the player doesn't have a tail yet, we draw a line from its current
+    // vertex to its perceived position
+    if (!v)
+        ctx.moveTo(currPos.x, currPos.y);
     ctx.lineTo(destX, destY);
-    ctx.stroke();
-    ctx.restore();    
+
     
+    ctx.lineCap = 'round';
+    
+
+    var pulse = this.timestep / this.reset_timestep;
+    pulse = Math.sin(Math.PI * pulse);
+    // Sampling to create a halo effect
+    // TODO: Generalise this, and make it use the player's own colour
+    ctx.strokeStyle = 'rgba(255, 150, 255, 0.2)';
+    ctx.lineWidth = 10 + 2 * pulse;
+    ctx.stroke();
+
+    ctx.lineWidth = 12 + 2 * pulse;
+    ctx.stroke();
+
+    ctx.lineWidth = 14 + 4 * pulse;
+    ctx.stroke();
+
+    ctx.strokeStyle = '#FFF';
+    ctx.lineWidth = 7;
+    ctx.stroke();
+
+    ctx.restore(); 
+
+    this.halo.render(ctx);   
+    
+    // Draw the head
     /*
     var currPos = spatialManager.getVertex(this.cx, this.cy).getPos();
     
@@ -349,7 +395,7 @@ Player.prototype.makeMove = function(N)
     var nextY = this.cy + this.velY;
     var vertex = spatialManager.getVertex(nextX, nextY);
 
-    if (N && (!vertex || vertex.isWall))
+    if (N && (!vertex || vertex.isWally))
     {
         this.makeRandomMove();
         this.handleInputs();

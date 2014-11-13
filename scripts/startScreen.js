@@ -27,11 +27,11 @@ var g_playSound = true;
 
 startScreen.prototype.render = function(ctx)
 {
-	g_sprites.grid.drawAt(ctx,0,0);
+	g_sprites.grid.drawAt(ctx,GRID_OFFSET_X,GRID_OFFSET_Y);
 	if (this.animationSequence<0.7)
 	{
 		ctx.globalAlpha=this.opacityTRON;
-	g_sprites.titleReg.drawAt(ctx,50,50);
+	g_sprites.titleReg.drawAt(ctx,50+GRID_OFFSET_X,50+GRID_OFFSET_Y);
 	}
 	if (this.animationSequence>=0.7 && this.animationSequence<0.75)
 	{
@@ -41,7 +41,7 @@ startScreen.prototype.render = function(ctx)
 		g_playSound = false;
 		}
 		ctx.globalAlpha=this.opacityTRON;
-		g_sprites.titleNoInnerO.drawAt(ctx,50,50);
+		g_sprites.titleNoInnerO.drawAt(ctx,50+GRID_OFFSET_X,50+GRID_OFFSET_Y);
 	}
 	if (this.animationSequence>=0.75 && this.animationSequence<0.80)
 	{
@@ -51,7 +51,7 @@ startScreen.prototype.render = function(ctx)
 		g_playSound = false;
 		}
 		ctx.globalAlpha=this.opacityTRON;
-		g_sprites.titleNoOuterO.drawAt(ctx,50,50);
+		g_sprites.titleNoOuterO.drawAt(ctx,50+GRID_OFFSET_X,50+GRID_OFFSET_Y);
 	}
 	if (this.animationSequence>=0.8 && this.animationSequence<0.9)
 	{
@@ -60,7 +60,7 @@ startScreen.prototype.render = function(ctx)
 		g_staticSound3.play();
 		g_playSound = false;
 		}
-		g_sprites.titleN.drawAt(ctx,50,50);
+		g_sprites.titleN.drawAt(ctx,50+GRID_OFFSET_X,50+GRID_OFFSET_Y);
 	}
 	if(this.animationSequence>=0.9)
 	{
@@ -70,39 +70,39 @@ startScreen.prototype.render = function(ctx)
 		g_playSound = false;
 		}
 		ctx.globalAlpha=this.opacityTRON;
-		g_sprites.titleNoT.drawAt(ctx,50,50);
+		g_sprites.titleNoT.drawAt(ctx,50+GRID_OFFSET_X,50+GRID_OFFSET_Y);
 	}
 	ctx.globalAlpha =this.opacityL;
 	ctx.fillStyle="cyan";
-	util.roundedRect(ctx,50,200,225,150,35);
+	util.roundedRect(ctx,50+GRID_OFFSET_X,200+GRID_OFFSET_Y,225,150,35);
 	ctx.stroke();
 	ctx.globalAlpha=this.opacityR;
-	util.roundedRect(ctx,325,200,225,150,35);
+	util.roundedRect(ctx,325+GRID_OFFSET_X,200+GRID_OFFSET_Y,225,150,35);
 	ctx.stroke();
-	util.roundedRect(ctx,50,400,500,40,20);
+	util.roundedRect(ctx,50+GRID_OFFSET_X,400+GRID_OFFSET_Y,500,40,20);
 	ctx.stroke();
 	ctx.fillStyle="white";
-	util.roundedRect(ctx,50,350,225,25,10);
-	util.roundedRect(ctx,325,350,225,25,10);
+	util.roundedRect(ctx,50+GRID_OFFSET_X,350+GRID_OFFSET_Y,225,25,10);
+	util.roundedRect(ctx,325+GRID_OFFSET_X,350+GRID_OFFSET_Y,225,25,10);
 	ctx.stroke();
 	ctx.globalAlpha=1;
 	ctx.fillStyle="black";
 	ctx.font="50px Andale Mono";
 	ctx.fillStyle = "white";
-	ctx.fillText ("GRID", 100,250);
-	ctx.fillText("ENEMIES",340,250);
+	ctx.fillText ("GRID", 100+GRID_OFFSET_X,250+GRID_OFFSET_Y);
+	ctx.fillText("ENEMIES",340+GRID_OFFSET_X,250+GRID_OFFSET_Y);
 	ctx.stroke();
 	ctx.font="35px Andale Mono";
 	//ctx.fillStyle = "black";
-	ctx.fillText ("Press Z to Begin",125,433);
+	ctx.fillText ("Press Z to Begin",125+GRID_OFFSET_X,433+GRID_OFFSET_Y);
 	ctx.stroke();
 	ctx.font= "100px Andale Mono";
-	ctx.fillText(g_game.gridChoice,130,335);
-	ctx.fillText(g_game.numbOfEnemies,400,335);
+	ctx.fillText(g_game.gridChoice,130+GRID_OFFSET_X,335+GRID_OFFSET_Y);
+	ctx.fillText(g_game.numbOfEnemies,400+GRID_OFFSET_X,335+GRID_OFFSET_Y);
 	ctx.font="20px Andale Mono";
 	ctx.fillStyle="black";
-	ctx.fillText("Press G to change",65, 372);
-	ctx.fillText("Press E to change",340, 372);
+	ctx.fillText("Press G to change",65+GRID_OFFSET_X, 372+GRID_OFFSET_Y);
+	ctx.fillText("Press E to change",340+GRID_OFFSET_X, 372+GRID_OFFSET_Y);
 
 
 }

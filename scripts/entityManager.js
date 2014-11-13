@@ -36,8 +36,8 @@ var entityManager = {
         this.generatePlayer({cx: 0,
                              cy: 0,
                              timestep: 7,
-                             color: '#00FC00',
-                             wallVerticies: [{cx: 0, cy: 0}],
+                             color: '#FFF',
+                             wallVertices: [{cx: 0, cy: 0}],
                              keys: {
                                  UP: 'W'.charCodeAt(0),
                                  DN: 'S'.charCodeAt(0),
@@ -50,8 +50,8 @@ var entityManager = {
                              velX: -1,
                              velY: 0,
                              timestep: 7,
-                             color: '#FC00AC',
-                             wallVerticies: [{cx: VERTICES_PER_ROW-1, cy: VERTICES_PER_ROW-1}],
+                             color: '#FFF',
+                             wallVertices: [{cx: VERTICES_PER_ROW-1, cy: VERTICES_PER_ROW-1}],
                              keys: {
                                  UP: 1000,
                                  DN: 1001,

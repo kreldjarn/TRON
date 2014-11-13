@@ -77,13 +77,14 @@ var main = (function()
         }
         
         gatherInputs();
-        update(dt);
+        
         if (g_gameState==="pregame"){
             g_startScreen.render(g_ctx);
             g_startScreen.update(dt);
         }
         if (g_gameState==="playing") {
             render(g_ctx);
+            update(dt);
             }
     };
 

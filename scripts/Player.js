@@ -160,6 +160,11 @@ Player.prototype.update = function(du)
             entityManager.incMaxWallLength();
             return;
         }
+        //Check whether all players are heading for the same vertex
+        else {
+            if (entityManager.checkSpecialCase()) return;
+        }
+
         spatialManager.register(this, this.cx, this.cy);
         
         if (this.AI) this.makeMove(5);

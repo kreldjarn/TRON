@@ -122,6 +122,24 @@ var entityManager = {
         }
     },
 
+    checkSpecialCase: function() 
+    {
+        var x = this._players[0].cx;
+        var y = this._players[0].cy;
+        for (var i = 1; i < this._players.length; i++) {
+            if (this._players[i].cx == x && this._players[i].cy == y)
+            {
+                for (var i = 0; i < this._players.length; i++) {
+                    this._players[i].score -= LOSE_PENALTY;
+                }
+                entityManager.resetPlayers();
+                entityManager.incMaxWallLength();
+                return true;
+            }
+        }
+        return false;
+    },
+
     update: function(du) {
         for (var c = 0; c < this._categories.length; ++c) {
     

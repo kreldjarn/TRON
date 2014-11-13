@@ -26,7 +26,7 @@ var KEY_QUIT = 'Q'.charCodeAt(0);
 var KEY_CHOOSEGRID = 'G'.charCodeAt(0);
 var KEY_ENEMYNUMBER = 'E'.charCodeAt(0);
 var KEY_STARTGAME = 'Z'.charCodeAt(0);
-var g_gameState = 0;
+var g_gameState = "pregame";
 
 
 function requestedQuit()
@@ -78,11 +78,11 @@ var main = (function()
         
         gatherInputs();
         update(dt);
-        if (g_gameState===0){
+        if (g_gameState==="pregame"){
             g_startScreen.render(g_ctx);
             g_startScreen.update(dt);
         }
-        if (g_gameState>0) {
+        if (g_gameState==="playing") {
             render(g_ctx);
             }
     };

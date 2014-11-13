@@ -13,7 +13,11 @@ var g_startScreen = new startScreen({
 	opacityTRONincreasing:true,
 	opacityL:0.6,
 	opacityR:0.6,
-	opacityTRON:0.6
+	opacityTRON:0.6,
+	changeValueL: 0.0015,
+	changeValueR: 0.002,
+	changeValueTRON: 0.001
+	
 });
 
 var g_staticSound1 = new Audio("https://notendur.hi.is/tap4/tronImages/static1.wav");
@@ -116,7 +120,7 @@ startScreen.prototype.update = function(du)
 		g_game.numbOfEnemies = g_game.numbOfEnemies+1;
 		if (g_game.numbOfEnemies>3) {g_game.numbOfEnemies=1;}
 	}
-	if (keys.eatKey(KEY_STARTGAME)) {g_gameState = g_gameState+1;}
+	if (keys.eatKey(KEY_STARTGAME)) {g_gameState = "playing";}
 	if (this.n < this.animationInterval)  {this.n=this.n+1;}
 	else
 	{
@@ -131,35 +135,46 @@ startScreen.prototype.update = function(du)
 
 
 	}
-	if (this.opacityLincreasing)
-	{
-		this.opacityL = this.opacityL+0.0015;
-		if (this.opacityL>0.95) {this.opacityLincreasing = false;}
-	}
-	else
-	{
-		this.opacityL=this.opacityL-0.0015;
-		if (this.opacityL<0.3){this.opacityLincreasing=true;}
-	}
-	if (this.opacityRincreasing)
-	{
-		this.opacityR = this.opacityR+0.002;
-		if (this.opacityR>0.95) {this.opacityRincreasing=false;}
-	}
-	else
-	{
-		this.opacityR=this.opacityR-0.002;
-		if (this.opacityR<0.275) {this.opacityRincreasing=true;}
-	}
-	if (this.opacityTRONincreasing)
-	{
-		this.opacityTRON= this.opacityTRON+0.001
-		if(this.opacityTRON>0.975) {this.opacityTRONincreasing=false;}
+	
+		if (this.opacityL>0.95 && this.opacityLincreasing===true) 
+			{
+				this.opacityLincreasing = false;
+				this.changeValueL = this.changeValueL*-1;
+			}
+		this.opacityL = this.opacityL+this.changeValueL;
 
-	}
-	else
-	{
-		this.opacityTRON = this.opacityTRON-0.001;
-		if (this.opacityTRON<0.65) {this.opacityTRONincreasing=true;}
-	}
+
+		if (this.opacityL<0.3 && this.opacityLincreasing === false)
+			{
+				this.opacityLincreasing=true;
+				this.changeValueL = this.changeValueL*-1;
+			}
+
+		if (this.opacityR>0.85 && this.opacityLincreasing===true) 
+			{
+				this.opacityRincreasing = false;
+				this.changeValueR = this.changeValueR*-1;
+			}
+		this.opacityR = this.opacityR+this.changeValueR;
+
+
+		if (this.opacityR<0.3 && this.opacityRincreasing === false)
+			{
+				this.opacityRincreasing=true;
+				this.changeValueR = this.changeValueR*-1;
+			}
+
+		if (this.opacityTRON>0.9 && this.opacityTRONincreasing===true) 
+			{
+				this.opacityTRONincreasing = false;
+				this.changeValueTRON = this.changeValueTRON*-1;
+			}
+		this.opacityTRON = this.opacityTRON+this.changeValueTRON;
+
+
+		if (this.opacityTRON<0.2 && this.opacityTRONincreasing === false)
+			{
+				this.opacityTRONincreasing=true;
+				this.changeValueTRON = this.changeValueTRON*-1;
+			}
 }

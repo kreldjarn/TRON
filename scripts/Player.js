@@ -20,7 +20,7 @@ function Player(descr) {
     this.rememberResets();
     this.halo = halo('255, 255, 255');
 
-    spatialManager.getVertex(this.cx, this.cy).isWally = true;
+    spatialManager.getVertex(this.cx, this.cy).isWall = true;
 };
 
 Player.prototype = new Entity();
@@ -79,8 +79,9 @@ Player.prototype.introUpdate = function(du)
         this.cx += this.velX;
         this.cy += this.velY;
 
-        if (this.permWallVertices.length === 0)this.refreshWall(this.permWallVertices, last_cx, last_cy);
-        this.refreshWall(this.permWallVertices, this.cx, this.cy);
+        if (this.wallVertices.length === 0)
+            this.refreshWall(this.wallVertices, last_cx, last_cy);
+        this.refreshWall(this.wallVertices, this.cx, this.cy);
 
          if (this.isColliding(this.cx + this.velX, this.cy + this.velY)) 
         {
@@ -123,14 +124,16 @@ Player.prototype.update = function(du)
 {
     var currPos = spatialManager.getVertex(this.cx, this.cy).getPos();
     var nextPos = spatialManager.getVertex(this.cx + this.velX,
-                                           this.cy + this.velY).getPos();
+                                           this.cy + this.velY);
+    if (nextPos)
+        nextPos = nextPos.getPos();
     // The elapsed portion of the timestep
     var progress = (this.reset_timestep - this.timestep) / this.reset_timestep;
     var destX = currPos.x + progress * (nextPos.x - currPos.x);
     var destY = currPos.y + progress * (nextPos.y - currPos.y);
     this.halo.update(destX, destY);
 
-    if(this.introCount < (VERTICES_PER_ROW)*2 - 3) {
+    if (this.introCount < (VERTICES_PER_ROW) * 2 - 1) {
         this.introUpdate(du);
         return;
     }
@@ -146,23 +149,25 @@ Player.prototype.update = function(du)
 
         this.cx += this.velX;
         this.cy += this.velY;
-        if (this.wallVertices.length === 0) this.refreshWall(this.wallVertices,last_cx, last_cy);
-        this.refreshWall(this.wallVertices, this.cx, this.cy);
-        this.velX = this.requestedVelX;
-        this.velY = this.requestedVelY;
-        this.timestep = this.reset_timestep;
-        //this.refreshWall(last_cx, last_cy);
-
-        if (this.isColliding(this.cx + this.velX, this.cy + this.velY)) 
+        if (this.isColliding(this.cx, this.cy)) 
         {
             this.score = this.score - LOSE_PENALTY;
             entityManager.resetPlayers();
             entityManager.incMaxWallLength();
             return;
         }
+
+        if (this.wallVertices.length === 0) this.refreshWall(this.wallVertices,last_cx, last_cy);
+        
+        this.velX = this.requestedVelX;
+        this.velY = this.requestedVelY;
+        this.timestep = this.reset_timestep;
+        //this.refreshWall(last_cx, last_cy);
+
+        this.refreshWall(this.wallVertices, this.cx, this.cy);
         spatialManager.register(this, this.cx, this.cy);
         
-        if (this.AI) this.makeMove(5);
+        if (this.AI) this.makeMove();
 
         this.score = this.score + SCORE_INC;
     }
@@ -221,16 +226,17 @@ Player.prototype.refreshWall = function(vertexArray, x, y)
     vertexArray.push({cx: x, cy: y});
     var wallLength = vertexArray.length;
     spatialManager.register(this, x, y);
-    spatialManager._vertices[x][y].isWally = true;
+    spatialManager.getVertex(x, y).isWall = true;
     //spatialManager.addRift(x, y);
-    if (vertexArray == this.wallVertices && vertexArray.length > this.maxWallLength)
+    if (vertexArray == this.wallVertices &&
+        vertexArray.length > this.maxWallLength)
     {
         var freeUpVertexX = this.wallVertices[0].cx;
         var freeUpVertexY = this.wallVertices[0].cy;
         spatialManager.unregister(this,
                                   freeUpVertexX,
                                   freeUpVertexY);
-        spatialManager._vertices[freeUpVertexX][freeUpVertexY].isWally = false;
+        spatialManager.getVertex(freeUpVertexX, freeUpVertexY).isWall = false;
         this.wallVertices.splice(0, 1);
     }
 };
@@ -238,7 +244,7 @@ Player.prototype.refreshWall = function(vertexArray, x, y)
 Player.prototype.isColliding = function(nextX, nextY)
 {
     var vertex = spatialManager.getVertex(nextX, nextY);
-    if (!vertex || vertex.isWally) {
+    if (!vertex || vertex.isWall) {
         return true;
     }
     return false;
@@ -264,12 +270,12 @@ Player.prototype.reset = function()
 {
     this.introCount = 0;
 
-    spatialManager.unregister(this, this.cx, this.cy);
+    //spatialManager.unregister(this, this.cx, this.cy);
     for(var i = 0; i < this.wallVertices.length; i++)
     {
         var wallX = this.wallVertices[i].cx;
         var wallY = this.wallVertices[i].cy;
-        spatialManager._vertices[wallX][wallY].isWally = false;
+        spatialManager.getVertex(wallX, wallY).isWall = false;
     }
     this.wallVertices = [];
 
@@ -277,7 +283,7 @@ Player.prototype.reset = function()
     {
         var wallX = this.permWallVertices[i].cx;
         var wallY = this.permWallVertices[i].cy;
-        spatialManager._vertices[wallX][wallY].isWally = false;
+        spatialManager.getVertex(wallX, wallY).isWall = false;
     }
     this.permWallVertices = [];
 
@@ -299,23 +305,10 @@ Player.prototype.reset = function()
 
 Player.prototype.render = function (ctx)
 {
-    ctx.beginPath();
-    this.drawWalls(ctx, this.permWallVertices);
-    if(this.introCount == (VERTICES_PER_ROW)*2 - 3) this.drawWalls(ctx, this.wallVertices);   
+    //this.drawWalls(ctx, this.permWallVertices);
+    //if (this.introCount === (VERTICES_PER_ROW)*2 - 3)
+    this.drawWalls(ctx, this.wallVertices);   
     util.writeText(ctx, this.scorePosX, this.score, this.color);
-     
-    // Draw the head
-    /*
-    var currPos = spatialManager.getVertex(this.cx, this.cy).getPos();
-    
-    ctx.save();
-    ctx.strokeStyle = '#FFF';
-    ctx.lineWidth = 2;
-    util.strokeCircle (
-       ctx, currPos.x, currPos.y, 10
-    );
-    ctx.restore();
-    */
 };
 
 Player.prototype.drawWalls = function(ctx, vertexArray) 
@@ -324,7 +317,9 @@ Player.prototype.drawWalls = function(ctx, vertexArray)
 
     var currPos = spatialManager.getVertex(this.cx, this.cy).getPos();
     var nextPos = spatialManager.getVertex(this.cx + this.velX,
-                                           this.cy + this.velY).getPos();
+                                           this.cy + this.velY)
+    if (nextPos)
+        nextPos = nextPos.getPos();
     // The elapsed portion of the timestep
     var progress = (this.reset_timestep - this.timestep) / this.reset_timestep;
 
@@ -340,7 +335,8 @@ Player.prototype.drawWalls = function(ctx, vertexArray)
         var orgX, orgY;
         // If the wall has reached its maximum length, we ease the tip of the
         // tail between vertices
-        if (vertexArray[this.maxWallLength - 1] && vertexArray != this.permWallVertices)
+        if (vertexArray[this.maxWallLength - 1] &&
+            vertexArray != this.permWallVertices)
         {
             var v1 = vertexArray[1];
             var pos1 = spatialManager.getVertex(v1.cx, v1.cy).getPos();
@@ -367,9 +363,9 @@ Player.prototype.drawWalls = function(ctx, vertexArray)
     
     // If the player doesn't have a tail yet, we draw a line from its current
     // vertex to its perceived position
-    /*if (!v)
+    if (!v)
         ctx.moveTo(currPos.x, currPos.y);
-    ctx.lineTo(destX, destY);*/
+    ctx.lineTo(destX, destY);
 
     
     ctx.lineCap = 'round';
@@ -389,7 +385,7 @@ Player.prototype.drawWalls = function(ctx, vertexArray)
     ctx.lineWidth = 14 + 4 * pulse;
     ctx.stroke();
 
-    ctx.strokeStyle = this.color;
+    ctx.strokeStyle = '#FFF';
     ctx.lineWidth = 7;
     ctx.stroke();
 
@@ -398,7 +394,7 @@ Player.prototype.drawWalls = function(ctx, vertexArray)
     this.halo.render(ctx);
 }
 
-Player.prototype.makeMove = function(N)
+Player.prototype.makeMove = function()
 {
     var movesAhead = 3;
     var speed = 1;
@@ -418,13 +414,12 @@ Player.prototype.makeMove = function(N)
     else
         if (Math.abs(this.velX)===speed)
         {
-            console.log('South: ' + this.freeVertexSouth()>this.freeVertexNorth());
-            if (this.freeVertexSouth()>this.freeVertexNorth()) this.AIMove('South');
+            if (this.freeVertexSouth()>this.freeVertexNorth())
+                this.AIMove('South');
             else this.AIMove('North');
         }
         if (Math.abs(this.velY)===speed)
         {
-            console.log('West: ' + this.freeVertexWest()>this.freeVertexEast());
             if (this.freeVertexWest()>this.freeVertexEast()) this.AIMove('West');
             else this.AIMove('East');
         }
@@ -461,39 +456,45 @@ Player.prototype.aggressiveMove = function()
     var speed = 1;
 
     // Turn in front of your nemesis
-    if (this.velX !== 0 && this.velX === player1VelX && Math.abs(distanceX) > Math.abs(distanceY))
+    if (this.velX !== 0 && this.velX === player1VelX &&
+        Math.abs(distanceX) > Math.abs(distanceY))
     {
         if (this.cy > player1Y && this.freeVertexNorth() > 0) return 'North';
         if (this.cy < player1Y && this.freeVertexSouth() > 0) return 'South';
     }
 
-    if (this.velY !== 0 && this.velY === player1VelY && Math.abs(distanceY) > Math.abs(distanceX))
+    if (this.velY !== 0 && this.velY === player1VelY &&
+        Math.abs(distanceY) > Math.abs(distanceX))
     {
         if (this.cx > player1X && this.freeVertexWest() > 0) return'West';
         if (this.cx < player1X && this.freeVertexEast() > 0) return 'East';
     }
 
     // If your oponent is heading into you sideways carry on
-    if (player1VelY !== 0 && this.velX === 0 && Math.abs(distanceX) > Math.abs(distanceY))
+    if (player1VelY !== 0 && this.velX === 0 &&
+        Math.abs(distanceX) > Math.abs(distanceY))
     {
         if (this.velX === speed && distanceX < 1 && this.freeVertexEast() > 0) return 'East';
         if (this.velX === -speed && distanceX > -1 && this.freeVertexWest() > 0) return 'West';
     }
 
-    if (player1VelX !== 0 && this.velY === 0 && Math.abs(distanceX) < Math.abs(distanceY))
+    if (player1VelX !== 0 && this.velY === 0 &&
+        Math.abs(distanceX) < Math.abs(distanceY))
     {
         if (this.velY === speed && distanceY < 1 && this.freeVertexSouth() > 0) return 'South';
         if (this.velY === -speed && distanceY > -1 && this.freeVertexNorth() > 0) return 'North';
     }
 
     // If you and your oponent are head on Turn in front of him
-    if (this.velX !== 0 && this.velX === -player1VelX && Math.abs(distanceX) > Math.abs(distanceY))
+    if (this.velX !== 0 && this.velX === -player1VelX &&
+        Math.abs(distanceX) > Math.abs(distanceY))
     {
         if (distanceY < 0 && this.freeVertexSouth() > 0) return 'South';
         if (distanceY > 0 && this.freeVertexNorth() > 0) return 'South';
     }
 
-    if (this.velY !== 0 && this.velY === -player1VelY && Math.abs(distanceX) < Math.abs(distanceY))
+    if (this.velY !== 0 && this.velY === -player1VelY &&
+        Math.abs(distanceX) < Math.abs(distanceY))
     {
         if (distanceX < 0 && this.freeVertexEast() > 0) return 'East';
         if (distanceX > 0 && this.freeVertexWest() > 0) return 'West';
@@ -537,10 +538,8 @@ Player.prototype.freeVertexNorth = function()
     var counter = 0;
     var nextNorth = this.cy - 1;
     var vertex = spatialManager.getVertex(this.cx, nextNorth);
-    //while ((nextNorth>=0) && !vertex.isWall && !vertex.isWally)
-    while (vertex && !vertex.isWall && !vertex.isWally)
+    while (vertex && !vertex.isWall)
     {
-        console.log("freeVertexNorth" + vertex + " "+ !vertex.isWall + " " + !vertex.isWally);
         counter++;
         nextNorth--;
         vertex = spatialManager.getVertex(this.cx, nextNorth);
@@ -553,10 +552,8 @@ Player.prototype.freeVertexSouth = function()
     var counter = 0;
     var nextSouth = this.cy + 1;
     var vertex = spatialManager.getVertex(this.cx, nextSouth);
-    //while ((VERTICES_PER_ROW>nextSouth) && !vertex.isWall && !vertex.isWally)
-    while (vertex && !vertex.isWall && !vertex.isWally)
+    while (vertex && !vertex.isWall)
     {
-        console.log("freeVertexSouth" + vertex + " "+ !vertex.isWall + " " + !vertex.isWally);
         counter++;
         nextSouth++;
         vertex = spatialManager.getVertex(this.cx, nextSouth);
@@ -569,10 +566,8 @@ Player.prototype.freeVertexEast = function()
     var counter = 0;
     var nextEast = this.cx + 1;
     var vertex = spatialManager.getVertex(nextEast, this.cy);
-    //while ((VERTICES_PER_ROW>nextEast) && !vertex.isWall && !vertex.isWally)
-    while (vertex && !vertex.isWall && !vertex.isWally)
+    while (vertex && !vertex.isWall)
     {
-        console.log("freeVertexEast" + vertex + " "+ !vertex.isWall + " " + !vertex.isWally);
         counter++;
         nextEast++;
         vertex = spatialManager.getVertex(nextEast, this.cy);
@@ -582,14 +577,11 @@ Player.prototype.freeVertexEast = function()
 
 Player.prototype.freeVertexWest = function()
 {
-    //if (this.cx === 0 || this.cx === 1) return 0;
     var counter = 0;
     var nextWest = this.cx - 1;
     var vertex = spatialManager.getVertex(nextWest, this.cy);
-    //while ((nextWest>=0) && !vertex.isWall && !vertex.isWally)
-    while (vertex && !vertex.isWall && !vertex.isWally)
+    while (vertex && !vertex.isWall)
     {
-        console.log("freeVertexWest" + vertex + " "+ !vertex.isWall + " " + !vertex.isWally);
         counter++;
         nextWest--;
         vertex = spatialManager.getVertex(nextWest, this.cy);

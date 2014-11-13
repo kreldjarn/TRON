@@ -13,3 +13,8 @@ Sequencer.prototype.nextState = function()
 	}
 	return state;
 }
+
+Sequencer.prototype.addState = function(state)
+{
+	this.sequence.push(state);
+}

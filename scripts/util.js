@@ -124,4 +124,12 @@ linearInterpolate : function(a, b, p)
     return (b - a) * p + a;
 },
 
+writeText : function(ctx, scorePosX, score, style)
+{
+    ctx.font="30px Courier New";
+    // Fill with gradient
+    ctx.fillStyle = style;
+    ctx.fillText(score , scorePosX, SCORE_POSY);
+},
+
 };

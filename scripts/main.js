@@ -23,6 +23,12 @@ haven't adopted it here.
 */
 
 var KEY_QUIT = 'Q'.charCodeAt(0);
+var KEY_CHOOSEGRID = 'G'.charCodeAt(0);
+var KEY_ENEMYNUMBER = 'E'.charCodeAt(0);
+var KEY_STARTGAME = 'Z'.charCodeAt(0);
+var g_gameState = "pregame";
+
+
 function requestedQuit()
 {
     return keys.getState(KEY_QUIT);
@@ -39,7 +45,6 @@ function mainIterFrame(frameTime) {
 }
 
 var TOGGLE_TIMER_SHOW = 'T'.charCodeAt(0);
-
 
 var main = (function()
 {
@@ -72,8 +77,15 @@ var main = (function()
         }
         
         gatherInputs();
-        update(dt);
-        render(g_ctx);
+        
+        if (g_gameState==="pregame"){
+            g_startScreen.render(g_ctx);
+            g_startScreen.update(dt);
+        }
+        if (g_gameState==="playing") {
+            render(g_ctx);
+            update(dt);
+            }
     };
 
     var requestNextIteration = function()
@@ -118,7 +130,8 @@ var main = (function()
     };
 
     var init = function ()
-    {
+    {   
+        
         g_ctx.fillStyle = "white";
     
         requestNextIteration();

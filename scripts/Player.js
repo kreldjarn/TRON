@@ -25,6 +25,8 @@ function Player(descr) {
 
 Player.prototype = new Entity();
 
+var g_numberOfEnemies = 1;
+
 Player.prototype.rememberResets = function () {
     // Remember my reset positions
     this.reset_cx = this.cx;

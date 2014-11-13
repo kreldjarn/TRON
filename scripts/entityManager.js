@@ -35,9 +35,12 @@ var entityManager = {
     _generatePlayers : function() {
         this.generatePlayer({cx: 0,
                              cy: 0,
-                             timestep: 7,
-                             color: '#FFF',
+                             timestep: 6,
+                             color: '#1BFFA2',
+                             halo_color: 'rgba(143, 246, 204, 0.2)',
                              wallVertices: [{cx: 0, cy: 0}],
+                             permWallVertices: [{cx: 0, cy: 0}],
+                             scorePosX: 0 + GRID_OFFSET_X,
                              keys: {
                                  UP: 'W'.charCodeAt(0),
                                  DN: 'S'.charCodeAt(0),
@@ -49,9 +52,12 @@ var entityManager = {
                              cy: VERTICES_PER_ROW-1,
                              velX: -1,
                              velY: 0,
-                             timestep: 7,
-                             color: '#FFF',
+                             timestep: 6,
+                             color: '#EF066E',
+                             halo_color: 'rgba(239, 6, 110, 0.2)',
                              wallVertices: [{cx: VERTICES_PER_ROW-1, cy: VERTICES_PER_ROW-1}],
+                             permWallVertices: [{cx: VERTICES_PER_ROW-1, cy: VERTICES_PER_ROW-1}],
+                             scorePosX: 100 + GRID_OFFSET_X,
                              keys: {
                                  UP: 1000,
                                  DN: 1001,
@@ -97,11 +103,20 @@ var entityManager = {
         return this._players;
     },
 
-    /*generateWall : function(descr) {
-        this._walls.push(new Wall(descr));
-        //console.log(this._walls);
-    },*/
-    
+    resetPlayers: function() 
+    {
+        for (var i = 0; i < this._players.length; i++) {
+            this._players[i].reset();
+        }
+    },
+
+    incMaxWallLength: function()
+    {
+        for (var i = 0; i < this._players.length; i++) {
+            this._players[i].maxWallLength += 5;
+        }
+    },
+
     update: function(du) {
         for (var c = 0; c < this._categories.length; ++c) {
     

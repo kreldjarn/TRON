@@ -9,3 +9,8 @@ var VERTICES_PER_ROW = 30,
     // PHYS_ACC denotes accuracy of physics simulation.
     // lower for better performance
     PHYS_ACC = 8;
+
+//Game Scoring Settings
+var LOSE_PENALTY = 50,
+	SCORE_INC = 5,
+	SCORE_POSY = GRID_OFFSET_Y - 10;

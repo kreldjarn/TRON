@@ -76,13 +76,13 @@ var entityManager = {
     {
         this.generatePlayer({cx: 2,
                              cy: 8,
-                             timestep: 4,
+                             timestep: 6,
                              color: '#1BFFA2',
                              halo_color: 'rgba(143, 246, 204, 0.2)',
                              wallVertices: [{cx: 2, cy: 8}],
                              permWallVertices: [{cx: 0, cy: 0}],
                              scorePosX: null,
-                             sequencer: new Sequencer(INTRO_SEQUENCE),
+                             sequencer: new Sequencer(INTRO_SEQUENCE, true),
                              introPlayer: true,
                              maxWallLength: 170,
                              keys: {

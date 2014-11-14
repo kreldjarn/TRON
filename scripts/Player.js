@@ -116,7 +116,6 @@ Player.prototype.introUpdate = function(du)
         this.timestep = this.reset_timestep;
         spatialManager.register(this, this.cx, this.cy);
         this.introCount++;
-        //console.log(this.introCount);
     }
 }
     
@@ -132,11 +131,12 @@ Player.prototype.update = function(du)
     var destX = currPos.x + progress * (nextPos.x - currPos.x);
     var destY = currPos.y + progress * (nextPos.y - currPos.y);
     this.halo.update(destX, destY);
-
+    /*
     if (this.introCount < (VERTICES_PER_ROW) * 2 - 1) {
         this.introUpdate(du);
         return;
     }
+    */
     this.handleInputs();
     this.timestep -= du;
 
@@ -144,6 +144,12 @@ Player.prototype.update = function(du)
     if (this.timestep <= 0)
     {
         spatialManager.unregister(this, this.cx, this.cy);
+        if (this.sequencer && !this.sequencer.isEmpty())
+        {
+            var state = this.sequencer.pop();
+            this.requestedVelX = state.x;
+            this.requestedVelY = state.y;
+        }
         var last_cx = this.cx;
         var last_cy = this.cy;
 
@@ -162,7 +168,6 @@ Player.prototype.update = function(du)
         this.velX = this.requestedVelX;
         this.velY = this.requestedVelY;
         this.timestep = this.reset_timestep;
-        //this.refreshWall(last_cx, last_cy);
 
         this.refreshWall(this.wallVertices, this.cx, this.cy);
         spatialManager.register(this, this.cx, this.cy);
@@ -209,20 +214,6 @@ Player.prototype.handleInputs = function()
 
 Player.prototype.refreshWall = function(vertexArray, x, y)
 {
-    /*this.wallVertices.push({cx: x, cy: y});
-    spatialManager.register(this,
-                            this.wallVertices[0].cx,
-                            this.wallVertices[0].cy);
-    //spatialManager.addRift(x, y);
-    if (this.wallVertices.length > this.maxWallLength)
-    {
-        spatialManager.unregister(this,
-                                  this.wallVertices[0].cx,
-                                  this.wallVertices[0].cy);
-        spatialManager._vertices[x][y].isWally = false;
-        //spatialManager.removeRift(this.wallVertices[0].cx, this.wallVertices[0].cy);
-        this.wallVertices.splice(0, 1);
-    }*/
     vertexArray.push({cx: x, cy: y});
     var wallLength = vertexArray.length;
     spatialManager.register(this, x, y);
@@ -307,8 +298,9 @@ Player.prototype.render = function (ctx)
 {
     //this.drawWalls(ctx, this.permWallVertices);
     //if (this.introCount === (VERTICES_PER_ROW)*2 - 3)
-    this.drawWalls(ctx, this.wallVertices);   
-    util.writeText(ctx, this.scorePosX, this.score, this.color);
+    this.drawWalls(ctx, this.wallVertices);
+    if (this.scorePosX)
+        util.writeText(ctx, this.scorePosX, this.score, this.color);
 };
 
 Player.prototype.drawWalls = function(ctx, vertexArray) 
@@ -411,37 +403,21 @@ Player.prototype.makeMove = function()
     if (this.velX === speed && (this.freeVertexEast()>movesAhead)) return;
     if (this.velY === speed && (this.freeVertexSouth()>movesAhead)) return;
     if (this.velY === -speed && (this.freeVertexNorth()>movesAhead)) return;
-    else
-        if (Math.abs(this.velX)===speed)
-        {
-            if (this.freeVertexSouth()>this.freeVertexNorth())
-                this.AIMove('South');
-            else this.AIMove('North');
-        }
-        if (Math.abs(this.velY)===speed)
-        {
-            if (this.freeVertexWest()>this.freeVertexEast()) this.AIMove('West');
-            else this.AIMove('East');
-        }
-
-    /*if (Math.random() < this.anxiousness)
+    
+    if (Math.abs(this.velX)===speed)
     {
-        this.makeRandomMove();
+        if (this.freeVertexSouth()>this.freeVertexNorth())
+            this.AIMove('South');
+        else
+            this.AIMove('North');
     }
-
-    var nextX = this.cx + this.velX;
-    var nextY = this.cy + this.velY;
-    var vertex = spatialManager.getVertex(nextX, nextY);
-
-    if (N && (!vertex || vertex.isWally))
+    if (Math.abs(this.velY)===speed)
     {
-        this.makeRandomMove();
-        this.handleInputs();
-        this.velX = this.requestedVelX;
-        this.velY = this.requestedVelY;
-        this.makeMove(N - 1);
-    }*/
-
+        if (this.freeVertexWest()>this.freeVertexEast())
+            this.AIMove('West');
+        else
+            this.AIMove('East');
+    }
 };
 
 Player.prototype.aggressiveMove = function()

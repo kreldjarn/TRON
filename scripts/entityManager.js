@@ -33,7 +33,8 @@ var entityManager = {
     // "PRIVATE" METHODS
     
     _generatePlayers : function() {
-        this.generatePlayer({cx: 0,
+        this._generateTitlePlayer();
+        /*this.generatePlayer({cx: 0,
                              cy: 0,
                              timestep: 6,
                              color: '#1BFFA2',
@@ -41,6 +42,7 @@ var entityManager = {
                              wallVertices: [{cx: 0, cy: 0}],
                              permWallVertices: [{cx: 0, cy: 0}],
                              scorePosX: 0 + GRID_OFFSET_X,
+                             sequencer: null,
                              keys: {
                                  UP: 'W'.charCodeAt(0),
                                  DN: 'S'.charCodeAt(0),
@@ -58,6 +60,7 @@ var entityManager = {
                              wallVertices: [{cx: VERTICES_PER_ROW-1, cy: VERTICES_PER_ROW-1}],
                              permWallVertices: [{cx: VERTICES_PER_ROW-1, cy: VERTICES_PER_ROW-1}],
                              scorePosX: 100 + GRID_OFFSET_X,
+                             sequencer: null,
                              keys: {
                                  UP: 1000,
                                  DN: 1001,
@@ -65,7 +68,28 @@ var entityManager = {
                                  RT: 1003,
                              },
                              AI: true,
-                             anxiousness: 0.2});
+                             anxiousness: 0.2});*/
+    },
+
+
+    _generateTitlePlayer: function()
+    {
+        this.generatePlayer({cx: 0,
+                             cy: 0,
+                             timestep: 6,
+                             color: '#1BFFA2',
+                             halo_color: 'rgba(143, 246, 204, 0.2)',
+                             wallVertices: [{cx: 0, cy: 0}],
+                             permWallVertices: [{cx: 0, cy: 0}],
+                             scorePosX: null,
+                             sequencer: new Sequencer(INTRO_SEQUENCE),
+                             keys: {
+                                 UP: 2000,
+                                 DN: 2001,
+                                 LT: 2002,
+                                 RT: 2003,
+                             },
+                             AI: false});
     },
     
     _forEachOf: function(aCategory, fn) {

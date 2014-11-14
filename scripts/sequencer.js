@@ -1,9 +1,9 @@
 function Sequencer(sequence)
 {
-	this.sequence = sequence;
+	this.sequence = sequence || [];
 }
 
-Sequencer.prototype.nextState = function()
+Sequencer.prototype.pop = function()
 {
 	var state = null;
 	if (this.sequence)
@@ -14,7 +14,12 @@ Sequencer.prototype.nextState = function()
 	return state;
 }
 
-Sequencer.prototype.addState = function(state)
+Sequencer.prototype.push = function(state)
 {
 	this.sequence.push(state);
+}
+
+Sequencer.prototype.isEmpty = function()
+{
+	return this.sequence.length === 0;
 }

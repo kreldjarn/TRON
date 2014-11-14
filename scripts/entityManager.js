@@ -74,15 +74,17 @@ var entityManager = {
 
     _generateTitlePlayer: function()
     {
-        this.generatePlayer({cx: 0,
-                             cy: 0,
-                             timestep: 6,
+        this.generatePlayer({cx: 2,
+                             cy: 8,
+                             timestep: 4,
                              color: '#1BFFA2',
                              halo_color: 'rgba(143, 246, 204, 0.2)',
-                             wallVertices: [{cx: 0, cy: 0}],
+                             wallVertices: [{cx: 2, cy: 8}],
                              permWallVertices: [{cx: 0, cy: 0}],
                              scorePosX: null,
                              sequencer: new Sequencer(INTRO_SEQUENCE),
+                             introPlayer: true,
+                             maxWallLength: 170,
                              keys: {
                                  UP: 2000,
                                  DN: 2001,

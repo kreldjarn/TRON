@@ -1,6 +1,6 @@
 function Sequencer(sequence)
 {
-	this.sequence = sequence || [];
+	this.sequence = sequence.slice(0) || [];
 }
 
 Sequencer.prototype.pop = function()

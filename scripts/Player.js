@@ -144,6 +144,12 @@ Player.prototype.update = function(du)
     if (this.timestep <= 0)
     {
         spatialManager.unregister(this, this.cx, this.cy);
+        if (this.introPlayer && this.sequencer.isEmpty())
+        {
+            console.log("here");
+            this.sequencer = new Sequencer(INTRO_SEQUENCE);
+            console.log(INTRO_SEQUENCE);
+        }
         if (this.sequencer && !this.sequencer.isEmpty())
         {
             var state = this.sequencer.pop();

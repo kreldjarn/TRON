@@ -1,5 +1,6 @@
 var g_canvas = document.getElementById("myCanvas");
 var g_ctx = g_canvas.getContext("2d");
+var HALO_ALPHA = 0.2;
 
 // =============
 // GRID SETTINGS

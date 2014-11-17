@@ -33,8 +33,8 @@ var entityManager = {
     // "PRIVATE" METHODS
     
     _generatePlayers : function() {
-        this._generateTitlePlayer();
-        /*this.generatePlayer({cx: 0,
+        //this._generateTitlePlayer();
+        this.generatePlayer({cx: 0,
                              cy: 0,
                              timestep: 6,
                              color: '#1BFFA2',
@@ -68,7 +68,7 @@ var entityManager = {
                                  RT: 1003,
                              },
                              AI: true,
-                             anxiousness: 0.2});*/
+                             anxiousness: 0.2});
     },
 
 

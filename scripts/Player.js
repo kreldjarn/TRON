@@ -131,12 +131,12 @@ Player.prototype.update = function(du)
     var destX = currPos.x + progress * (nextPos.x - currPos.x);
     var destY = currPos.y + progress * (nextPos.y - currPos.y);
     this.halo.update(destX, destY);
-    /*
+    
     if (this.introCount < (VERTICES_PER_ROW) * 2 - 1) {
         this.introUpdate(du);
         return;
     }
-    */
+    
     this.handleInputs();
     this.timestep -= du;
 
@@ -157,6 +157,7 @@ Player.prototype.update = function(du)
         this.cy += this.velY;
         if (this.isColliding(this.cx, this.cy)) 
         {
+            res.explosion(destX,destY);
             this.score = this.score - LOSE_PENALTY;
             entityManager.resetPlayers();
             entityManager.incMaxWallLength();

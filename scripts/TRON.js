@@ -103,7 +103,7 @@ function processDiagnostics()
 
 function renderTitle(ctx)
 {
-    ctx.font="30px Courier New";
+    ctx.font="30px Helvetica";
     ctx.textAlign = 'center';
     ctx.fillStyle = '#FFF';
     ctx.fillText("Press X to start",

@@ -192,21 +192,6 @@ var entityManager = {
                 aCategory[i].render(ctx);
             }
         }
-        // DEBUG
-        for (var c = 0; c < this._states['title']._categories.length; ++c) {
-    
-            var aCategory = this._states['title']._categories[c];
-    
-            if (!this._bShowRocks && 
-                aCategory == this._rocks)
-                continue;
-    
-            for (var i = 0; i < aCategory.length; ++i) {
-    
-                aCategory[i].render(ctx);
-    
-            }
-        }
     }
 
 }

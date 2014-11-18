@@ -48,7 +48,6 @@ var entityManager = {
                                  RT: 'D'.charCodeAt(0),
                              },
                              AI: false});
-        console.log(this._players);
         // AI
         this.generatePlayer({cx: VERTICES_PER_ROW-1,
                              cy: VERTICES_PER_ROW-1,

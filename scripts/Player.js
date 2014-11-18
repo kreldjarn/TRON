@@ -20,7 +20,7 @@ function Player(descr) {
     this.rememberResets();
     this.halo = halo('255, 255, 255');
 
-    spatialManager.getVertex(this.cx, this.cy).isWall = true;
+    spatialManager.register(this, this.cx, this.cy);
 };
 
 Player.prototype = new Entity();
@@ -152,7 +152,8 @@ Player.prototype.update = function(du)
 
 Player.prototype.takeStep = function()
 {
-    spatialManager.unregister(this, this.cx, this.cy);
+    //spatialManager.unregister(this, this.cx, this.cy);
+    
     if (this.sequencer && !this.sequencer.isEmpty())
     {
         var state = this.sequencer.pop();
@@ -172,7 +173,8 @@ Player.prototype.takeStep = function()
         return;
     }
 
-    if (this.wallVertices.length === 0) this.refreshWall(this.wallVertices,last_cx, last_cy);
+    if (this.wallVertices.length === 0)
+        this.refreshWall(this.wallVertices, last_cx, last_cy);
     
     this.velX = this.requestedVelX;
     this.velY = this.requestedVelY;
@@ -180,6 +182,8 @@ Player.prototype.takeStep = function()
 
     this.refreshWall(this.wallVertices, this.cx, this.cy);
     spatialManager.register(this, this.cx, this.cy);
+    
+    
     
     if (this.AI) this.makeMove();
 
@@ -223,7 +227,7 @@ Player.prototype.refreshWall = function(vertexArray, x, y)
     vertexArray.push({cx: x, cy: y});
     var wallLength = vertexArray.length;
     spatialManager.register(this, x, y);
-    spatialManager.getVertex(x, y).isWall = true;
+    //spatialManager.getVertex(x, y).isWall = true;
     //spatialManager.addRift(x, y);
     if (vertexArray == this.wallVertices &&
         vertexArray.length > this.maxWallLength)
@@ -233,7 +237,7 @@ Player.prototype.refreshWall = function(vertexArray, x, y)
         spatialManager.unregister(this,
                                   freeUpVertexX,
                                   freeUpVertexY);
-        spatialManager.getVertex(freeUpVertexX, freeUpVertexY).isWall = false;
+        //spatialManager.getVertex(freeUpVertexX, freeUpVertexY).isWall = false;
         this.wallVertices.splice(0, 1);
     }
 };
@@ -241,7 +245,7 @@ Player.prototype.refreshWall = function(vertexArray, x, y)
 Player.prototype.isColliding = function(nextX, nextY)
 {
     var vertex = spatialManager.getVertex(nextX, nextY);
-    if (!vertex || vertex.isWall) {
+    if (!vertex || vertex.isWall()) {
         return true;
     }
     return false;
@@ -266,24 +270,24 @@ Player.prototype.getVel = function()
 Player.prototype.reset = function()
 {
     this.introCount = 0;
-
-    //spatialManager.unregister(this, this.cx, this.cy);
+    if (spatialManager.getVertex(this.cx, this.cy))
+        spatialManager.unregister(this, this.cx, this.cy);
     for(var i = 0; i < this.wallVertices.length; i++)
     {
         var wallX = this.wallVertices[i].cx;
         var wallY = this.wallVertices[i].cy;
-        spatialManager.getVertex(wallX, wallY).isWall = false;
+        spatialManager.unregister(this, wallX, wallY)
     }
     this.wallVertices = [];
-
+    /*
     for(var i = 0; i < this.permWallVertices.length; i++)
     {
         var wallX = this.permWallVertices[i].cx;
         var wallY = this.permWallVertices[i].cy;
-        spatialManager.getVertex(wallX, wallY).isWall = false;
+        //spatialManager.getVertex(wallX, wallY).isWall = false;
     }
     this.permWallVertices = [];
-
+    */
     this.cx = this.reset_cx;
     this.cy = this.reset_cy;
     this.velX = this.reset_velX;
@@ -372,7 +376,6 @@ Player.prototype.drawWalls = function(ctx, vertexArray)
     var pulse = this.timestep / this.reset_timestep;
     pulse = Math.sin(Math.PI * pulse);
     // Sampling to create a halo effect
-    // TODO: Generalise this, and make it use the player's own colour
     ctx.strokeStyle = this.halo_color;
     ctx.lineWidth = 10 + 2 * pulse;
     ctx.stroke();
@@ -520,7 +523,7 @@ Player.prototype.freeVertexNorth = function()
     var counter = 0;
     var nextNorth = this.cy - 1;
     var vertex = spatialManager.getVertex(this.cx, nextNorth);
-    while (vertex && !vertex.isWall)
+    while (vertex && !vertex.isWall())
     {
         counter++;
         nextNorth--;
@@ -534,7 +537,7 @@ Player.prototype.freeVertexSouth = function()
     var counter = 0;
     var nextSouth = this.cy + 1;
     var vertex = spatialManager.getVertex(this.cx, nextSouth);
-    while (vertex && !vertex.isWall)
+    while (vertex && !vertex.isWall())
     {
         counter++;
         nextSouth++;
@@ -548,7 +551,7 @@ Player.prototype.freeVertexEast = function()
     var counter = 0;
     var nextEast = this.cx + 1;
     var vertex = spatialManager.getVertex(nextEast, this.cy);
-    while (vertex && !vertex.isWall)
+    while (vertex && !vertex.isWall())
     {
         counter++;
         nextEast++;
@@ -562,7 +565,7 @@ Player.prototype.freeVertexWest = function()
     var counter = 0;
     var nextWest = this.cx - 1;
     var vertex = spatialManager.getVertex(nextWest, this.cy);
-    while (vertex && !vertex.isWall)
+    while (vertex && !vertex.isWall())
     {
         counter++;
         nextWest--;

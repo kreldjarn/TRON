@@ -126,15 +126,6 @@ var spatialManager = {
             for (var i = 1; i < VERTICES_PER_ROW; ++i)
             {
                 this.getVertex(i, j).render(ctx, this.getVertex(i-1, j-1));
-                
-                var v = this.getVertex(i, j);
-                if (v.isWall)
-                {
-                    var pos = v.getPos();
-                    ctx.fillStyle = '#FFF';
-                    util.fillCircle(ctx, pos.x, pos.y, 5);
-                }
-
             }
         }
         //ctx.stroke();

@@ -1,26 +1,35 @@
 function SpatialVertex()
 {
     this._entities = [];
-    this.isWally = false;
+    this._isWall = false;
 }
 
 SpatialVertex.prototype.register = function(entity)
 {
     var ID = entity.getSpatialID();
     this._entities[ID] = entity;
-    this.isWall = true;
+    this._isWall = true;
 };
 
 SpatialVertex.prototype.unregister = function(entity)
 {
     var ID = entity.getSpatialID();
-    this.isWall = false;
+    this._isWall = false;
     delete this._entities[ID];
+};
+
+SpatialVertex.prototype.isWall = function()
+{
+    return this._isWall;
 };
 
 SpatialVertex.prototype.reset = function()
 {
-    this.isWall = false;
+    this._isWall = false;
+    for (var e in this._entities)
+    {
+        delete this._entities[e];
+    }
 };
 
 SpatialVertex.prototype.getPos = function()

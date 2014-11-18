@@ -381,17 +381,17 @@ Player.prototype.drawWalls = function(ctx, vertexArray)
     pulse = Math.sin(Math.PI * pulse / 4);
     // Sampling to create a halo effect
     ctx.strokeStyle = this.halo_color;
-    ctx.lineWidth = 10 + 4 * pulse;
+    ctx.lineWidth = 8 + 2 * pulse;
     ctx.stroke();
 
-    ctx.lineWidth = 12 + 6 * pulse;
+    ctx.lineWidth = 10 + 3 * pulse;
     ctx.stroke();
 
-    ctx.lineWidth = 14 + 8 * pulse;
+    ctx.lineWidth = 12 + 4 * pulse;
     ctx.stroke();
 
     ctx.strokeStyle = '#FFF';
-    ctx.lineWidth = 7;
+    ctx.lineWidth = 4;
     ctx.stroke();
 
     ctx.restore(); 

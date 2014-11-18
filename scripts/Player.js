@@ -167,6 +167,12 @@ Player.prototype.takeStep = function()
     this.cy += this.velY;
     if (this.isColliding(this.cx, this.cy)) 
     {
+        var v = spatialManager.getVertex(this.cx, this.cy);
+        if (v)
+        {
+            var pos = v.getPos();
+            this.halo.explode(pos.x, pos.y);
+        }
         this.score = this.score - LOSE_PENALTY;
         entityManager.resetPlayers();
         entityManager.incMaxWallLength();

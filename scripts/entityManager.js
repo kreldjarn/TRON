@@ -30,8 +30,6 @@ var entityManager = {
     _players : [],
     _title : [],
     
-    // "PRIVATE" METHODS
-    
     generatePlayers : function() {
         // PLAYER CHARACTER
         this.generatePlayer({cx: 0,

@@ -321,8 +321,6 @@ Player.prototype.render = function (ctx)
 
 Player.prototype.drawWalls = function(ctx, vertexArray) 
 {
-    
-
     var currPos = spatialManager.getVertex(this.cx, this.cy).getPos();
     var nextPos = spatialManager.getVertex(this.cx + this.velX,
                                            this.cy + this.velY)
@@ -380,16 +378,16 @@ Player.prototype.drawWalls = function(ctx, vertexArray)
     
 
     var pulse = this.timestep / this.reset_timestep;
-    pulse = Math.sin(Math.PI * pulse);
+    pulse = Math.sin(Math.PI * pulse / 4);
     // Sampling to create a halo effect
     ctx.strokeStyle = this.halo_color;
-    ctx.lineWidth = 10 + 2 * pulse;
+    ctx.lineWidth = 10 + 4 * pulse;
     ctx.stroke();
 
-    ctx.lineWidth = 12 + 2 * pulse;
+    ctx.lineWidth = 12 + 6 * pulse;
     ctx.stroke();
 
-    ctx.lineWidth = 14 + 4 * pulse;
+    ctx.lineWidth = 14 + 8 * pulse;
     ctx.stroke();
 
     ctx.strokeStyle = '#FFF';

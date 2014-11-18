@@ -36,7 +36,7 @@ var entityManager = {
                              cy: 0,
                              timestep: 6,
                              color: '#1BFFA2',
-                             halo_color: 'rgba(143, 246, 204, 0.2)',
+                             halo_color: 'rgba(50, 255, 255, 0.15)',
                              wallVertices: [{cx: 0, cy: 0}],
                              permWallVertices: [{cx: 0, cy: 0}],
                              scorePosX: 0 + GRID_OFFSET_X,
@@ -55,7 +55,7 @@ var entityManager = {
                              velY: 0,
                              timestep: 6,
                              color: '#EF066E',
-                             halo_color: 'rgba(239, 6, 110, 0.2)',
+                             halo_color: 'rgba(255, 26, 130, 0.15)',
                              wallVertices: [{cx: VERTICES_PER_ROW-1, cy: VERTICES_PER_ROW-1}],
                              permWallVertices: [{cx: VERTICES_PER_ROW-1, cy: VERTICES_PER_ROW-1}],
                              scorePosX: 100 + GRID_OFFSET_X,
@@ -66,8 +66,7 @@ var entityManager = {
                                  LT: 1002,
                                  RT: 1003,
                              },
-                             AI: true,
-                             anxiousness: 0.2});
+                             AI: true});
     },
 
     reset: function()
@@ -117,7 +116,7 @@ var entityManager = {
                                 cy: 8,
                                 timestep: 6,
                                 color: '#1BFFA2',
-                                halo_color: 'rgba(143, 246, 204, 0.2)',
+                                halo_color: 'rgba(50, 255, 255, 0.15)',
                                 wallVertices: [{cx: 2, cy: 8}],
                                 permWallVertices: [{cx: 0, cy: 0}],
                                 scorePosX: null,

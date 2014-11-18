@@ -108,7 +108,7 @@ function renderTitle(ctx)
     ctx.fillStyle = '#FFF';
     ctx.fillText("Press X to start",
                  g_canvas.width / 2,
-                 g_canvas.height / 2 + 40);
+                 g_canvas.height / 2 + 75);
 }
 
 

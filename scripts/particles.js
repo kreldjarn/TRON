@@ -92,23 +92,22 @@ function halo(_colour)
         }
     };
 
-    res.explosion = function(x,y)
+    res.explode = function(x,y)
     {
-        var n = 350;
+        var n = 50;
         for (var i=0; i<n; i++)
         {
-            res.spawnExplosionParticle(x,y);
-            i=i+1;
+            spawnExplosionParticle(x,y);
         }
 
     }
 
-    res.spawnExplosionParticle = function(x, y)
+    spawnExplosionParticle = function(x, y)
     {
         // We randomize the velocity vector of the particles to make
         // them look more natural.
-        velX = (Math.random() < 0.5) ? Math.random() : - Math.random()*3;
-        velY = (Math.random() < 0.5) ? Math.random() : - Math.random()*3;
+        velX = (Math.random() < 0.5) ? Math.random() : - Math.random();
+        velY = (Math.random() < 0.5) ? Math.random() : - Math.random();
         //var pColour = util.generateColors();
         particles.push(particle(x, y, 1 + Math.random()*2, velX, velY, colour));
     };

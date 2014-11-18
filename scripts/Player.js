@@ -131,53 +131,59 @@ Player.prototype.update = function(du)
     var destX = currPos.x + progress * (nextPos.x - currPos.x);
     var destY = currPos.y + progress * (nextPos.y - currPos.y);
     this.halo.update(destX, destY);
-    /*
-    if (this.introCount < (VERTICES_PER_ROW) * 2 - 1) {
+    
+    if (g_states.getState() != 'title' &&
+        this.introCount < (VERTICES_PER_ROW) * 2 - 1) {
         this.introUpdate(du);
         return;
     }
-    */
+    
     this.handleInputs();
     this.timestep -= du;
 
     // We only move the actual entity once every reset_timestep
     if (this.timestep <= 0)
     {
-        spatialManager.unregister(this, this.cx, this.cy);
-        if (this.sequencer && !this.sequencer.isEmpty())
-        {
-            var state = this.sequencer.pop();
-            this.requestedVelX = state.x;
-            this.requestedVelY = state.y;
-        }
-        var last_cx = this.cx;
-        var last_cy = this.cy;
-
-        this.cx += this.velX;
-        this.cy += this.velY;
-        if (this.isColliding(this.cx, this.cy)) 
-        {
-            this.score = this.score - LOSE_PENALTY;
-            entityManager.resetPlayers();
-            entityManager.incMaxWallLength();
-            return;
-        }
-
-        if (this.wallVertices.length === 0) this.refreshWall(this.wallVertices,last_cx, last_cy);
-        
-        this.velX = this.requestedVelX;
-        this.velY = this.requestedVelY;
-        this.timestep = this.reset_timestep;
-
-        this.refreshWall(this.wallVertices, this.cx, this.cy);
-        spatialManager.register(this, this.cx, this.cy);
-        
-        if (this.AI) this.makeMove();
-
-        this.score = this.score + SCORE_INC;
+        this.takeStep();
     }
 
     if (this._isDeadNow) return entityManager.KILL_ME_NOW;
+};
+
+Player.prototype.takeStep = function()
+{
+    spatialManager.unregister(this, this.cx, this.cy);
+    if (this.sequencer && !this.sequencer.isEmpty())
+    {
+        var state = this.sequencer.pop();
+        this.requestedVelX = state.x;
+        this.requestedVelY = state.y;
+    }
+    var last_cx = this.cx;
+    var last_cy = this.cy;
+
+    this.cx += this.velX;
+    this.cy += this.velY;
+    if (this.isColliding(this.cx, this.cy)) 
+    {
+        this.score = this.score - LOSE_PENALTY;
+        entityManager.resetPlayers();
+        entityManager.incMaxWallLength();
+        return;
+    }
+
+    if (this.wallVertices.length === 0) this.refreshWall(this.wallVertices,last_cx, last_cy);
+    
+    this.velX = this.requestedVelX;
+    this.velY = this.requestedVelY;
+    this.timestep = this.reset_timestep;
+
+    this.refreshWall(this.wallVertices, this.cx, this.cy);
+    spatialManager.register(this, this.cx, this.cy);
+    
+    if (this.AI) this.makeMove();
+
+    this.score = this.score + SCORE_INC;
 };
 
 Player.prototype.handleInputs = function()

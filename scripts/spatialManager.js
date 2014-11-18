@@ -118,80 +118,6 @@ var spatialManager = {
             v1.constrainBy(v2);
     },
 
-    drawGrid: function(ctx, levelArray) {
-        ctx.strokeStyle = '#00F';
-        var vx = getWorldCoordinates(0, 0).x;
-        var vy = getWorldCoordinates(0, 0).y;
-
-        //Draw horizontal lines of grid
-        for (var j = 0; j < VERTICES_PER_ROW; ++j)
-        {
-            for (var i = 0; i < VERTICES_PER_ROW - 1; ++i)
-            {
-                ctx.beginPath();
-                ctx.moveTo(vx, vy);
-                if (levelArray[j][i] === 1 && levelArray[j][i + 1] === 1)
-                {
-                    ctx.lineTo(vx + VERTEX_MARGIN, vy);
-                    ctx.stroke();
-                }
-                vx = vx + VERTEX_MARGIN;
-            }
-            vy = vy + VERTEX_MARGIN;
-            vx = 2 * VERTEX_MARGIN - 2;
-        }
-
-        //Reset to first vertex
-        var vx = getWorldCoordinates(0, 0).x;
-        var vy = getWorldCoordinates(0, 0).y;
-        
-        //Draw vertical lines of grid
-        for (var m = 0; m < VERTICES_PER_ROW; ++m)
-        {
-            for (var n = 0; n < VERTICES_PER_ROW - 1; ++n)
-            {
-                ctx.beginPath();
-                ctx.moveTo(vx, vy);
-                if (levelArray[n][m] === 1 && levelArray[n + 1][m] === 1)
-                {
-                    ctx.lineTo(vx, vy + VERTEX_MARGIN);
-                    ctx.stroke();
-                }
-                vy = vy + VERTEX_MARGIN;
-            }
-            vx = vx + VERTEX_MARGIN;
-            vy = 2 * VERTEX_MARGIN - 2;
-        }
-
-    },
-
-    drawFloor: function (ctx, levelArray) {
-            var floorGrad = ctx.createRadialGradient(300,300,300,300,300,100);
-            floorGrad.addColorStop(0,'#33334C');
-            floorGrad.addColorStop(1,'#8585AD');
-            ctx.fillStyle = floorGrad;
-            var vx = 2 * VERTEX_MARGIN - 2;
-            var vy = 2 * VERTEX_MARGIN - 2;
-            //Draw floor tiles of grid
-            for (var j=0; j< VERTICES_PER_ROW - 1; ++j)
-            {
-                for (var i =0; i < VERTICES_PER_ROW - 1; ++i)
-                    {
-                        ctx.beginPath();
-                        ctx.moveTo(vx,vy);
-                        if(levelArray[j][i]===1 && levelArray[j+1][i]===1 && levelArray[j+1][i+1]===1 && levelArray[j][i+1]===1)
-                            {
-                                ctx.fillRect(vx,vy,VERTEX_MARGIN,VERTEX_MARGIN);
-                            }
-                        vx = vx + VERTEX_MARGIN;
-                    }
-                vy = vy + VERTEX_MARGIN;
-                vx = 2 * VERTEX_MARGIN - 2;
-           }
-
-    },
-
-
     render: function(ctx) {
         ctx.strokeStyle = '#FFF';
         //ctx.beginPath();
@@ -200,6 +126,15 @@ var spatialManager = {
             for (var i = 1; i < VERTICES_PER_ROW; ++i)
             {
                 this.getVertex(i, j).render(ctx, this.getVertex(i-1, j-1));
+                
+                var v = this.getVertex(i, j);
+                if (v.isWall)
+                {
+                    var pos = v.getPos();
+                    ctx.fillStyle = '#FFF';
+                    util.fillCircle(ctx, pos.x, pos.y, 5);
+                }
+
             }
         }
         //ctx.stroke();

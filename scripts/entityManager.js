@@ -28,12 +28,10 @@ var entityManager = {
     // "PRIVATE" DATA
     
     _players : [],
-    //_walls : [],
+    _title : [],
     
-    // "PRIVATE" METHODS
-    
-    _generatePlayers : function() {
-        //this._generateTitlePlayer();
+    generatePlayers : function() {
+        // PLAYER CHARACTER
         this.generatePlayer({cx: 0,
                              cy: 0,
                              timestep: 6,
@@ -50,6 +48,8 @@ var entityManager = {
                                  RT: 'D'.charCodeAt(0),
                              },
                              AI: false});
+        console.log(this._players);
+        // AI
         this.generatePlayer({cx: VERTICES_PER_ROW-1,
                              cy: VERTICES_PER_ROW-1,
                              velX: -1,
@@ -71,29 +71,13 @@ var entityManager = {
                              anxiousness: 0.2});
     },
 
-
-    _generateTitlePlayer: function()
+    reset: function()
     {
-        this.generatePlayer({cx: 2,
-                             cy: 8,
-                             timestep: 6,
-                             color: '#1BFFA2',
-                             halo_color: 'rgba(143, 246, 204, 0.2)',
-                             wallVertices: [{cx: 2, cy: 8}],
-                             permWallVertices: [{cx: 0, cy: 0}],
-                             scorePosX: null,
-                             sequencer: new Sequencer(INTRO_SEQUENCE, true),
-                             introPlayer: true,
-                             maxWallLength: 170,
-                             keys: {
-                                 UP: 2000,
-                                 DN: 2001,
-                                 LT: 2002,
-                                 RT: 2003,
-                             },
-                             AI: false});
+        this._players = [];
+        this._title = [];
+        this.deferredSetup();
     },
-    
+
     _forEachOf: function(aCategory, fn) {
         for (var i = 0; i < aCategory.length; ++i) {
             fn.call(aCategory[i]);
@@ -111,22 +95,48 @@ var entityManager = {
     // i.e. thing which need `this` to be defined.
     //
     deferredSetup : function () {
-        this._categories = [this._players];
-        this._generatePlayers();
+        this._states = {
+            'title' : {
+                _categories : [this._title]
+            },
+            'game' : {
+                _categories : [this._players]
+            }
+        };
     },
     
     init: function() {
         this._generatePlayers();
-        //this._generateShip();
     },
 
     generatePlayer : function(descr) {
         this._players.push(new Player(descr));
     },
 
+    generateTitle : function(descr) {
+        this._title.push(new Player({cx: 2,
+                                cy: 8,
+                                timestep: 6,
+                                color: '#1BFFA2',
+                                halo_color: 'rgba(143, 246, 204, 0.2)',
+                                wallVertices: [{cx: 2, cy: 8}],
+                                permWallVertices: [{cx: 0, cy: 0}],
+                                scorePosX: null,
+                                sequencer: new Sequencer(INTRO_SEQUENCE, true),
+                                introPlayer: true,
+                                maxWallLength: 170,
+                                keys: {
+                                    UP: 2000,
+                                    DN: 2001,
+                                    LT: 2002,
+                                    RT: 2003,
+                                },
+                                AI: false}));
+    },
+
     getPlayers : function()
     {
-        return this._players;
+        return this._states[g_states.getState()]._categories[0];
     },
 
     resetPlayers: function() 
@@ -144,9 +154,9 @@ var entityManager = {
     },
 
     update: function(du) {
-        for (var c = 0; c < this._categories.length; ++c) {
-    
-            var aCategory = this._categories[c];
+        var state = g_states.getState();
+        for (var c = 0; c < this._states[state]._categories.length; ++c) {
+            var aCategory = this._states[state]._categories[c];
             var i = 0;
     
             while (i < aCategory.length) {
@@ -167,24 +177,18 @@ var entityManager = {
     },
     
     render: function(ctx) {
-    
-        var debugX = 10, debugY = 100;
-    
-        for (var c = 0; c < this._categories.length; ++c) {
-    
-            var aCategory = this._categories[c];
-    
+        var state = g_states.getState();
+        for (var c = 0; c < this._states[state]._categories.length; ++c) {
+            
+            var aCategory = this._states[state]._categories[c];
+
             if (!this._bShowRocks && 
                 aCategory == this._rocks)
                 continue;
     
             for (var i = 0; i < aCategory.length; ++i) {
-    
                 aCategory[i].render(ctx);
-                //debug.text(".", debugX + i * 10, debugY);
-    
             }
-            debugY += 10;
         }
     }
 
@@ -192,4 +196,5 @@ var entityManager = {
 
 // Some deferred setup which needs the object to have been created first
 entityManager.deferredSetup();
+entityManager.generateTitle();
 

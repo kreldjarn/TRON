@@ -60,9 +60,14 @@ function gatherInputs() {
 
 // GAME-SPECIFIC UPDATE LOGIC
 
+var KEY_TOGGLE_STATE = 'X'.charCodeAt(0);
+
 function updateSimulation(du)
 {
     processDiagnostics();
+    if (keys.eatKey(KEY_TOGGLE_STATE) &&
+        g_states.getState() == 'title')
+        g_states.toggleState();
     entityManager.update(du);
     while (du > 1) {
         spatialManager.update(1);
@@ -78,8 +83,6 @@ var g_allowMixedActions = true;
 var g_useGravity = false;
 var g_useAveVel = true;
 var g_renderSpatialDebug = false;
-
-var KEY_SPATIAL = 'X'.charCodeAt(0);
 
 function processDiagnostics()
 {
@@ -98,6 +101,16 @@ function processDiagnostics()
 //
 // It then delegates the game-specific logic to `gameRender`
 
+function renderTitle(ctx)
+{
+    ctx.font="30px Helvetica";
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#FFF';
+    ctx.fillText("Press X to start",
+                 g_canvas.width / 2,
+                 g_canvas.height / 2 + 40);
+}
+
 
 // GAME-SPECIFIC RENDERING
 
@@ -105,7 +118,10 @@ function renderSimulation(ctx)
 {
     spatialManager.render(ctx);
     entityManager.render(ctx);
-
+    if (g_states.getState() == 'title')
+    {
+        renderTitle(ctx);
+    }
     //if (g_renderSpatialDebug) spatialManager.render(ctx);
 }
 
@@ -144,12 +160,6 @@ function preloadDone() {
     main.init();
 }
 
-// retina
-//var dpr = window.devicePixelRatio || 1;
-//g_canvas.width *= dpr;
-//g_canvas.height *= dpr;
-//g_canvas.getContext("2d").scale(dpr, dpr);
-//
 
 // Kick it off
 //requestPreloads();

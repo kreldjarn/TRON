@@ -8,19 +8,19 @@ SpatialVertex.prototype.register = function(entity)
 {
     var ID = entity.getSpatialID();
     this._entities[ID] = entity;
-    this.isWally = true;
+    this.isWall = true;
 };
 
 SpatialVertex.prototype.unregister = function(entity)
 {
     var ID = entity.getSpatialID();
-    this.isWally = false;
+    this.isWall = false;
     delete this._entities[ID];
 };
 
 SpatialVertex.prototype.reset = function()
 {
-    this.isWally = false;
+    this.isWall = false;
 };
 
 SpatialVertex.prototype.getPos = function()

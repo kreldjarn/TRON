@@ -65,10 +65,10 @@ hexToRGB: function (hex) {
 },
 
 generateColors: function() {
-    var color = '#'+Math.floor(Math.random()*16777215).toString(16); //16777215 is ffffff in hexadecimal
+    var color = '#'+(Math.random().toString(16) + '000000').slice(2, 8); //16777215 is ffffff in hexadecimal
     var result = this.hexToRGB(color);
     var halo_color = 'rgba(' + result.r + ',' + result.g + ',' + result.b + ',' + HALO_ALPHA + ')';
-    return {color: color, halo_color: halo_color}
+    return {color: color, halo_color: halo_color, result: result}
 },
 
 

@@ -16,7 +16,7 @@ var VERTICES_PER_ROW = 30,
 // ==============
 // SCORE SETTINGS
 // ==============
-var LOSE_PENALTY = 30,
+var LOSE_PENALTY = 10,
 	SCORE_INC = 5,
 	SCORE_POSY = GRID_OFFSET_Y - 10;
 

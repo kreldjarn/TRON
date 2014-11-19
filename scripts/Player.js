@@ -180,10 +180,10 @@ Player.prototype.takeStep = function()
         if (this.AI)
         {
             entityManager.respawnAI(this);
-            this.maxWallLength -= LOSE_PENALTY;
+            if (this.maxWallLength > LOSE_PENALTY) this.maxWallLength -= LOSE_PENALTY;
         }
         //TODO kill the player and end the game
-        else this.maxWallLength -= LOSE_PENALTY;
+        else if (this.maxWallLength > LOSE_PENALTY) this.maxWallLength -= LOSE_PENALTY;
         entityManager.resetPlayers();
         entityManager.incMaxWallLength();
         return;

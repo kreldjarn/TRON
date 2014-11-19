@@ -165,6 +165,13 @@ var entityManager = {
                     var player1 = this._players[i];
                     var player2 = this._players[j];
 
+                    var v = spatialManager.getVertex(x, y);
+                    if (v)
+                    {
+                        var pos = v.getPos();
+                        player1.halo.explode(pos.x, pos.y);
+                    }
+
                     if (player1.AI) this.respawnAI(player1);
                     if (player2.AI) this.respawnAI(player2);
 

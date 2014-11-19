@@ -52,6 +52,25 @@ square: function(x) {
     return x*x;
 },
 
+// COLOR GENERATORS
+// ================
+
+hexToRGB: function (hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+},
+
+generateColors: function() {
+    var color = '#'+Math.floor(Math.random()*16777215).toString(16); //16777215 is ffffff in hexadecimal
+    var result = this.hexToRGB(color);
+    var halo_color = 'rgba(' + result.r + ',' + result.g + ',' + result.b + ',' + HALO_ALPHA + ')';
+    return {color: color, halo_color: halo_color}
+},
+
 
 // DISTANCES
 // =========

@@ -148,8 +148,73 @@ var entityManager = {
     incMaxWallLength: function()
     {
         for (var i = 0; i < this._players.length; i++) {
-            this._players[i].maxWallLength += 5;
+            this._players[i].maxWallLength += WALL_INC;
         }
+    },
+
+    checkSpecialCase: function()
+    {
+        for (var i = 0; i < this._players.length; i++)
+        {
+            var x = this._players[i].cx;
+            var y = this._players[i].cy;
+            for (var j = i+1; (j < this._players.length) && (j != i); j++)
+            {
+                if (this._players[j].cx == x && this._players[j].cy == y)
+                {
+                    var player1 = this._players[i];
+                    var player2 = this._players[j];
+
+                    if (player1.AI) this.respawnAI(player1);
+                    if (player2.AI) this.respawnAI(player2);
+
+                    entityManager.resetPlayers();
+                    entityManager.incMaxWallLength();
+                    return true;
+                }
+            }
+        }
+        return false;
+    },
+
+    respawnAI: function(entity)
+    {   
+        //Remember the AI's wallLength
+        var wallLength = entity.maxWallLength;
+        //kill AI
+        this._players.splice(this.returnIndex(entity),1);
+        //Spawn new AI
+        this.generatePlayer({cx: VERTICES_PER_ROW-1,
+                             cy: VERTICES_PER_ROW-1,
+                             velX: -1,
+                             velY: 0,
+                             timestep: 6,
+                             color: '#fff',
+                             halo_color: '#fff',
+                             wallVertices: [{cx: VERTICES_PER_ROW-1, cy: VERTICES_PER_ROW-1}],
+                             permWallVertices: [{cx: VERTICES_PER_ROW-1, cy: VERTICES_PER_ROW-1}],
+                             scorePosX: 100 + GRID_OFFSET_X,
+                             sequencer: null,
+                             maxWallLength: wallLength,
+                             keys: {
+                                 UP: 1000,
+                                 DN: 1001,
+                                 LT: 1002,
+                                 RT: 1003,
+                             },
+                             AI: true,
+                             anxiousness: 0.2});
+        //Add colors to the new AI
+        var newIndex = this._players.length - 1;
+        var newAI = this._players[newIndex];
+        var colors = util.generateColors();
+        newAI.color = colors.color;
+        newAI.halo_color = colors.halo_color;
+    },
+
+    returnIndex: function(entity)
+    {
+        return this._players.indexOf(entity);
     },
 
     update: function(du) {

@@ -10,7 +10,7 @@ var VERTICES_PER_ROW = 30,
     GRID_OFFSET_Y = 50;
     VERTEX_MARGIN = (g_canvas.width - (2 * GRID_OFFSET_X)) /
     				(VERTICES_PER_ROW - 1),
-    // PHYS_ACC denotes accuracy of physics simulation.
+    // PHYS_ACC denotes number of iterations through physics simulation.
     // lower for better performance
     PHYS_ACC = 8;
 

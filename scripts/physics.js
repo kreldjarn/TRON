@@ -1,4 +1,4 @@
-var gravity = 3;
+var gravity = 2.5;
 
 function Vertex(x, y)
 {
@@ -140,14 +140,14 @@ Constraint.prototype.apply = function(du)
         dist = Math.sqrt(dX * dX + dY * dY),
         deltaFrac = (this.length - dist) / dist;
 
-    var px = dX * deltaFrac * PHYS_ACC/2 * du;
-    var py = dY * deltaFrac * PHYS_ACC/2 * du;
+    var px = dX * deltaFrac * 5 * du;
+    var py = dY * deltaFrac * 5 * du;
 
     // This is a hack to make up for the fact that the top (pinned) row does
     // not assert any force on the next row below.
     if (this.vtx2.pinX && this.vtx2.pinY)
     {
-        this.vtx1.setPos(pos1.x + px * 2, pos1.y + py * 2);
+        this.vtx1.setPos(pos1.x + px * 2.5, pos1.y + py * 2.5);
     }
     else
     {

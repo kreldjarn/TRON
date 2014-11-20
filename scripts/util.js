@@ -52,6 +52,25 @@ square: function(x) {
     return x*x;
 },
 
+// COLOR GENERATORS
+// ================
+
+hexToRGB: function (hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+},
+
+generateColors: function() {
+    var color = '#'+(Math.random().toString(16) + '000000').slice(2, 8); //16777215 is ffffff in hexadecimal
+    var result = this.hexToRGB(color);
+    var halo_color = 'rgba(' + result.r + ',' + result.g + ',' + result.b + ',' + HALO_ALPHA + ')';
+    return {color: color, halo_color: halo_color, result: result}
+},
+
 
 // DISTANCES
 // =========
@@ -122,12 +141,12 @@ linearInterpolate : function(a, b, p)
     return (b - a) * p + a;
 },
 
-writeText : function(ctx, scorePosX, score, style)
+writeText : function(ctx, score, style)
 {
     ctx.font="30px Courier New";
     // Fill with gradient
     ctx.fillStyle = style;
-    ctx.fillText(score , scorePosX, SCORE_POSY);
+    ctx.fillText(score , SCORE_POSX, SCORE_POSY);
 },
 
 };

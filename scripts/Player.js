@@ -152,7 +152,13 @@ Player.prototype.update = function(du)
         this.takeStep();
     }
 
-    if (this._isDeadNow) return entityManager.KILL_ME_NOW;
+    if (this._isDeadNow)
+    {
+        LAST_SCORE = this.score;
+        HAS_PLAYED = true;
+        g_states.toggleState();
+        return;
+    }
 };
 
 Player.prototype.takeStep = function()
@@ -171,6 +177,10 @@ Player.prototype.takeStep = function()
 
     this.cx += this.velX;
     this.cy += this.velY;
+    // Check whether this is colliding head-on with another player
+    // and deal with it accordingly
+    //if(entityManager.checkSpecialCase()) return; 
+
     if (this.isColliding(this.cx, this.cy)) 
     {
         var v = spatialManager.getVertex(this.cx, this.cy);
@@ -181,9 +191,12 @@ Player.prototype.takeStep = function()
             var pos = v.getPos();
             this.halo.explode(pos.x, pos.y);
         }
-        this.score = this.score - LOSE_PENALTY;
+        //TODO kill the player and end the game
+        if (this.maxWallLength > LOSE_PENALTY) this.maxWallLength -= LOSE_PENALTY;
         entityManager.resetPlayers();
         entityManager.incMaxWallLength();
+        if (this.AI) entityManager.respawnAI(this);
+        else this._isDeadNow = true;
         return;
     }
 
@@ -276,12 +289,14 @@ Player.prototype.reset = function()
     this.introCount = 0;
     if (spatialManager.getVertex(this.cx, this.cy))
         spatialManager.unregister(this, this.cx, this.cy);
-    for(var i = 0; i < this.wallVertices.length; i++)
+    /*for(var i = 0; i < this.wallVertices.length; i++)
     {
         var wallX = this.wallVertices[i].cx;
         var wallY = this.wallVertices[i].cy;
         spatialManager.unregister(this, wallX, wallY)
     }
+    */
+    spatialManager.reset();
     this.wallVertices = [];
     /*
     for(var i = 0; i < this.permWallVertices.length; i++)
@@ -313,9 +328,8 @@ Player.prototype.render = function (ctx)
     //this.drawWalls(ctx, this.permWallVertices);
     //if (this.introCount === (VERTICES_PER_ROW)*2 - 3)
     this.drawWalls(ctx, this.wallVertices);
-    if (this.scorePosX)
-        util.writeText(ctx, this.scorePosX, this.score, this.color);
-    this.halo.render(ctx);
+    if (!this.AI)
+        util.writeText(ctx, this.score, this.color);
 };
 
 Player.prototype.drawWalls = function(ctx, vertexArray) 

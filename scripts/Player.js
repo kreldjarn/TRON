@@ -328,8 +328,9 @@ Player.prototype.render = function (ctx)
     //this.drawWalls(ctx, this.permWallVertices);
     //if (this.introCount === (VERTICES_PER_ROW)*2 - 3)
     this.drawWalls(ctx, this.wallVertices);
-    if (!this.AI)
+    if (!this.AI && !this.sequencer)
         util.writeText(ctx, this.score, this.color);
+    this.halo.render(ctx);
 };
 
 Player.prototype.drawWalls = function(ctx, vertexArray) 

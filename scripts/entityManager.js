@@ -220,6 +220,11 @@ var entityManager = {
         var colors = util.generateColors();
         newAI.color = colors.color;
         newAI.halo_color = colors.halo_color;
+        if (AI_LOSER)
+        {
+            newAI.introCount = 100;
+            AI_LOSER = false;
+        }
     },
 
     returnIndex: function(entity)

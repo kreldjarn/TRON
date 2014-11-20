@@ -191,14 +191,20 @@ Player.prototype.takeStep = function()
         }
         //Make sure our wallLength is not reduced to no wall at all
         if (this.maxWallLength > LOSE_PENALTY) this.maxWallLength -= LOSE_PENALTY;
-        entityManager.resetPlayers();
+        //entityManager.resetPlayers();
         if (this.AI) 
         {
+            this.reset();
+            AI_LOSER = true;
             entityManager.respawnAI(this);
             entityManager.incWinnerScore(this);
         }
-        else this._isDeadNow = true;
-        return;
+        else 
+        {
+            entityManager.resetPlayers();
+            this._isDeadNow = true;
+            return;
+        }
     }
 
     if (this.wallVertices.length === 0)

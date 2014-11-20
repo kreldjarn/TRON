@@ -152,7 +152,7 @@ Player.prototype.update = function(du)
         this.takeStep();
     }
 
-    if (this._isDeadNow)
+    if (this._isDeadNow && g_states.getState() != 'title')
     {
         LAST_SCORE = this.score;
         HAS_PLAYED = true;
@@ -179,7 +179,7 @@ Player.prototype.takeStep = function()
     this.cy += this.velY;
     // Check whether this is colliding head-on with another player
     // and deal with it accordingly
-    //if(entityManager.checkSpecialCase()) return; 
+    if(entityManager.checkSpecialCase()) return; 
 
     if (this.isColliding(this.cx, this.cy)) 
     {
@@ -192,11 +192,14 @@ Player.prototype.takeStep = function()
             var pos = v.getPos();
             this.halo.explode(pos.x, pos.y);
         }
-        //TODO kill the player and end the game
+
         if (this.maxWallLength > LOSE_PENALTY) this.maxWallLength -= LOSE_PENALTY;
         entityManager.resetPlayers();
-        entityManager.incMaxWallLength();
-        if (this.AI) entityManager.respawnAI(this);
+        if (this.AI) 
+        {
+            entityManager.respawnAI(this);
+            entityManager.incWinnerScore(this);
+        }
         else this._isDeadNow = true;
         return;
     }
@@ -215,6 +218,7 @@ Player.prototype.takeStep = function()
     if (this.AI) this.makeMove();
 
     this.score = this.score + SCORE_INC;
+    if (this.score % MAX_INC == 0 && g_states.getState() != 'title') this.maxWallLength += WALL_INC;
 };
 
 Player.prototype.handleInputs = function()

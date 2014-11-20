@@ -187,7 +187,7 @@ Player.prototype.takeStep = function()
         {
             console.log("here")
             var pos = v.getPos();
-            this.halo.explode(pos.x, pos.y);
+            entityManager.generateExplosion(pos.x, pos.y);
         }
         //Make sure our wallLength is not reduced to no wall at all
         if (this.maxWallLength > LOSE_PENALTY) this.maxWallLength -= LOSE_PENALTY;
@@ -313,9 +313,9 @@ Player.prototype.render = function (ctx)
 {
     this.drawWalls(ctx, this.wallVertices);
     if (!this.AI && !this.sequencer)
-        util.writeText(ctx, this.score, '#BEBEBE');
+        util.writeText(ctx, this.score, '#777');
     if (HAS_PLAYED && g_states.getState() == 'title') 
-        util.writeText(g_ctx, LAST_SCORE, '#666');
+        util.writeText(g_ctx, LAST_SCORE, '#777');
     this.halo.render(ctx);
 };
 

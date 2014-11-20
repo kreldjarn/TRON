@@ -99,28 +99,63 @@ function halo(_colour)
             particles[i].render(ctx);
         }
     };
+    return res;
+}
 
-    res.explode = function(x,y)
+function explosion(_x, _y)
+{
+    // PUBLIC
+    // ======
+    var particles = (function()
     {
-        var n = 50;
-        for (var i=0; i<n; i++)
+        var p = [];
+
+        function spawnExplosionParticle(_x, _y)
         {
-            spawnExplosionParticle(x,y);
+            // We randomize the velocity vector of the particles to make
+            // them look more natural.
+            velX = (Math.random() < 0.5) ? Math.random()*2 : - Math.random()*2;
+            velY = (Math.random() < 0.5) ? Math.random()*2 : - Math.random()*2;
+            var pColour = util.generateColors();
+            var colorString = pColour.result.r + ',' +
+                              pColour.result.g + ',' +
+                              pColour.result.b; 
+            return particle(_x, _y, 1 + Math.random()*2, velX, velY, colorString);
+        };
+        
+        for (var i = 0; i < 100; ++i)
+        {
+            p.push(spawnExplosionParticle(_x, _y));
         }
 
+        return p;
+    })();
+
+    // PRIVATE
+    // =======
+    var res = {};
+    res.update = function()
+    {
+        for (var i = 0; i < particles.length;)
+        {
+            particles[i].update(false);
+            // We allow particles to be garbage collected when they have
+            // faded almost completely
+            if (particles[i].getAlpha() < 0.05)
+                particles.splice(i, 1);
+            else
+                ++i;
+        }
+        if (particles.length === 0)
+            return entityManager.KILL_ME_NOW;
     }
 
-    spawnExplosionParticle = function(x, y)
+    res.render = function(ctx)
     {
-        // We randomize the velocity vector of the particles to make
-        // them look more natural.
-        velX = (Math.random() < 0.5) ? Math.random() : - Math.random();
-        velY = (Math.random() < 0.5) ? Math.random() : - Math.random();
-        var pColour = util.generateColors();
-        var colorString = pColour.result.r +','+ pColour.result.g + ',' + pColour.result.b; 
-        particles.push(particle(x, y, 1 + Math.random()*2, velX, velY, colorString));
-    };
-
-
+        for (var i = 0; i < particles.length; ++i)
+        {
+            particles[i].render(ctx);
+        }
+    }
     return res;
 }

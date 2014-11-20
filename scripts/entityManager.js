@@ -16,6 +16,7 @@ var entityManager = {
     
     _players : [],
     _title : [],
+    _explosions : [],
     
     //Game is a 1-player game.  Player vs AI.
     generatePlayers : function() {
@@ -56,6 +57,11 @@ var entityManager = {
                              AI: true});
     },
 
+    generateExplosion : function(x, y)
+    {
+        this._explosions.push(explosion(x, y))
+    },
+
     reset: function()
     {
         this._players = [];
@@ -82,10 +88,10 @@ var entityManager = {
     deferredSetup : function () {
         this._states = {
             'title' : {
-                _categories : [this._title]
+                _categories : [this._title, this._explosions]
             },
             'game' : {
-                _categories : [this._players]
+                _categories : [this._players, this._explosions]
             }
         };
     },
@@ -166,7 +172,7 @@ var entityManager = {
                     if (v)
                     {
                         var pos = v.getPos();
-                        player1.halo.explode(pos.x, pos.y);
+                        entityManager.generateExplosion(pos.x, pos.y);
                     }
 
                     if (player1.AI) this.respawnAI(player1);
@@ -223,7 +229,8 @@ var entityManager = {
 
     update: function(du) {
         var state = g_states.getState();
-        for (var c = 0; c < this._states[state]._categories.length; ++c) {
+        for (var c = 0; c < this._states[state]._categories.length; ++c)
+        {
             var aCategory = this._states[state]._categories[c];
             var i = 0;
     
@@ -246,14 +253,9 @@ var entityManager = {
     
     render: function(ctx) {
         var state = g_states.getState();
-        for (var c = 0; c < this._states[state]._categories.length; ++c) {
-            
+        for (var c = 0; c < this._states[state]._categories.length; ++c)
+        {
             var aCategory = this._states[state]._categories[c];
-
-            if (!this._bShowRocks && 
-                aCategory == this._rocks)
-                continue;
-    
             for (var i = 0; i < aCategory.length; ++i) {
                 aCategory[i].render(ctx);
             }

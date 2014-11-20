@@ -1,7 +1,11 @@
 // ==============================
 //      GENERIC RENDERING
 // ===============================
-
+var g_doClear = true;
+var g_doBox = false;
+var g_undoBox = false;
+var g_doFlipFlop = false;
+var g_doRender = true;
 
 function render(ctx) {
     

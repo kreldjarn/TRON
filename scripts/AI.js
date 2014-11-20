@@ -53,12 +53,16 @@ var g_AI = {
 	// or if a position is occupied with a wall
 	illegalMove : function(grid, direction, cx, cy, N)
 	{
+		// =============
+		// TODO:
+		// Clean up: DRY
+		// =============
 		if (direction === 'North') cy--;
 		else if (direction === 'South') cy++;
 		else if (direction === 'West') cx--;
 		else cx++;
 
-		if (cx < 0 || cx>= VERTICES_PER_ROW|| cy<0||
+		if (cx < 0 || cx>= VERTICES_PER_ROW || cy<0 ||
 			cy>=VERTICES_PER_ROW) return true;
 		else if (grid[cx][cy]===1) return true;
 

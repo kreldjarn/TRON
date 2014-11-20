@@ -38,9 +38,9 @@ var LOSE_PENALTY = 10,
 	HAS_PLAYED = false,
 	LAST_SCORE = 0;
 
-// ==============
+// =============
 // HALO SETTINGS
-// ==============
+// =============
 
 var HALO_ALPHA = 0.15;
 

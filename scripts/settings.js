@@ -18,6 +18,7 @@ var VERTICES_PER_ROW = 30,
 // ==============
 var LOSE_PENALTY = 10,
 	SCORE_INC = 5,
+	WIN_SCORE = 100,
 	SCORE_POSY = GRID_OFFSET_Y - 10,
 	SCORE_POSX = 0 + GRID_OFFSET_X,
 	HAS_PLAYED = false,
@@ -33,7 +34,8 @@ var HALO_ALPHA = 0.2;
 // WALL LENGTH
 //=============
 
-var WALL_INC = 5;
+var WALL_INC = 1,
+	MAX_INC = 50;
 
 // ==============
 // INTRO SEQUENCE

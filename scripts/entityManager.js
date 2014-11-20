@@ -146,7 +146,14 @@ var entityManager = {
     incMaxWallLength: function()
     {
         for (var i = 0; i < this._players.length; i++) {
-            this._players[i].maxWallLength += WALL_INC;
+            this._players[i].maxWallLength = WALL_INC;
+        }
+    },
+
+    incWinnerScore: function(entity)
+    {
+        for (var i = 0; i < this._players.length && i != returnIndex(entity); i++) {
+            this._players[i].score += WIN_SCORE;
         }
     },
 
@@ -174,7 +181,6 @@ var entityManager = {
                     if (player2.AI) this.respawnAI(player2);
 
                     entityManager.resetPlayers();
-                    entityManager.incMaxWallLength();
                     return true;
                 }
             }

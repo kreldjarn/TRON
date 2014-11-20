@@ -414,6 +414,46 @@ Player.prototype.drawWalls = function(ctx, vertexArray)
     ctx.restore(); 
 }
 
+
+Player.prototype.makeMove = function()
+{
+    var movesAhead = 4;
+    var AIdirection='';
+    var players=entityManager.getPlayers();
+    var Player1direction='';
+ 
+    if(this.velX===1) {AIdirection='East';}
+    else if(this.velY===1) {AIdirection='South';}
+    else if(this.velX===-1) {AIdirection='West';}
+    else {AIdirection='North';}
+    if(players[0].velX===1) {Player1direction='East';}
+    else if(players[0].velY===1) {Player1direction='South';}
+    else if(players[0].velX===-1) {Player1direction='West';}
+    else {Player1direction='North';}
+    var move = g_AI.decisionMaker(AIdirection, this.cx, this.cy,
+        Player1direction, players[0].cx, players[0].cy);
+    this.AIMove(move);
+ 
+};
+
+Player.prototype.AIMove = function(direction)
+{
+    for (var key in this.keys)
+        keys.clearKey(this.keys[key]);
+    if (direction === 'North')
+        keys.setKey(this.keys['UP']);
+    else if (direction === 'South')
+        keys.setKey(this.keys['DN']);
+    else if (direction === 'West')
+        keys.setKey(this.keys['LT']);
+    else
+        keys.setKey(this.keys['RT']);
+};
+
+// ==========
+// DEPRECATED
+// ==========
+/*
 Player.prototype.makeMove = function()
 {
     var movesAhead = 3;
@@ -431,26 +471,8 @@ Player.prototype.makeMove = function()
     if (this.velX === speed && (this.freeVertexEast()>movesAhead)) return;
     if (this.velY === speed && (this.freeVertexSouth()>movesAhead)) return;
     if (this.velY === -speed && (this.freeVertexNorth()>movesAhead)) return;
-<<<<<<< HEAD
-    else
-        if (Math.abs(this.velX)===speed)
-        {
-            //console.log('South: ' + this.freeVertexSouth()>this.freeVertexNorth());
-            if (this.freeVertexSouth()>this.freeVertexNorth()) this.AIMove('South');
-            else this.AIMove('North');
-        }
-        if (Math.abs(this.velY)===speed)
-        {
-            //console.log('West: ' + this.freeVertexWest()>this.freeVertexEast());
-            if (this.freeVertexWest()>this.freeVertexEast()) this.AIMove('West');
-            else this.AIMove('East');
-        }
 
-    /*if (Math.random() < this.anxiousness)
-=======
-    
     if (Math.abs(this.velX)===speed)
->>>>>>> FETCH_HEAD
     {
         if (this.freeVertexSouth()>this.freeVertexNorth())
             this.AIMove('South');
@@ -527,19 +549,6 @@ Player.prototype.aggressiveMove = function()
     return false;
 };
 
-Player.prototype.AIMove = function(direction)
-{
-    for (var key in this.keys)
-        keys.clearKey(this.keys[key]);
-    if (direction === 'North')
-        keys.setKey(this.keys['UP']);
-    else if (direction === 'South')
-        keys.setKey(this.keys['DN']);
-    else if (direction === 'West')
-        keys.setKey(this.keys['LT']);
-    else
-        keys.setKey(this.keys['RT']);
-};
 
 Player.prototype.makeRandomMove = function()
 {
@@ -628,3 +637,4 @@ Player.prototype.freeVertexWest = function()
     }
     return counter;    
 };
+*/

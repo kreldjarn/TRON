@@ -185,8 +185,13 @@ Player.prototype.takeStep = function()
         // they are exiting the playing field
         if (v)
         {
-            console.log("here")
             var pos = v.getPos();
+            entityManager.generateExplosion(pos.x, pos.y);
+        }
+        else
+        {
+            var pos = this.wallVertices[this.wallVertices.length - 1];
+            pos = spatialManager.getVertex(pos.cx, pos.cy).getPos();
             entityManager.generateExplosion(pos.x, pos.y);
         }
         //Make sure our wallLength is not reduced to no wall at all
@@ -347,10 +352,13 @@ Player.prototype.drawWalls = function(ctx, vertexArray)
         var orgX, orgY;
         // If the wall has reached its maximum length, we ease the tip of the
         // tail between vertices
+        var v1 = vertexArray[1];
         if (vertexArray[this.maxWallLength - 1] &&
-            vertexArray != this.permWallVertices)
+            vertexArray != this.permWallVertices &&
+            v1)
         {
-            var v1 = vertexArray[1];
+            
+
             var pos1 = spatialManager.getVertex(v1.cx, v1.cy).getPos();
             orgX = pos.x + progress * (pos1.x - pos.x);
             orgY = pos.y + progress * (pos1.y - pos.y);

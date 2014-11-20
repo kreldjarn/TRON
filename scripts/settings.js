@@ -42,7 +42,7 @@ var LOSE_PENALTY = 10,
 // HALO SETTINGS
 // ==============
 
-var HALO_ALPHA = 0.2;
+var HALO_ALPHA = 0.15;
 
 //==============
 // WALL LENGTH

@@ -194,6 +194,7 @@ var entityManager = {
         //kill AI
         this._players.splice(this.returnIndex(entity),1);
         //Spawn new AI
+        
         this.generatePlayer({cx: VERTICES_PER_ROW-1,
                              cy: VERTICES_PER_ROW-1,
                              velX: -1,

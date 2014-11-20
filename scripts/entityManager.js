@@ -40,7 +40,6 @@ var entityManager = {
                              //halo_color: 'rgba(50, 255, 255, 0.15)',
                              wallVertices: [{cx: 0, cy: 0}],
                              permWallVertices: [{cx: 0, cy: 0}],
-                             scorePosX: 0 + GRID_OFFSET_X,
                              sequencer: null,
                              keys: {
                                  UP: 'W'.charCodeAt(0),
@@ -59,7 +58,6 @@ var entityManager = {
                              halo_color: 'rgba(255, 26, 130, 0.15)',
                              wallVertices: [{cx: VERTICES_PER_ROW-1, cy: VERTICES_PER_ROW-1}],
                              permWallVertices: [{cx: VERTICES_PER_ROW-1, cy: VERTICES_PER_ROW-1}],
-                             scorePosX: 100 + GRID_OFFSET_X,
                              sequencer: null,
                              keys: {
                                  UP: 1000,

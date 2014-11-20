@@ -18,7 +18,10 @@ var VERTICES_PER_ROW = 30,
 // ==============
 var LOSE_PENALTY = 10,
 	SCORE_INC = 5,
-	SCORE_POSY = GRID_OFFSET_Y - 10;
+	SCORE_POSY = GRID_OFFSET_Y - 10,
+	SCORE_POSX = 0 + GRID_OFFSET_X,
+	HAS_PLAYED = false,
+	LAST_SCORE = 0;
 
 // ==============
 // HALO SETTINGS

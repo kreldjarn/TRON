@@ -110,7 +110,6 @@ function halo(_colour)
         velY = (Math.random() < 0.5) ? Math.random() : - Math.random();
         var pColour = util.generateColors();
         var colorString = pColour.result.r +','+ pColour.result.g + ',' + pColour.result.b; 
-        console.log(colorString);
         particles.push(particle(x, y, 1 + Math.random()*2, velX, velY, colorString));
     };
 

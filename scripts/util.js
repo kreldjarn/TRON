@@ -141,12 +141,12 @@ linearInterpolate : function(a, b, p)
     return (b - a) * p + a;
 },
 
-writeText : function(ctx, scorePosX, score, style)
+writeText : function(ctx, score, style)
 {
     ctx.font="30px Courier New";
     // Fill with gradient
     ctx.fillStyle = style;
-    ctx.fillText(score , scorePosX, SCORE_POSY);
+    ctx.fillText(score , SCORE_POSX, SCORE_POSY);
 },
 
 };

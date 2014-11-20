@@ -1,5 +1,7 @@
-var g_track = new Audio("https://notendur.hi.is/~keh4/TRON/assets/boats.m4a");
-g_track.loop = true;
+//==================
+//    Audio
+//==================
+
 document.body.appendChild(g_track);
 g_track.play();
 

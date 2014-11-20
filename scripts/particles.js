@@ -1,4 +1,12 @@
+//========================
+//        Particles
+//=========================
+
+
 var g_explosions = [];
+
+
+//Create particles that fly off the cycles.
 function particle(_x, _y, _r, _dX, _dY, _colour)
 {
     // Private
@@ -50,7 +58,7 @@ function particle(_x, _y, _r, _dX, _dY, _colour)
     return res;
 }
 
-
+//Create a glowing/pulsing effect around the cycles/walls
 function halo(_colour)
 {
     // Private

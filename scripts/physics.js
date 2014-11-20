@@ -1,3 +1,8 @@
+//==========================
+//      Physics
+//==========================
+
+
 var gravity = 2.5;
 
 function Vertex(x, y)
@@ -38,8 +43,6 @@ Vertex.prototype.update = function(du)
         {
             var scale = (dist > 2000) ? (8000/dist) : 4;
             var vel = players[i].getVel();
-            //this.pullX -= vel.x * du * scale;
-            //this.pullY -= vel.y * du * scale;
             this.applyForce(vel.x * du * scale * 2,
                             vel.y * du * scale * 2);
         }

@@ -1,27 +1,14 @@
-/*
-
-entityManager.js
-
-A module which handles arbitrary entity-management for "Asteroids"
-
-
-We create this module as a single global object, and initialise it
-with suitable 'data' and 'methods'.
-
-"Private" properties are denoted by an underscore prefix convention.
-
-*/
-
+//===============================
+//     Entity Manager
+//===============================
 
 "use strict";
-
 
 // Tell jslint not to complain about my use of underscore prefixes (nomen),
 // my flattening of some indentation (white), or my use of incr/decr ops 
 // (plusplus).
 //
 /*jslint nomen: true, white: true, plusplus: true*/
-
 
 var entityManager = {
 
@@ -30,6 +17,7 @@ var entityManager = {
     _players : [],
     _title : [],
     
+    //Game is a 1-player game.  Player vs AI.
     generatePlayers : function() {
         // PLAYER CHARACTER
         this.generatePlayer({cx: 0,
@@ -110,6 +98,7 @@ var entityManager = {
         this._players.push(new Player(descr));
     },
 
+    // New psuedo-player/cycle created to draw on the Title "TRON" sequence
     generateTitle : function(descr) {
         this._title.push(new Player({cx: 2,
                                 cy: 8,
@@ -143,6 +132,7 @@ var entityManager = {
         }
     },
 
+    //Increase wall length for Player or AI
     incMaxWallLength: function()
     {
         for (var i = 0; i < this._players.length; i++) {
@@ -150,13 +140,15 @@ var entityManager = {
         }
     },
 
+    //Increase score for player.
     incWinnerScore: function(entity)
     {
-        for (var i = 0; i < this._players.length && i != returnIndex(entity); i++) {
+        for (var i = 0; i < this._players.length && i != this.returnIndex(entity); i++) {
             this._players[i].score += WIN_SCORE;
         }
     },
 
+    //Check for a head-to-head collision.
     checkSpecialCase: function()
     {
         for (var i = 0; i < this._players.length; i++)
@@ -188,6 +180,7 @@ var entityManager = {
         return false;
     },
 
+    //AI is respawn when it dies.
     respawnAI: function(entity)
     {   
         //Remember the AI's wallLength

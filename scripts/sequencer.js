@@ -1,3 +1,8 @@
+//=======================
+//    Sequencer
+//=======================
+
+
 function Sequencer(sequence, loop)
 {
 	this.sequence = sequence.slice(0) || [];

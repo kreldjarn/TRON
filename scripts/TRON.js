@@ -1,34 +1,10 @@
-// =========
-// ASTEROIDS
-// =========
-/*
-
-A sort-of-playable version of the classic arcade game.
-
-
-HOMEWORK INSTRUCTIONS:
-
-You have some "TODO"s to fill in again, particularly in:
-
-spatialManager.js
-
-But also, to a lesser extent, in:
-
-Rock.js
-Bullet.js
-Ship.js
-
-
-...Basically, you need to implement the core of the spatialManager,
-and modify the Rock/Bullet/Ship to register (and unregister)
-with it correctly, so that they can participate in collisions.
-
-*/
+//==========================
+//  TRON.js
+//==========================
 
 "use strict";
 
 /* jshint browser: true, devel: true, globalstrict: true */
-
 
 
 /*
@@ -44,19 +20,6 @@ function gatherInputs() {
     // Nothing to do here!
     // The event handlers do everything we need for now.
 }
-
-
-// =================
-// UPDATE SIMULATION
-// =================
-
-// We take a very layered approach here...
-//
-// The primary `update` routine handles generic stuff such as
-// pausing, single-step, and time-handling.
-//
-// It then delegates the game-specific logic to `updateSimulation`
-
 
 // GAME-SPECIFIC UPDATE LOGIC
 
@@ -77,29 +40,13 @@ function updateSimulation(du)
     
 }
 
-// GAME-SPECIFIC DIAGNOSTICS
-
-var g_allowMixedActions = true;
-var g_useGravity = false;
-var g_useAveVel = true;
-var g_renderSpatialDebug = false;
-
-function processDiagnostics()
-{
-    //if (eatKey(KEY_SPATIAL)) g_renderSpatialDebug = !g_renderSpatialDebug;
-}
+function processDiagnostics(){}
 
 
 // =================
 // RENDER SIMULATION
 // =================
 
-// We take a very layered approach here...
-//
-// The primary `render` routine handles generic stuff such as
-// the diagnostic toggles (including screen-clearing).
-//
-// It then delegates the game-specific logic to `gameRender`
 
 function renderTitle(ctx)
 {
@@ -122,7 +69,6 @@ function renderSimulation(ctx)
     {
         renderTitle(ctx);
     }
-    //if (g_renderSpatialDebug) spatialManager.render(ctx);
 }
 
 
@@ -134,11 +80,7 @@ var g_images = {};
 
 function requestPreloads() {
 
-    var requiredImages = {
-        //ship   : "https://notendur.hi.is/~pk/308G/images/ship.png",
-        //ship2  : "https://notendur.hi.is/~pk/308G/images/ship_2.png",
-        //rock   : "https://notendur.hi.is/~pk/308G/images/rock.png"
-    };
+    var requiredImages = {};
 
     imagesPreload(requiredImages, g_images, preloadDone);
 }
@@ -160,7 +102,5 @@ function preloadDone() {
     main.init();
 }
 
-
 // Kick it off
-//requestPreloads();
 main.init();

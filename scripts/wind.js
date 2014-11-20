@@ -1,3 +1,7 @@
+// =======================
+//         Wind
+//========================
+
 function Wind()
 {
 	this.cx = Math.floor(Math.random() * VERTICES_PER_ROW);

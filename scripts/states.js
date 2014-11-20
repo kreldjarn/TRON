@@ -1,3 +1,7 @@
+//=====================
+//      States
+//=====================
+
 var g_states = {
 	_state : 0,
 	_states : ['title', 'game'],
@@ -24,6 +28,7 @@ var g_states = {
 	{
 		this._state = this._states.indexOf(state);
 	},
+	//Used to begin/end the gamePlay
 	toggleState : function()
 	{
 		this._state = (this._state + 1) % this._states.length;

@@ -1,3 +1,7 @@
+//======================
+//   AI
+//======================
+
 var g_AI = {
 	freeVertex : function(grid, direction, cx, cy)
 	{
@@ -96,35 +100,6 @@ var g_AI = {
 			cy>=VERTICES_PER_ROW) return true;
 		else if (grid[cx][cy]===1) return true;
 		else return false;
-		/*var x1 = cx,
-			y1 = cy,
-			x2 = cx,
-			y2 = cy;
-		var value = false;
-		if (N===0) return false;
-		N--;
-		switch (direction)
-		{
-			case 'North': 
-				y1--;
-				y2-=2;
-				break;
-			case 'South':
-				y1++;
-				y2+=2;
-				break;
-			case 'West':
-				x1--;
-				x2-=2;
-				break;
-			default :
-				x1++;
-				x2-=2;
-				break;
-		};
-		value = this.isADeadlyMove(grid, x1, y1);
-		value = this.isADeadlyMove(grid, x2, y2);
-		return value;*/
 	},
 
 	isADeadlyMove : function(grid, x, y)

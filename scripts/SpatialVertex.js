@@ -1,3 +1,7 @@
+//=====================
+//      Spatial Vertex
+//======================
+
 function SpatialVertex()
 {
     this._entities = [];
@@ -28,6 +32,7 @@ SpatialVertex.prototype.clearWall = function()
     this._isWall = false;
 }
 
+// Is this vertex currently occupied by a wall? (AI or Player)
 SpatialVertex.prototype.isWall = function()
 {
     return this._isWall;
@@ -42,6 +47,7 @@ SpatialVertex.prototype.reset = function()
     }
 };
 
+//Return (x,y) coordinates for this vertex
 SpatialVertex.prototype.getPos = function()
 {
     return {x: this.x, y: this.y};

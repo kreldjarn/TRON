@@ -1,17 +1,7 @@
 // ========
 // MAINLOOP
 // ========
-/*
 
-The mainloop is one big object with a fairly small public interface
-(e.g. init, iter, gameOver), and a bunch of private internal helper methods.
-
-The "private" members are identified as such purely by the naming convention
-of having them begin with a leading underscore. A more robust form of privacy,
-with genuine name-hiding *is* possible in JavaScript (via closures), but I 
-haven't adopted it here.
-
-*/
 
 "use strict";
 

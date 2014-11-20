@@ -1,4 +1,6 @@
+//======================
 // GENERIC UPDATE LOGIC
+//=====================
 
 // The "nominal interval" is the one that all of our time-based units are
 // calibrated to e.g. a velocity unit is "pixels per nominal interval"

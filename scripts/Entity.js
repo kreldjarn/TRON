@@ -1,16 +1,6 @@
 // ======
 // ENTITY
 // ======
-/*
-
-Provides a set of common functions which can be "inherited" by all other
-game Entities.
-
-JavaScript's prototype-based inheritance system is unusual, and requires 
-some care in use. In particular, this "base" should only provide shared
-functions... shared data properties are potentially quite confusing.
-
-*/
 
 "use strict";
 
@@ -22,15 +12,7 @@ functions... shared data properties are potentially quite confusing.
 */
 
 
-function Entity() {
-
-/*
-    // Diagnostics to check inheritance stuff
-    this._entityProperty = true;
-    console.dir(this);
-*/
-
-};
+function Entity() {};
 
 Entity.prototype.setup = function (descr) {
 
@@ -46,27 +28,33 @@ Entity.prototype.setup = function (descr) {
     this._isDeadNow = false;
 };
 
+//Set the x/y coordinates for an entity.
 Entity.prototype.setPos = function (cx, cy) {
     this.cx = cx;
     this.cy = cy;
 };
 
+//Returns x and y coordinates for an entity.
 Entity.prototype.getPos = function () {
     return {posX : this.cx, posY : this.cy};
 };
 
+//Returns radius for an entity.
 Entity.prototype.getRadius = function () {
     return 0;
 };
 
+//Returns spatial ID for an entity.
 Entity.prototype.getSpatialID = function () {
     return this._spatialID;
 };
 
+//Kills an entity
 Entity.prototype.kill = function () {
     this._isDeadNow = true;
 };
 
+//Returns the entity we hit.
 Entity.prototype.findHitEntity = function () {
     var pos = this.getPos();
     return spatialManager.findEntityInRange(
@@ -79,6 +67,7 @@ Entity.prototype.isColliding = function () {
     return this.findHitEntity();
 };
 
+//Wrap an entity position around the edges of the grid.
 Entity.prototype.wrapPosition = function () {
     this.cx = util.wrapRange(this.cx, 0, g_canvas.width);
     this.cy = util.wrapRange(this.cy, 0, g_canvas.height);

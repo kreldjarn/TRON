@@ -1,11 +1,6 @@
-/*
-
-spatialManager.js
-
-A module which handles spatial lookup, as required for...
-e.g. general collision detection.
-
-*/
+//=====================
+//    SpatialManager
+//======================
 
 "use strict";
 

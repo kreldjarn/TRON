@@ -422,7 +422,7 @@ Player.prototype.makeMove = function()
     var attack = this.aggressiveMove();
     if (attack)
     {
-        console.log("I'm gonna kill you!");
+        //console.log("I'm gonna kill you!");
         this.AIMove(attack);
         return;
     }
@@ -431,8 +431,26 @@ Player.prototype.makeMove = function()
     if (this.velX === speed && (this.freeVertexEast()>movesAhead)) return;
     if (this.velY === speed && (this.freeVertexSouth()>movesAhead)) return;
     if (this.velY === -speed && (this.freeVertexNorth()>movesAhead)) return;
+<<<<<<< HEAD
+    else
+        if (Math.abs(this.velX)===speed)
+        {
+            //console.log('South: ' + this.freeVertexSouth()>this.freeVertexNorth());
+            if (this.freeVertexSouth()>this.freeVertexNorth()) this.AIMove('South');
+            else this.AIMove('North');
+        }
+        if (Math.abs(this.velY)===speed)
+        {
+            //console.log('West: ' + this.freeVertexWest()>this.freeVertexEast());
+            if (this.freeVertexWest()>this.freeVertexEast()) this.AIMove('West');
+            else this.AIMove('East');
+        }
+
+    /*if (Math.random() < this.anxiousness)
+=======
     
     if (Math.abs(this.velX)===speed)
+>>>>>>> FETCH_HEAD
     {
         if (this.freeVertexSouth()>this.freeVertexNorth())
             this.AIMove('South');
@@ -450,10 +468,11 @@ Player.prototype.makeMove = function()
 
 Player.prototype.aggressiveMove = function()
 {
-    var player1X = entityManager._players[0].cx,
-    player1Y = entityManager._players[0].cy,
-    player1VelX = entityManager._players[0].velX,
-    player1VelY = entityManager._players[0].velY;
+    var players = entityManager.getPlayers();
+    var player1X = players[0].cx,
+    player1Y = players[0].cy,
+    player1VelX = players[0].velX,
+    player1VelY = players[0].velY;
 
     var distanceX = this.cx - player1X;
     var distanceY = this.cy - player1Y;
@@ -463,6 +482,7 @@ Player.prototype.aggressiveMove = function()
     if (this.velX !== 0 && this.velX === player1VelX &&
         Math.abs(distanceX) > Math.abs(distanceY))
     {
+        console.log("race on the X")
         if (this.cy > player1Y && this.freeVertexNorth() > 0) return 'North';
         if (this.cy < player1Y && this.freeVertexSouth() > 0) return 'South';
     }
@@ -544,6 +564,10 @@ Player.prototype.freeVertexNorth = function()
     var vertex = spatialManager.getVertex(this.cx, nextNorth);
     while (vertex && !vertex.isWall())
     {
+<<<<<<< HEAD
+        //console.log("freeVertexNorth" + vertex + " "+ !vertex.isWall + " " + !vertex.isWally);
+=======
+>>>>>>> FETCH_HEAD
         counter++;
         nextNorth--;
         vertex = spatialManager.getVertex(this.cx, nextNorth);
@@ -558,6 +582,10 @@ Player.prototype.freeVertexSouth = function()
     var vertex = spatialManager.getVertex(this.cx, nextSouth);
     while (vertex && !vertex.isWall())
     {
+<<<<<<< HEAD
+        //console.log("freeVertexSouth" + vertex + " "+ !vertex.isWall + " " + !vertex.isWally);
+=======
+>>>>>>> FETCH_HEAD
         counter++;
         nextSouth++;
         vertex = spatialManager.getVertex(this.cx, nextSouth);
@@ -572,6 +600,10 @@ Player.prototype.freeVertexEast = function()
     var vertex = spatialManager.getVertex(nextEast, this.cy);
     while (vertex && !vertex.isWall())
     {
+<<<<<<< HEAD
+        //console.log("freeVertexEast" + vertex + " "+ !vertex.isWall + " " + !vertex.isWally);
+=======
+>>>>>>> FETCH_HEAD
         counter++;
         nextEast++;
         vertex = spatialManager.getVertex(nextEast, this.cy);
@@ -586,6 +618,10 @@ Player.prototype.freeVertexWest = function()
     var vertex = spatialManager.getVertex(nextWest, this.cy);
     while (vertex && !vertex.isWall())
     {
+<<<<<<< HEAD
+        //console.log("freeVertexWest" + vertex + " "+ !vertex.isWall + " " + !vertex.isWally);
+=======
+>>>>>>> FETCH_HEAD
         counter++;
         nextWest--;
         vertex = spatialManager.getVertex(nextWest, this.cy);

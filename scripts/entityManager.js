@@ -152,7 +152,7 @@ var entityManager = {
 
     incWinnerScore: function(entity)
     {
-        for (var i = 0; i < this._players.length && i != returnIndex(entity); i++) {
+        for (var i = 0; i < this._players.length && i != this.returnIndex(entity); i++) {
             this._players[i].score += WIN_SCORE;
         }
     },

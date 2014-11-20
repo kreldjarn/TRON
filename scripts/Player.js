@@ -188,6 +188,7 @@ Player.prototype.takeStep = function()
         // they are exiting the playing field
         if (v)
         {
+            console.log("here")
             var pos = v.getPos();
             this.halo.explode(pos.x, pos.y);
         }
@@ -329,7 +330,7 @@ Player.prototype.render = function (ctx)
     //if (this.introCount === (VERTICES_PER_ROW)*2 - 3)
     this.drawWalls(ctx, this.wallVertices);
     if (!this.AI && !this.sequencer)
-        util.writeText(ctx, this.score, this.color);
+        util.writeText(ctx, this.score, '#FFF');
     this.halo.render(ctx);
 };
 

@@ -57,7 +57,7 @@ Player.prototype.requestedVelY = 0;
 
 Player.prototype.wallVertices = [];
 Player.prototype.maxWallLength = 5;
-Player.prototype.permWallVertices = [];
+//Player.prototype.permWallVertices = [];
 
 Player.prototype.anxiousness = 0;
 
@@ -65,8 +65,11 @@ Player.prototype.introCount = 0;
 
 Player.prototype.score = 0;
 
+// introUpdate is called during the intro sequence (when the player and one AI
+// are circling the playing field)
 Player.prototype.introUpdate = function(du) 
 {
+    // We want the intro to be fast, hence:
     this.timestep = 0;
     //if (this.AI) this.timestep -=du;
     if (this.timestep <= 0) 
@@ -128,6 +131,8 @@ Player.prototype.update = function(du)
         nextPos = nextPos.getPos();
     // The elapsed portion of the timestep
     var progress = (this.reset_timestep - this.timestep) / this.reset_timestep;
+    // Find the exact coordinates inbetween vertices that the player is
+    // currently at
     var destX = currPos.x + progress * (nextPos.x - currPos.x);
     var destY = currPos.y + progress * (nextPos.y - currPos.y);
     this.halo.update(destX, destY);
@@ -158,8 +163,9 @@ Player.prototype.update = function(du)
 
 Player.prototype.takeStep = function()
 {
-    //spatialManager.unregister(this, this.cx, this.cy);
-    
+    spatialManager.unregister(this, this.cx, this.cy);
+    // If there's a non-empty sequencer attached to the Player, we ignore given
+    // input and instead pop the sequencer
     if (this.sequencer && !this.sequencer.isEmpty())
     {
         var state = this.sequencer.pop();
@@ -178,8 +184,11 @@ Player.prototype.takeStep = function()
     if (this.isColliding(this.cx, this.cy)) 
     {
         var v = spatialManager.getVertex(this.cx, this.cy);
+        // We generate an explosion if the player is hitting a wall, but not if
+        // they are exiting the playing field
         if (v)
         {
+            console.log("here")
             var pos = v.getPos();
             this.halo.explode(pos.x, pos.y);
         }
@@ -195,14 +204,13 @@ Player.prototype.takeStep = function()
     if (this.wallVertices.length === 0)
         this.refreshWall(this.wallVertices, last_cx, last_cy);
     
+    // In the vertex, we make a decision towards which vertex we will move next
     this.velX = this.requestedVelX;
     this.velY = this.requestedVelY;
     this.timestep = this.reset_timestep;
 
-    this.refreshWall(this.wallVertices, this.cx, this.cy);
+    this.refreshWall(this.wallVertices, last_cx, last_cy);
     spatialManager.register(this, this.cx, this.cy);
-    
-    
     
     if (this.AI) this.makeMove();
 
@@ -246,8 +254,6 @@ Player.prototype.refreshWall = function(vertexArray, x, y)
     vertexArray.push({cx: x, cy: y});
     var wallLength = vertexArray.length;
     spatialManager.register(this, x, y);
-    //spatialManager.getVertex(x, y).isWall = true;
-    //spatialManager.addRift(x, y);
     if (vertexArray == this.wallVertices &&
         vertexArray.length > this.maxWallLength)
     {
@@ -256,7 +262,6 @@ Player.prototype.refreshWall = function(vertexArray, x, y)
         spatialManager.unregister(this,
                                   freeUpVertexX,
                                   freeUpVertexY);
-        //spatialManager.getVertex(freeUpVertexX, freeUpVertexY).isWall = false;
         this.wallVertices.splice(0, 1);
     }
 };
@@ -268,12 +273,6 @@ Player.prototype.isColliding = function(nextX, nextY)
         return true;
     }
     return false;
-};
-
-
-Player.prototype.getRadius = function ()
-{
-    return 8;
 };
 
 Player.prototype.getPos = function()
@@ -330,8 +329,9 @@ Player.prototype.render = function (ctx)
     //this.drawWalls(ctx, this.permWallVertices);
     //if (this.introCount === (VERTICES_PER_ROW)*2 - 3)
     this.drawWalls(ctx, this.wallVertices);
-    if (!this.AI)
-        util.writeText(ctx, this.score, this.color);
+    if (!this.AI && !this.sequencer)
+        util.writeText(ctx, this.score, '#FFF');
+    this.halo.render(ctx);
 };
 
 Player.prototype.drawWalls = function(ctx, vertexArray) 
@@ -379,6 +379,8 @@ Player.prototype.drawWalls = function(ctx, vertexArray)
         ctx.lineTo(pos.x, pos.y);
     }
 
+    ctx.lineTo(currPos.x, currPos.y);
+
     var destX = currPos.x + progress * (nextPos.x - currPos.x);
     var destY = currPos.y + progress * (nextPos.y - currPos.y);
     
@@ -410,8 +412,6 @@ Player.prototype.drawWalls = function(ctx, vertexArray)
     ctx.stroke();
 
     ctx.restore(); 
-
-    this.halo.render(ctx);
 }
 
 Player.prototype.makeMove = function()

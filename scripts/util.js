@@ -143,10 +143,10 @@ linearInterpolate : function(a, b, p)
 
 writeText : function(ctx, score, style)
 {
-    ctx.font="30px Courier New";
-    // Fill with gradient
+    ctx.font="15px Helvetica";
+    ctx.textAlign = 'center';
     ctx.fillStyle = style;
-    ctx.fillText(score , SCORE_POSX, SCORE_POSY);
+    ctx.fillText(score , g_canvas.width / 2, SCORE_POSY);
 },
 
 };

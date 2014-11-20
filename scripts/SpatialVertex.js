@@ -18,6 +18,16 @@ SpatialVertex.prototype.unregister = function(entity)
     delete this._entities[ID];
 };
 
+SpatialVertex.prototype.setWall = function()
+{
+    this._isWall = true;
+};
+
+SpatialVertex.prototype.clearWall = function()
+{
+    this._isWall = false;
+}
+
 SpatialVertex.prototype.isWall = function()
 {
     return this._isWall;

@@ -11,7 +11,6 @@ var g_states = {
 			entityManager.reset();
 			spatialManager.reset();
 			entityManager.generateTitle();
-			if (HAS_PLAYED) util.writeText(g_ctx, LAST_SCORE, '#BEBEBE');
 		},
 		game : function()
 		{

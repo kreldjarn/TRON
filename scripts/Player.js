@@ -313,7 +313,9 @@ Player.prototype.render = function (ctx)
 {
     this.drawWalls(ctx, this.wallVertices);
     if (!this.AI && !this.sequencer)
-        util.writeText(ctx, this.score, '#666');
+        util.writeText(ctx, this.score, '#BEBEBE');
+    if (HAS_PLAYED && g_states.getState() == 'title') 
+        util.writeText(g_ctx, LAST_SCORE, '#666');
     this.halo.render(ctx);
 };
 

@@ -1,6 +1,6 @@
-//=======================
-//    Sequencer
-//=======================
+// =========
+// Sequencer
+// =========
 
 
 function Sequencer(sequence, loop)

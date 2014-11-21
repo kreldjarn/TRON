@@ -1,6 +1,6 @@
-//====================
-//      Settings
-//=====================
+// ========
+// Settings
+// ========
 
 //Global Variables
 var g_canvas = document.getElementById("myCanvas");

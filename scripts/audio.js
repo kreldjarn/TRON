@@ -1,6 +1,6 @@
-//==================
-//    Audio
-//==================
+// =====
+// Audio
+// =====
 var g_track = new Audio("https://notendur.hi.is/~keh4/TRON/assets/boats.m4a");
 g_track.loop = true;
 document.body.appendChild(g_track);

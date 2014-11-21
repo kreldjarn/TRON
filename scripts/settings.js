@@ -18,7 +18,7 @@ var TOGGLE_DEBUG = 'N'.charCodeAt(0);
 // =====
 // DEBUG
 // =====
-var DEBUG = true;
+var DEBUG = false;
 	DEBUG_AI_NODES = [];
 
 // =============

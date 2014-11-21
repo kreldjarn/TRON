@@ -176,7 +176,7 @@ Player.prototype.takeStep = function()
     this.cy += this.velY;
     // Check whether this is colliding head-on with another player
     // and deal with it accordingly
-    //if(entityManager.checkSpecialCase()) return; 
+    if(entityManager.checkSpecialCase()) return; 
 
     if (this.isColliding(this.cx, this.cy)) 
     {

@@ -178,7 +178,8 @@ var entityManager = {
                     if (player1.AI) this.respawnAI(player1);
                     if (player2.AI) this.respawnAI(player2);
 
-                    entityManager.resetPlayers();
+                    spatialManager.reset();
+                    this.resetPlayers();
                     return true;
                 }
             }

@@ -13,7 +13,7 @@ var g_AI = {
 	snapShotGrid : function()
 	{
 		DEBUG_AI_NODES = [];
-		var p = entityManager.getPlayers();
+		//var p = entityManager.getPlayers();
 		var snapShotGrid = [];
 		var v;
 		for (var i = 0; i < VERTICES_PER_ROW; i++)
@@ -47,13 +47,14 @@ var g_AI = {
 	// copyGrid makes a duplicate of a grid so more than one possibility can be
 	// explored when determining future moves
 	copyGrid : function (grid, cx, cy)
-		{
-		var newgrid = [];
-		for (var i = 0; i < grid.length; i++)
-		{
-			newgrid[i] = grid[i].slice();
-		}
-		newgrid[cx][cy]=1;
+	{
+		var newgrid = grid.slice(0);
+		//var newgrid = [];
+		//for (var i = 0; i < grid.length; i++)
+		//{
+		//	newgrid[i] = grid[i].slice();
+		//}
+		newgrid[cx][cy] = 1;
 		return newgrid;
 	},
 
@@ -120,18 +121,16 @@ var g_AI = {
 		var AIdirs = this.directionOptions(AIdir, AIcx, AIcy);
 
 		var grid = this.snapShotGrid();
-		pathValue[0]= Math.max(alpha,this.minValue(AIdirs[0][0],
-			AIdirs[0][1],AIdirs[0][2],alpha,beta,m,grid,
+		pathValue[0]= Math.max(alpha, this.minValue(AIdirs[0][0],
+			AIdirs[0][1], AIdirs[0][2], alpha, beta, m, grid.slice(0),
 			P1dir, P1cx, P1cy));
 
-		grid = this.snapShotGrid();
-		pathValue[1] = Math.max(alpha,this.minValue(AIdirs[1][0],
-			AIdirs[1][1],AIdirs[1][2],alpha,beta,m,grid,
+		pathValue[1] = Math.max(alpha, this.minValue(AIdirs[1][0],
+			AIdirs[1][1], AIdirs[1][2], alpha, beta, m, grid.slice(0),
 			P1dir, P1cx, P1cy));
 
-		grid = this.snapShotGrid();
-		pathValue[2] = Math.max(alpha,this.minValue(AIdirs[2][0],
-			AIdirs[2][1],AIdirs[2][2],alpha,beta,m,grid,
+		pathValue[2] = Math.max(alpha, this.minValue(AIdirs[2][0],
+			AIdirs[2][1], AIdirs[2][2], alpha, beta, m, grid,
 			P1dir, P1cx, P1cy));
 
 		if (pathValue[0]>pathValue[1] && pathValue[0]>pathValue[2])

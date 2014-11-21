@@ -172,8 +172,6 @@ Player.prototype.takeStep = function()
     var last_cx = this.cx;
     var last_cy = this.cy;
 
-    if (this.AI) this.makeMove();
-
     this.cx += this.velX;
     this.cy += this.velY;
     // Check whether this is colliding head-on with another player
@@ -219,13 +217,14 @@ Player.prototype.takeStep = function()
     if (this.wallVertices.length === 0)
         this.refreshWall(this.wallVertices, last_cx, last_cy);
     
+    this.refreshWall(this.wallVertices, last_cx, last_cy);
+    spatialManager.register(this, this.cx, this.cy);
+    
+    if (this.AI) this.makeMove();
     // In the vertex, we make a decision towards which vertex we will move next
     this.velX = this.requestedVelX;
     this.velY = this.requestedVelY;
     this.timestep = this.reset_timestep;
-
-    this.refreshWall(this.wallVertices, last_cx, last_cy);
-    spatialManager.register(this, this.cx, this.cy);
 
     this.score = this.score + SCORE_INC;
     if (this.score % MAX_INC == 0 && g_states.getState() != 'title') this.maxWallLength += WALL_INC;
@@ -438,7 +437,7 @@ Player.prototype.makeMove = function()
     else Player1direction = 'North';
 
     var move = g_AI.decisionMaker(AIdirection,
-                                  this.cx + this.velX, this.cy + this.velY,
+                                  this.cx, this.cy,
                                   Player1direction,
                                   players[0].cx, players[0].cy);
     this.AIMove(move);

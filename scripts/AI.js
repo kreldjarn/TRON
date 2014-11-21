@@ -123,25 +123,25 @@ var g_AI = {
 	{
 		if (this.illegalMove(grid, AIdir, AIcx, AIcy)) return alpha;
 		var AIdirs = this.directionOptions(AIdir, AIcx,AIcy);
-		var oldAlpha = alpha;
+		var defaultAlpha = alpha;
 
 		var newgrid = this.copyGrid(grid, AIcx, AIcy);
-		alpha=Math.max(alpha,this.minValue(AIdirs[0][0],
-			AIdirs[0][1],AIdirs[0][2],alpha,beta,m,newgrid,
-			P1dir,P1cx, P1cy));
-		if (alpha >= beta) return alpha;
-
-		newgrid = this.copyGrid(grid, AIcx, AIcy);
-		alpha=Math.max(alpha,this.minValue(AIdirs[1][0],
-			AIdirs[1][1],AIdirs[1][2],alpha,beta,m,newgrid,
-			P1dir,P1cx, P1cy));
-		if (alpha >= beta) return alpha;
-
-		newgrid = this.copyGrid(grid, AIcx, AIcy);
-		alpha=Math.max(alpha,this.minValue(AIdirs[2][0],
-			AIdirs[2][1],AIdirs[2][2],alpha,beta,m,newgrid,
-			P1dir,P1cx, P1cy));
-		if (alpha >= beta) return alpha;
+		for (var i = 0; i < 3; ++i)
+		{
+			alpha = Math.max(alpha, this.minValue(AIdirs[i][0],
+												  AIdirs[i][1],
+												  AIdirs[i][2],
+												  alpha,
+												  beta,
+												  m,
+												  newgrid.slice(0),
+												  P1dir,
+												  P1cx,
+												  P1cy));
+			// Return instead of looking at other routes to shorten tree
+			if (alpha >= beta) return alpha;
+			else if (alpha > defaultAlpha) defaultAlpha = alpha;
+		}
 
 		return alpha;
 	},
@@ -150,30 +150,30 @@ var g_AI = {
 	minValue : function(AIdir, AIcx, AIcy, alpha, beta, m, grid, P1dir, P1cx, P1cy)
 	{
 		if (this.illegalMove(grid, P1dir, P1cx, P1cy)) return beta;
-		m = m - 1;
+		m -= 1;
 		if (m === 0) return this.terminalValue(grid, AIdir, AIcx,AIcy);
-		var oldBeta = beta;
 		var P1dirs = this.directionOptions(P1dir, P1cx, P1cy);
+		var defaultBeta = beta;
 
 		var newgrid = this.copyGrid(grid, P1cx, P1cy);
-		beta=Math.min(beta,this.maxValue(P1dirs[0][0],
-			P1dirs[0][1],P1dirs[0][2],alpha,beta,m,newgrid,
-			AIdir, AIcx,AIcy));
-		if(beta <= alpha) return beta;
+		for (var i = 0; i < 3; ++i)
+		{
+			beta = Math.min(beta, this.maxValue(P1dirs[i][0],
+												P1dirs[i][1],
+												P1dirs[i][2],
+												alpha,
+												beta,
+												m,
+												newgrid,
+												AIdir,
+												AIcx,
+												AIcy));
+			// Return instead of looking at other routes to shorten tree
+			if(beta <= alpha) return beta;
+			else if (beta < defaultBeta) defaultBeta = beta;
+		}
 
-		newgrid = this.copyGrid(grid, P1cx, P1cy);
-		beta=Math.min(beta,this.maxValue(P1dirs[1][0],
-			P1dirs[1][1],P1dirs[1][2],alpha,beta,m,newgrid,
-			AIdir, AIcx,AIcy));
-		if(beta <= alpha) return beta;
-
-		newgrid = this.copyGrid(grid, P1cx, P1cy);
-		beta=Math.min(beta,this.maxValue(P1dirs[2][0],
-			P1dirs[2][1],P1dirs[2][2],alpha,beta,m,newgrid,
-			AIdir, AIcx,AIcy));
-		if(beta <= alpha) return beta;
-
-		return beta;
+		return defaultBeta;
 	},
 	
 	// Returns a terminal value estimating the best move

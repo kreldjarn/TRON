@@ -15,6 +15,7 @@ function render(ctx) {
     if (keys.eatKey(TOGGLE_UNDO_BOX)) g_undoBox = !g_undoBox;
     if (keys.eatKey(TOGGLE_FLIPFLOP)) g_doFlipFlop = !g_doFlipFlop;
     if (keys.eatKey(TOGGLE_RENDER)) g_doRender = !g_doRender;
+    if (keys.eatKey(TOGGLE_DEBUG)) DEBUG = !DEBUG;
     if (g_doClear) util.clearCanvas(ctx);
     if (g_doBox) util.fillBox(ctx, 200, 200, 50, 50, "red");
     

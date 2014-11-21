@@ -58,23 +58,26 @@ var spatialManager = {
 
     update: function(du)
     {   
-        var duAlt = du/PHYS_ACC;
-        for (var n = 0; n < PHYS_ACC; ++n)
+        if (!DEBUG)
         {
+            var duAlt = du/PHYS_ACC;
+            for (var n = 0; n < PHYS_ACC; ++n)
+            {
+                for (var j = 0; j < VERTICES_PER_ROW; ++j)
+                {
+                    for (var i = 0; i < VERTICES_PER_ROW; ++i)
+                    {
+                        this._vertices[i][j].applyConstraints(duAlt);
+                    }
+                }
+            }
+            
             for (var j = 0; j < VERTICES_PER_ROW; ++j)
             {
                 for (var i = 0; i < VERTICES_PER_ROW; ++i)
                 {
-                    this._vertices[i][j].applyConstraints(duAlt);
+                    this._vertices[i][j].update(du);
                 }
-            }
-        }
-        
-        for (var j = 0; j < VERTICES_PER_ROW; ++j)
-        {
-            for (var i = 0; i < VERTICES_PER_ROW; ++i)
-            {
-                this._vertices[i][j].update(du);
             }
         }
         
@@ -111,10 +114,10 @@ var spatialManager = {
 
     render: function(ctx) {
         ctx.strokeStyle = '#FFF';
-        //ctx.beginPath();
+        var j = 1, i;
         for (var j = 1; j < VERTICES_PER_ROW; ++j)
         {
-            for (var i = 1; i < VERTICES_PER_ROW; ++i)
+            for (i = 1; i < VERTICES_PER_ROW; ++i)
             {
                 var v = this.getVertex(i, j);
                 v.render(ctx, this.getVertex(i-1, j-1));
@@ -123,11 +126,38 @@ var spatialManager = {
                 {
                     var pos = v.getPos();
                     ctx.fillStyle = '#0FF';
-                    util.fillCircle(ctx, pos.x, pos.y, 10);
+                    util.fillCircle(ctx, pos.x, pos.y, 7);
                 }
             }
         }
-        //ctx.stroke();
+
+        // Mark wall nodes and AI wall nodes if debug
+        if (DEBUG)
+        {
+            j = 0;
+            i = 0;
+            for (; j < VERTICES_PER_ROW; ++j)
+            {
+                for (i = 0; i < VERTICES_PER_ROW; ++i)
+                {
+                    var v = this.getVertex(i, j);
+                    if (v.isWall())
+                    {
+                        var pos = v.getPos();
+                        ctx.fillStyle = '#0FF';
+                        util.fillCircle(ctx, pos.x, pos.y, 7);
+                    }
+                }
+            }
+
+            ctx.fillStyle = '#F00';
+            for (i = 0; i < DEBUG_AI_NODES.length; ++i)
+            {
+                var pos = DEBUG_AI_NODES[i];
+                util.fillCircle(ctx, pos.x, pos.y, 5);
+            }
+        }
+
     },
 
     reset: function() {

@@ -12,27 +12,35 @@ var g_AI = {
 	// snapShotGrid makes a two dimensional array that represents the game grid
 	snapShotGrid : function()
 	{
+		DEBUG_AI_NODES = [];
 		var p = entityManager.getPlayers();
 		var snapShotGrid = [];
-		for (var i=0;i<VERTICES_PER_ROW;i++)
+		var v;
+		for (var i = 0; i < VERTICES_PER_ROW; i++)
 		{
-			snapShotGrid[i] = [];
-			for (var j=0;j<VERTICES_PER_ROW;j++)
+			snapShotGrid.push([]);
+			for (var j = 0; j < VERTICES_PER_ROW; j++)
 			{
-				snapShotGrid[i][j]=0;
+				snapShotGrid[i][j] = 0;
+				v = spatialManager.getVertex(i, j);
+				snapShotGrid[i][j] = (v.isWall()) ? 1 : 0;
+				if (DEBUG && snapShotGrid[i][j])
+				{
+					var pos = v.getPos();
+					DEBUG_AI_NODES.push(pos);
+				}
 			}
 		}
 
-		for (var i=0; i<p[0].wallVertices.length;i++)
-		{
+		//for (var i=0; i<p[0].wallVertices.length;i++)
+		//{
+		//	snapShotGrid[p[0].wallVertices[i].cx][p[0].wallVertices[i].cy]=1;
+		//}
 
-			snapShotGrid[p[0].wallVertices[i].cx][p[0].wallVertices[i].cy]=1;
-		}
-
-		for (var i=0; i<p[1].wallVertices.length;i++)
-		{
-			snapShotGrid[p[1].wallVertices[i].cx][p[1].wallVertices[i].cy]=1;
-		}
+		//for (var i=0; i<p[1].wallVertices.length;i++)
+		//{
+		//	snapShotGrid[p[1].wallVertices[i].cx][p[1].wallVertices[i].cy]=1;
+		//}
 		return snapShotGrid;
 	},
 
@@ -111,17 +119,17 @@ var g_AI = {
 		var beta = Infinity;
 		var AIdirs = this.directionOptions(AIdir, AIcx, AIcy);
 
-		var grid= this.snapShotGrid();
+		var grid = this.snapShotGrid();
 		pathValue[0]= Math.max(alpha,this.minValue(AIdirs[0][0],
 			AIdirs[0][1],AIdirs[0][2],alpha,beta,m,grid,
 			P1dir, P1cx, P1cy));
 
-		grid= this.snapShotGrid();
+		grid = this.snapShotGrid();
 		pathValue[1] = Math.max(alpha,this.minValue(AIdirs[1][0],
 			AIdirs[1][1],AIdirs[1][2],alpha,beta,m,grid,
 			P1dir, P1cx, P1cy));
 
-		grid= this.snapShotGrid();
+		grid = this.snapShotGrid();
 		pathValue[2] = Math.max(alpha,this.minValue(AIdirs[2][0],
 			AIdirs[2][1],AIdirs[2][2],alpha,beta,m,grid,
 			P1dir, P1cx, P1cy));

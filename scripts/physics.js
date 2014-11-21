@@ -85,8 +85,13 @@ Vertex.prototype.render = function(ctx, vtx)
     ctx.fillStyle = "rgba(" + coeficcient + ", 65, " + (200 - coeficcient) +
                     ", " + util.linearInterpolate(0.25, 2, coeficcient/255.0) +
                     ")";
-    ctx.fill();
-    ctx.strokeStyle = '#333';
+    ctx.strokeStyle = '#FFF';
+    if (!DEBUG)
+    {
+        ctx.fill();
+        ctx.strokeStyle = '#333';
+    }
+    
     ctx.stroke();
 };
 

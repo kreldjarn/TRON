@@ -13,11 +13,13 @@ var TOGGLE_BOX = 'B'.charCodeAt(0);
 var TOGGLE_UNDO_BOX = 'U'.charCodeAt(0);
 var TOGGLE_FLIPFLOP = 'F'.charCodeAt(0);
 var TOGGLE_RENDER = 'R'.charCodeAt(0);
+var TOGGLE_DEBUG = 'N'.charCodeAt(0);
 
 // =====
 // DEBUG
 // =====
-var DEBUG = false;
+var DEBUG = true;
+	DEBUG_AI_NODES = [];
 
 // =============
 // GRID SETTINGS

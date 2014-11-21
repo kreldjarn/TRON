@@ -194,7 +194,7 @@ var entityManager = {
         //kill AI
         this._players.splice(this.returnIndex(entity),1);
         //Spawn new AI
-        
+
         this.generatePlayer({cx: VERTICES_PER_ROW-1,
                              cy: VERTICES_PER_ROW-1,
                              velX: -1,
@@ -202,9 +202,10 @@ var entityManager = {
                              timestep: 6,
                              color: '#fff',
                              halo_color: '#fff',
-                             wallVertices: [{cx: VERTICES_PER_ROW-1, cy: VERTICES_PER_ROW-1}],
-                             permWallVertices: [{cx: VERTICES_PER_ROW-1, cy: VERTICES_PER_ROW-1}],
-                             scorePosX: 100 + GRID_OFFSET_X,
+                             wallVertices: [{cx: VERTICES_PER_ROW-1,
+                                             cy: VERTICES_PER_ROW-1}],
+                             permWallVertices: [{cx: VERTICES_PER_ROW-1,
+                                                 cy: VERTICES_PER_ROW-1}],
                              sequencer: null,
                              maxWallLength: wallLength,
                              keys: {
@@ -213,8 +214,7 @@ var entityManager = {
                                  LT: 1002,
                                  RT: 1003,
                              },
-                             AI: true,
-                             anxiousness: 0.2});
+                             AI: true});
         //Add colors to the new AI
         var newIndex = this._players.length - 1;
         var newAI = this._players[newIndex];
@@ -254,7 +254,6 @@ var entityManager = {
                 }
             }
         }
-    
     },
     
     render: function(ctx) {

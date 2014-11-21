@@ -14,6 +14,11 @@ var TOGGLE_UNDO_BOX = 'U'.charCodeAt(0);
 var TOGGLE_FLIPFLOP = 'F'.charCodeAt(0);
 var TOGGLE_RENDER = 'R'.charCodeAt(0);
 
+// =====
+// DEBUG
+// =====
+var DEBUG = false;
+
 // =============
 // GRID SETTINGS
 // =============

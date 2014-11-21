@@ -1,6 +1,6 @@
-//==========================
-//      Physics
-//==========================
+// =======
+// Physics
+// =======
 
 
 var gravity = 2.5;
@@ -119,6 +119,7 @@ Vertex.prototype.spliceConstraint = function(constraint)
     this.constraints.splice(this.constraints.indexOf(constraint), 1);
 };
 
+// (fx, fy) is a vector that is a function of du
 Vertex.prototype.applyForce = function(fx, fy)
 {
     this.velX += fx;

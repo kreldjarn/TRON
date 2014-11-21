@@ -86,14 +86,10 @@ var spatialManager = {
     },
     
     register: function(entity, x, y) {
-        //var pos = entity.getPos();
-        //this._vertices[pos.x][pos.y].register(entity);
         this._vertices[x][y].register(entity);
     },
     
     unregister: function(entity, x, y) {
-        //var pos = entity.getPos();
-        //this._vertices[pos.x][pos.y].unregister(entity);
         this._vertices[x][y].unregister(entity);
     },
 
@@ -120,7 +116,15 @@ var spatialManager = {
         {
             for (var i = 1; i < VERTICES_PER_ROW; ++i)
             {
-                this.getVertex(i, j).render(ctx, this.getVertex(i-1, j-1));
+                var v = this.getVertex(i, j);
+                v.render(ctx, this.getVertex(i-1, j-1));
+                // Render solid vertices
+                if (DEBUG && v.isWall())
+                {
+                    var pos = v.getPos();
+                    ctx.fillStyle = '#0FF';
+                    util.fillCircle(ctx, pos.x, pos.y, 10);
+                }
             }
         }
         //ctx.stroke();

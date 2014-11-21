@@ -201,8 +201,11 @@ Player.prototype.takeStep = function()
         {
             this.reset();
             AI_LOSER = true;
+
             entityManager.respawnAI(this);
             entityManager.incWinnerScore(this);
+            // DEBUG:
+            return entityManager.KILL_ME_NOW;
         }
         else 
         {
@@ -300,9 +303,11 @@ Player.prototype.getVel = function()
 Player.prototype.reset = function()
 {
     this.introCount = 0;
-    if (spatialManager.getVertex(this.cx, this.cy))
-        spatialManager.unregister(this, this.cx, this.cy);
-    spatialManager.reset();
+    for (var i = 0; i < this.wallVertices.length; ++i)
+    {
+        var node = this.wallVertices[i];
+        spatialManager.unregister(this, node.cx, node.cy);
+    }
     this.wallVertices = [];
     this.cx = this.reset_cx;
     this.cy = this.reset_cy;
@@ -316,8 +321,6 @@ Player.prototype.reset = function()
     // by clearing the state in keys
     for (var key in this.keys)
         keys.clearKey(this.keys[key]);
-
-    spatialManager.register(this, this.cx, this.cy);
 };
 
 Player.prototype.render = function (ctx)

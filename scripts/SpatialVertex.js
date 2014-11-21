@@ -1,6 +1,8 @@
-//=====================
-//      Spatial Vertex
-//======================
+// ==============
+// Spatial Vertex
+// ==============
+
+// Represents a node in the physical grid
 
 function SpatialVertex()
 {

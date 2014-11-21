@@ -411,12 +411,19 @@ Player.prototype.drawWalls = function(ctx, vertexArray)
     ctx.lineWidth = 12 + 4 * pulse;
     ctx.stroke();
 
-    ctx.restore(); 
+    ctx.restore();
 }
 
 
 Player.prototype.makeMove = function()
 {
+    if (DEBUG)
+    {
+        DEBUG_NODE_WEIGHTS = [];
+        for (var i = 0; i < VERTICES_PER_ROW; ++i)
+            DEBUG_NODE_WEIGHTS.push([]);
+    }
+    
     var movesAhead = 4;
     var AIdirection='';
     var players=entityManager.getPlayers();

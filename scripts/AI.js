@@ -199,49 +199,56 @@ var g_AI = {
 	},
 	
 	// Returns a terminal value estimating the best move
-	terminalValue : function(grid,AIdir, AIcx,AIcy,P1dir, P1cx, P1cy)
+	terminalValue : function(grid, AIdir, AIcx, AIcy, P1dir, P1cx, P1cy)
 	{
 		if (AIdir === 'North') AIcy--;
 		else if (AIdir === 'South') AIcy++;
 		else if (AIdir === 'West') AIcx--;
 		else AIcx++;
 
-		return this.freeVertex(grid, AIdir, AIcx, AIcy);
+		var weight = this.freeVertex(grid, AIdir, AIcx, AIcy);
+		if (DEBUG)
+		{
+			if (AIcx > 0 && AIcy > 0 && AIcx < (VERTICES_PER_ROW-1) &&
+				AIcy < (VERTICES_PER_ROW-1))
+				DEBUG_NODE_WEIGHTS[AIcx][AIcy] = weight;
+		}
+		return weight;
 	},
 
-	// Counts free verticies straight ahead 
+	// Counts free vertices straight ahead 
 	freeVertex : function(grid, direction, cx, cy)
 	{
-		if (cx < 1 || cy < 1 || cx >= (VERTICES_PER_ROW-1) ||
-			cy >= (VERTICES_PER_ROW-1)) return 0;
+		if (cx < 1 || cy < 1 || cx >= (VERTICES_PER_ROW - 1) ||
+			cy >= (VERTICES_PER_ROW - 1)) return -Infinity;
 		var counter = 0;
 		var x = cx;
 		var y = cy;
 		switch (direction)
 		{
 			case 'North':
-				while(y>0)
+				while(y > 0)
 				{
 					if (grid[x][--y]===0) counter++;
 					else return counter;
 				}
 				break;
 			case 'South':
-				while(y<VERTICES_PER_ROW-1)
+				while(y < VERTICES_PER_ROW-1)
 				{
 					if (grid[x][++y]===0) counter++;
 					else return counter;
 				}
 				break;
 			case 'East':
-				while(x<VERTICES_PER_ROW-1)
+				while(x < VERTICES_PER_ROW-1)
 				{
 					if (grid[++x][y]===0) counter++;
 					else return counter;
 				}
 				break;
 			default:
-				while(x>0)
+				while(x > 0)
 				{
 					if (grid[--x][y]===0) counter++;
 					else return counter;

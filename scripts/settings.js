@@ -15,12 +15,6 @@ var TOGGLE_FLIPFLOP = 'F'.charCodeAt(0);
 var TOGGLE_RENDER = 'R'.charCodeAt(0);
 var TOGGLE_DEBUG = 'N'.charCodeAt(0);
 
-// =====
-// DEBUG
-// =====
-var DEBUG = true;
-	DEBUG_AI_NODES = [];
-
 // =============
 // GRID SETTINGS
 // =============
@@ -32,6 +26,19 @@ var VERTICES_PER_ROW = 30,
     // PHYS_ACC denotes number of iterations through verlet integration.
     // lower for better performance
     PHYS_ACC = 8;
+
+
+// =====
+// DEBUG
+// =====
+var DEBUG = false;
+	// Contains wall nodes that are visible to AI
+	DEBUG_AI_NODES = [];
+	// Contains weights of the nodes that the AI has looked at
+	DEBUG_NODE_WEIGHTS = [];
+for (var i = 0; i < VERTICES_PER_ROW; ++i)
+	DEBUG_NODE_WEIGHTS.push([]);
+
 
 // ==============
 // SCORE SETTINGS

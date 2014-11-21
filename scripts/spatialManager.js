@@ -141,11 +141,27 @@ var spatialManager = {
                 for (i = 0; i < VERTICES_PER_ROW; ++i)
                 {
                     var v = this.getVertex(i, j);
+                    var pos = v.getPos();
                     if (v.isWall())
                     {
-                        var pos = v.getPos();
                         ctx.fillStyle = '#0FF';
                         util.fillCircle(ctx, pos.x, pos.y, 7);
+                    }
+
+                    var nw = DEBUG_NODE_WEIGHTS[i][j];
+                    if (nw)
+                    {
+                        var fill;
+                        if (nw == Infinity) fill = '#FFF';
+                        else if (nw == -Infinity) fill = '#F00';
+                        else
+                        {
+                            nw *= 10;
+                            if (nw > 255) nw = 255;
+                            fill = 'rgb(' + nw + ',0 ,' + nw + ')';
+                        }
+                        ctx.fillStyle = fill;
+                        util.fillCircle(ctx, pos.x, pos.y, 13);
                     }
                 }
             }
@@ -157,7 +173,6 @@ var spatialManager = {
                 util.fillCircle(ctx, pos.x, pos.y, 5);
             }
         }
-
     },
 
     reset: function() {

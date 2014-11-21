@@ -176,7 +176,7 @@ Player.prototype.takeStep = function()
     this.cy += this.velY;
     // Check whether this is colliding head-on with another player
     // and deal with it accordingly
-    //if(entityManager.checkSpecialCase()) return; 
+    if(entityManager.checkSpecialCase()) return; 
 
     if (this.isColliding(this.cx, this.cy)) 
     {
@@ -393,13 +393,10 @@ Player.prototype.drawWalls = function(ctx, vertexArray)
 
     
     ctx.lineCap = 'round';
-    
-    if (this.AI)
-    {
-        ctx.strokeStyle = '#FFF';
-        ctx.lineWidth = 4;
-        ctx.stroke();
-    }
+
+    ctx.strokeStyle = '#FFF';
+    ctx.lineWidth = 4;
+    ctx.stroke();
 
     var pulse = this.timestep / this.reset_timestep;
     pulse = Math.sin(Math.PI * pulse / 4);
@@ -414,19 +411,19 @@ Player.prototype.drawWalls = function(ctx, vertexArray)
     ctx.lineWidth = 12 + 4 * pulse;
     ctx.stroke();
 
-    if (!this.AI)
-    {
-        ctx.strokeStyle = '#FFF';
-        ctx.lineWidth = 4;
-        ctx.stroke();
-    }
-    
-    ctx.restore(); 
+    ctx.restore();
 }
 
 
 Player.prototype.makeMove = function()
 {
+    if (DEBUG)
+    {
+        DEBUG_NODE_WEIGHTS = [];
+        for (var i = 0; i < VERTICES_PER_ROW; ++i)
+            DEBUG_NODE_WEIGHTS.push([]);
+    }
+    
     var movesAhead = 4;
     var AIdirection='';
     var players=entityManager.getPlayers();

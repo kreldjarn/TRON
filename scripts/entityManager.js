@@ -28,7 +28,6 @@ var entityManager = {
                              halo_color: 'rgba(255, 255, 255, 0.15)',
                              //halo_color: 'rgba(50, 255, 255, 0.15)',
                              wallVertices: [{cx: 0, cy: 0}],
-                             permWallVertices: [{cx: 0, cy: 0}],
                              sequencer: null,
                              keys: {
                                  UP: 'W'.charCodeAt(0),
@@ -45,8 +44,8 @@ var entityManager = {
                              timestep: 6,
                              color: '#EF066E',
                              halo_color: 'rgba(255, 26, 130, 0.15)',
-                             wallVertices: [{cx: VERTICES_PER_ROW-1, cy: VERTICES_PER_ROW-1}],
-                             permWallVertices: [{cx: VERTICES_PER_ROW-1, cy: VERTICES_PER_ROW-1}],
+                             wallVertices: [{cx: VERTICES_PER_ROW-1,
+                                             cy: VERTICES_PER_ROW-1}],
                              sequencer: null,
                              keys: {
                                  UP: 1000,
@@ -97,7 +96,7 @@ var entityManager = {
     },
     
     init: function() {
-        this._generatePlayers();
+        this.generatePlayers();
     },
 
     generatePlayer : function(descr) {
@@ -112,7 +111,6 @@ var entityManager = {
                                 color: '#1BFFA2',
                                 halo_color: 'rgba(255, 255, 255, 0.15)',
                                 wallVertices: [{cx: 2, cy: 8}],
-                                permWallVertices: [{cx: 0, cy: 0}],
                                 scorePosX: null,
                                 sequencer: new Sequencer(INTRO_SEQUENCE, true),
                                 introPlayer: true,
@@ -175,10 +173,13 @@ var entityManager = {
                         entityManager.generateExplosion(pos.x, pos.y);
                     }
 
-                    if (player1.AI) this.respawnAI(player1);
-                    if (player2.AI) this.respawnAI(player2);
-
-                    entityManager.resetPlayers();
+                    // If there's a head on collision, we go straight to the
+                    // into sequence.
+                    g_states.toggleState();
+                    this.reset();
+                    this.generateTitle();
+                    LAST_SCORE = player1.score;
+                    HAS_PLAYED = true;
                     return true;
                 }
             }
@@ -204,8 +205,6 @@ var entityManager = {
                              halo_color: '#fff',
                              wallVertices: [{cx: VERTICES_PER_ROW-1,
                                              cy: VERTICES_PER_ROW-1}],
-                             permWallVertices: [{cx: VERTICES_PER_ROW-1,
-                                                 cy: VERTICES_PER_ROW-1}],
                              sequencer: null,
                              maxWallLength: wallLength,
                              keys: {

@@ -1,8 +1,8 @@
 
-//======================
-//   AI
-//======================
-// We implemented an alpha beta pruning algorithm to control the AI movements
+// ==
+// AI
+// ==
+// We implement an alpha beta pruning algorithm to control the AI movements
 // The main functions are the decisionMaker, maxValue and minValue functions
 // all other functions are helper functions.
 
@@ -13,7 +13,6 @@ var g_AI = {
 	snapShotGrid : function()
 	{
 		DEBUG_AI_NODES = [];
-		var p = entityManager.getPlayers();
 		var snapShotGrid = [];
 		var v;
 		for (var i = 0; i < VERTICES_PER_ROW; i++)
@@ -37,13 +36,14 @@ var g_AI = {
 	// copyGrid makes a duplicate of a grid so more than one possibility can be
 	// explored when determining future moves
 	copyGrid : function (grid, cx, cy)
-		{
-		var newgrid = [];
-		for (var i = 0; i < grid.length; i++)
-		{
-			newgrid[i] = grid[i].slice();
-		}
-		newgrid[cx][cy]=1;
+	{
+		var newgrid = grid.slice(0);
+		//var newgrid = [];
+		//for (var i = 0; i < grid.length; i++)
+		//{
+		//	newgrid[i] = grid[i].slice();
+		//}
+		newgrid[cx][cy] = 1;
 		return newgrid;
 	},
 
@@ -87,18 +87,16 @@ var g_AI = {
 		var AIdirs = this.directionOptions(AIdir, AIcx, AIcy);
 
 		var grid = this.snapShotGrid();
-		pathValue[0]= Math.max(alpha,this.minValue(AIdirs[0][0],
-			AIdirs[0][1],AIdirs[0][2],alpha,beta,m,grid,
+		pathValue[0]= Math.max(alpha, this.minValue(AIdirs[0][0],
+			AIdirs[0][1], AIdirs[0][2], alpha, beta, m, grid.slice(0),
 			P1dir, P1cx, P1cy));
 
-		grid = this.snapShotGrid();
-		pathValue[1] = Math.max(alpha,this.minValue(AIdirs[1][0],
-			AIdirs[1][1],AIdirs[1][2],alpha,beta,m,grid,
+		pathValue[1] = Math.max(alpha, this.minValue(AIdirs[1][0],
+			AIdirs[1][1], AIdirs[1][2], alpha, beta, m, grid.slice(0),
 			P1dir, P1cx, P1cy));
 
-		grid = this.snapShotGrid();
-		pathValue[2] = Math.max(alpha,this.minValue(AIdirs[2][0],
-			AIdirs[2][1],AIdirs[2][2],alpha,beta,m,grid,
+		pathValue[2] = Math.max(alpha, this.minValue(AIdirs[2][0],
+			AIdirs[2][1], AIdirs[2][2], alpha, beta, m, grid,
 			P1dir, P1cx, P1cy));
 
 		if (pathValue[0]>=pathValue[1] && pathValue[0]>=pathValue[2])
@@ -110,7 +108,7 @@ var g_AI = {
 	},
 
 	// The maxValue determines the best possible move the AI can make
-	maxValue : function(P1dir, P1cx, P1cy,alpha,beta,m,grid, AIdir, AIcx,AIcy)
+	maxValue : function(P1dir, P1cx, P1cy, alpha, beta, m, grid, AIdir, AIcx, AIcy)
 	{
 		if (this.illegalMove(grid, AIdir, AIcx, AIcy)) return alpha;
 		var AIdirs = this.directionOptions(AIdir, AIcx,AIcy);
@@ -137,73 +135,83 @@ var g_AI = {
 	},
 
 	// The minValue determines the best possible move the oponent can make
-	minValue : function(AIdir, AIcx,AIcy,alpha,beta,m,grid, P1dir, P1cx, P1cy)
+	minValue : function(AIdir, AIcx, AIcy, alpha, beta, m, grid, P1dir, P1cx, P1cy)
 	{
 		if (this.illegalMove(grid, P1dir, P1cx, P1cy)) return beta;
-		m = m-1;
-		if (m===0) return this.terminalValue(grid,AIdir, AIcx,AIcy);
+		m = m - 1;
+		if (m === 0) return this.terminalValue(grid, AIdir, AIcx,AIcy);
 		var P1dirs = this.directionOptions(P1dir, P1cx, P1cy);
 
 		var newgrid = this.copyGrid(grid, P1cx, P1cy);
 		beta=Math.min(beta,this.maxValue(P1dirs[0][0],
 			P1dirs[0][1],P1dirs[0][2],alpha,beta,m,newgrid,
 			AIdir, AIcx,AIcy));
-		if(beta<=alpha) return beta;
+		if(beta <= alpha) return beta;
 
 		newgrid = this.copyGrid(grid, P1cx, P1cy);
 		beta=Math.min(beta,this.maxValue(P1dirs[1][0],
 			P1dirs[1][1],P1dirs[1][2],alpha,beta,m,newgrid,
 			AIdir, AIcx,AIcy));
-		if(beta<=alpha) return beta;
+		if(beta <= alpha) return beta;
 
 		newgrid = this.copyGrid(grid, P1cx, P1cy);
 		beta=Math.min(beta,this.maxValue(P1dirs[2][0],
 			P1dirs[2][1],P1dirs[2][2],alpha,beta,m,newgrid,
 			AIdir, AIcx,AIcy));
-		if(beta<=alpha) return beta;
+		if(beta <= alpha) return beta;
 
 		return beta;
 	},
 	
 	// Returns a terminal value estimating the best move
-	terminalValue : function(grid,AIdir, AIcx,AIcy)
+
+	terminalValue : function(grid, AIdir, AIcx, AIcy)
 	{
-		return this.freeVertex(grid, AIdir, AIcx, AIcy);
+		// TODO:
+		// Factor player 1 into the decision making
+		var weight = this.freeVertex(grid, AIdir, AIcx, AIcy);
+		if (DEBUG)
+		{
+			if (AIcx > 0 && AIcy > 0 && AIcx < (VERTICES_PER_ROW-1) &&
+				AIcy < (VERTICES_PER_ROW-1))
+				DEBUG_NODE_WEIGHTS[AIcx][AIcy] = weight;
+		}
+		return weight;
 	},
 
-	// Counts free verticies straight ahead 
+	// Counts free vertices straight ahead 
 	freeVertex : function(grid, direction, cx, cy)
 	{
-		if (cx < 1 || cy < 1 || cx >= (VERTICES_PER_ROW-1) ||
-			cy >= (VERTICES_PER_ROW-1)) return 0;
+		if (cx < 1 || cy < 1 || cx >= (VERTICES_PER_ROW - 1) ||
+			cy >= (VERTICES_PER_ROW - 1)) return -Infinity;
 		var counter = 0;
 		var x = cx;
 		var y = cy;
 		switch (direction)
 		{
 			case 'North':
-				while(y>0)
+				while(y > 0)
 				{
 					if (grid[x][--y]===0) counter++;
 					else return counter;
 				}
 				break;
 			case 'South':
-				while(y<VERTICES_PER_ROW-1)
+				while(y < VERTICES_PER_ROW-1)
 				{
 					if (grid[x][++y]===0) counter++;
 					else return counter;
 				}
 				break;
 			case 'East':
-				while(x<VERTICES_PER_ROW-1)
+				while(x < VERTICES_PER_ROW-1)
 				{
 					if (grid[++x][y]===0) counter++;
 					else return counter;
 				}
 				break;
 			default:
-				while(x>0)
+				while(x > 0)
 				{
 					if (grid[--x][y]===0) counter++;
 					else return counter;

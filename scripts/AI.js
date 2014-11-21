@@ -31,16 +31,6 @@ var g_AI = {
 				}
 			}
 		}
-
-		//for (var i=0; i<p[0].wallVertices.length;i++)
-		//{
-		//	snapShotGrid[p[0].wallVertices[i].cx][p[0].wallVertices[i].cy]=1;
-		//}
-
-		//for (var i=0; i<p[1].wallVertices.length;i++)
-		//{
-		//	snapShotGrid[p[1].wallVertices[i].cx][p[1].wallVertices[i].cy]=1;
-		//}
 		return snapShotGrid;
 	},
 
@@ -59,38 +49,15 @@ var g_AI = {
 
 	// illegalMove determines if a position is outside the grid
 	// or if a position is occupied with a wall
-	illegalMove : function(grid, direction, cx, cy, N)
+	illegalMove : function(grid, direction, cx, cy)
 	{
-		// =============
-		// TODO:
-		// Clean up: DRY
-		// =============
 		if (direction === 'North') cy--;
 		else if (direction === 'South') cy++;
 		else if (direction === 'West') cx--;
 		else cx++;
-
 		if (cx < 0 || cx>= VERTICES_PER_ROW || cy<0 ||
 			cy>=VERTICES_PER_ROW) return true;
 		else if (grid[cx][cy]===1) return true;
-
-		if (direction === 'North') cy--;
-		else if (direction === 'South') cy++;
-		else if (direction === 'West') cx--;
-		else cx++;
-
-		if (cx < 0 || cx>= VERTICES_PER_ROW|| cy<0||
-			cy>=VERTICES_PER_ROW) return true;
-		else if (grid[cx][cy]===1) return true;
-		else return false;
-	},
-
-	// A helper function for the illegal move function
-	isADeadlyMove : function(grid, x, y)
-	{
-		if (x < 0 || x>= VERTICES_PER_ROW|| y<0||
-			y>=VERTICES_PER_ROW) return true;
-		else if (grid[x][y]===1) return true;
 		else return false;
 	},
 
@@ -134,18 +101,18 @@ var g_AI = {
 			AIdirs[2][1],AIdirs[2][2],alpha,beta,m,grid,
 			P1dir, P1cx, P1cy));
 
-		if (pathValue[0]>pathValue[1] && pathValue[0]>pathValue[2])
+		if (pathValue[0]>=pathValue[1] && pathValue[0]>=pathValue[2])
 			return AIdirs[0][0];
-		else if (pathValue[1]>pathValue[0] && pathValue[1]>pathValue[2])
+		else if (pathValue[1]>=pathValue[0] && pathValue[1]>=pathValue[2])
 			return AIdirs[1][0];
-		else if (pathValue[2]>pathValue[0] && pathValue[2]>pathValue[1])
+		else if (pathValue[2]>=pathValue[0] && pathValue[2]>=pathValue[1])
 			return AIdirs[2][0];
 	},
 
 	// The maxValue determines the best possible move the AI can make
 	maxValue : function(P1dir, P1cx, P1cy,alpha,beta,m,grid, AIdir, AIcx,AIcy)
 	{
-		if (this.illegalMove(grid, AIdir, AIcx, AIcy, 2)) return alpha;
+		if (this.illegalMove(grid, AIdir, AIcx, AIcy)) return alpha;
 		var AIdirs = this.directionOptions(AIdir, AIcx,AIcy);
 
 		var newgrid = this.copyGrid(grid, AIcx, AIcy);
@@ -172,7 +139,7 @@ var g_AI = {
 	// The minValue determines the best possible move the oponent can make
 	minValue : function(AIdir, AIcx,AIcy,alpha,beta,m,grid, P1dir, P1cx, P1cy)
 	{
-		if (this.illegalMove(grid, P1dir, P1cx, P1cy, 2)) return beta;
+		if (this.illegalMove(grid, P1dir, P1cx, P1cy)) return beta;
 		m = m-1;
 		if (m===0) return this.terminalValue(grid,AIdir, AIcx,AIcy,
 			P1dir, P1cx, P1cy);
@@ -202,11 +169,6 @@ var g_AI = {
 	// Returns a terminal value estimating the best move
 	terminalValue : function(grid,AIdir, AIcx,AIcy,P1dir, P1cx, P1cy)
 	{
-		if (AIdir === 'North') AIcy--;
-		else if (AIdir === 'South') AIcy++;
-		else if (AIdir === 'West') AIcx--;
-		else AIcx++;
-
 		return this.freeVertex(grid, AIdir, AIcx, AIcy);
 	},
 

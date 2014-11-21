@@ -172,6 +172,8 @@ Player.prototype.takeStep = function()
     var last_cx = this.cx;
     var last_cy = this.cy;
 
+    if (this.AI) this.makeMove();
+
     this.cx += this.velX;
     this.cy += this.velY;
     // Check whether this is colliding head-on with another player
@@ -224,8 +226,6 @@ Player.prototype.takeStep = function()
 
     this.refreshWall(this.wallVertices, last_cx, last_cy);
     spatialManager.register(this, this.cx, this.cy);
-    
-    if (this.AI) this.makeMove();
 
     this.score = this.score + SCORE_INC;
     if (this.score % MAX_INC == 0 && g_states.getState() != 'title') this.maxWallLength += WALL_INC;
@@ -424,21 +424,23 @@ Player.prototype.makeMove = function()
             DEBUG_NODE_WEIGHTS.push([]);
     }
     
-    var movesAhead = 4;
-    var AIdirection='';
-    var players=entityManager.getPlayers();
-    var Player1direction='';
+    var AIdirection, Player1direction;
+    var players = entityManager.getPlayers();
  
-    if(this.velX===1) {AIdirection='East';}
-    else if(this.velY===1) {AIdirection='South';}
-    else if(this.velX===-1) {AIdirection='West';}
-    else {AIdirection='North';}
-    if(players[0].velX===1) {Player1direction='East';}
-    else if(players[0].velY===1) {Player1direction='South';}
-    else if(players[0].velX===-1) {Player1direction='West';}
-    else {Player1direction='North';}
-    var move = g_AI.decisionMaker(AIdirection, this.cx, this.cy,
-        Player1direction, players[0].cx, players[0].cy);
+    if(this.velX === 1) AIdirection = 'East';
+    else if(this.velY === 1) AIdirection = 'South';
+    else if(this.velX === -1) AIdirection = 'West';
+    else AIdirection = 'North';
+
+    if(players[0].velX === 1) Player1direction = 'East';
+    else if(players[0].velY === 1) Player1direction = 'South';
+    else if(players[0].velX === -1) Player1direction = 'West';
+    else Player1direction = 'North';
+
+    var move = g_AI.decisionMaker(AIdirection,
+                                  this.cx + this.velX, this.cy + this.velY,
+                                  Player1direction,
+                                  players[0].cx, players[0].cy);
     this.AIMove(move);
  
 };

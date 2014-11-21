@@ -67,10 +67,11 @@ var g_AI = {
 	{
 		var directions = [['North', cx, cy-1],['East', cx+1, cy],
 		['South', cx, cy+1],['West', cx-1, cy]];
+		// Mark the direction we're coming from as illegal
 		for(var i = 0; i < directions.length; i++)
 		{
-			var illegalDir = (i+2)%4;
-			if (direction === directions[i][0]) directions.splice(illegalDir,1);
+			var illegalDir = (i + 2) % 4;
+			if (direction === directions[i][0]) directions.splice(illegalDir, 1);
 		}
 		return directions;
 	},
@@ -81,30 +82,40 @@ var g_AI = {
 	decisionMaker : function (AIdir, AIcx, AIcy, P1dir, P1cx, P1cy)
 	{
 		var m = 2;
-		var pathValue =[];
+		var pathValue = [];
 		var alpha = -Infinity;
 		var beta = Infinity;
 		var AIdirs = this.directionOptions(AIdir, AIcx, AIcy);
 
 		var grid = this.snapShotGrid();
-		pathValue[0]= Math.max(alpha, this.minValue(AIdirs[0][0],
-			AIdirs[0][1], AIdirs[0][2], alpha, beta, m, grid.slice(0),
-			P1dir, P1cx, P1cy));
-
-		pathValue[1] = Math.max(alpha, this.minValue(AIdirs[1][0],
-			AIdirs[1][1], AIdirs[1][2], alpha, beta, m, grid.slice(0),
-			P1dir, P1cx, P1cy));
-
-		pathValue[2] = Math.max(alpha, this.minValue(AIdirs[2][0],
-			AIdirs[2][1], AIdirs[2][2], alpha, beta, m, grid,
-			P1dir, P1cx, P1cy));
-
-		if (pathValue[0]>=pathValue[1] && pathValue[0]>=pathValue[2])
-			return AIdirs[0][0];
-		else if (pathValue[1]>=pathValue[0] && pathValue[1]>=pathValue[2])
-			return AIdirs[1][0];
-		else if (pathValue[2]>=pathValue[0] && pathValue[2]>=pathValue[1])
-			return AIdirs[2][0];
+		for (var i = 0; i < 3; ++i)
+		{
+			pathValue[i] = this.minValue(AIdirs[i][0],
+										 AIdirs[i][1],
+										 AIdirs[i][2],
+										 alpha,
+										 beta,
+										 m,
+										 grid.slice(0),
+										 P1dir,
+										 P1cx,
+										 P1cy);
+		}
+		
+		var maxVal = Math.max(pathValue[1], pathValue[0], pathValue[2]);
+		var res;
+		switch (maxVal)
+		{
+			case pathValue[0]:
+				res = AIdirs[0][0];
+				break;
+			case pathValue[1]:
+				res = AIdirs[1][0];
+				break;
+			default:
+				res = AIdirs[2][0];
+		}
+		return res;
 	},
 
 	// The maxValue determines the best possible move the AI can make
@@ -112,6 +123,7 @@ var g_AI = {
 	{
 		if (this.illegalMove(grid, AIdir, AIcx, AIcy)) return alpha;
 		var AIdirs = this.directionOptions(AIdir, AIcx,AIcy);
+		var oldAlpha = alpha;
 
 		var newgrid = this.copyGrid(grid, AIcx, AIcy);
 		alpha=Math.max(alpha,this.minValue(AIdirs[0][0],
@@ -140,6 +152,7 @@ var g_AI = {
 		if (this.illegalMove(grid, P1dir, P1cx, P1cy)) return beta;
 		m = m - 1;
 		if (m === 0) return this.terminalValue(grid, AIdir, AIcx,AIcy);
+		var oldBeta = beta;
 		var P1dirs = this.directionOptions(P1dir, P1cx, P1cy);
 
 		var newgrid = this.copyGrid(grid, P1cx, P1cy);

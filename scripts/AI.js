@@ -13,7 +13,6 @@ var g_AI = {
 	snapShotGrid : function()
 	{
 		DEBUG_AI_NODES = [];
-		//var p = entityManager.getPlayers();
 		var snapShotGrid = [];
 		var v;
 		for (var i = 0; i < VERTICES_PER_ROW; i++)
@@ -31,16 +30,6 @@ var g_AI = {
 				}
 			}
 		}
-
-		//for (var i=0; i<p[0].wallVertices.length;i++)
-		//{
-		//	snapShotGrid[p[0].wallVertices[i].cx][p[0].wallVertices[i].cy]=1;
-		//}
-
-		//for (var i=0; i<p[1].wallVertices.length;i++)
-		//{
-		//	snapShotGrid[p[1].wallVertices[i].cx][p[1].wallVertices[i].cy]=1;
-		//}
 		return snapShotGrid;
 	},
 
@@ -193,7 +182,7 @@ var g_AI = {
 		beta=Math.min(beta,this.maxValue(P1dirs[2][0],
 			P1dirs[2][1],P1dirs[2][2],alpha,beta,m,newgrid,
 			AIdir, AIcx,AIcy));
-		if(beta<=alpha) return beta;
+		if(beta <= alpha) return beta;
 
 		return beta;
 	},
@@ -201,6 +190,8 @@ var g_AI = {
 	// Returns a terminal value estimating the best move
 	terminalValue : function(grid, AIdir, AIcx, AIcy, P1dir, P1cx, P1cy)
 	{
+		// TODO:
+		// Factor player 1 into the decision making
 		if (AIdir === 'North') AIcy--;
 		else if (AIdir === 'South') AIcy++;
 		else if (AIdir === 'West') AIcx--;

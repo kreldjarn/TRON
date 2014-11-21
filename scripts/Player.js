@@ -393,13 +393,10 @@ Player.prototype.drawWalls = function(ctx, vertexArray)
 
     
     ctx.lineCap = 'round';
-    
-    if (this.AI)
-    {
-        ctx.strokeStyle = '#FFF';
-        ctx.lineWidth = 4;
-        ctx.stroke();
-    }
+
+    ctx.strokeStyle = '#FFF';
+    ctx.lineWidth = 4;
+    ctx.stroke();
 
     var pulse = this.timestep / this.reset_timestep;
     pulse = Math.sin(Math.PI * pulse / 4);
@@ -414,13 +411,6 @@ Player.prototype.drawWalls = function(ctx, vertexArray)
     ctx.lineWidth = 12 + 4 * pulse;
     ctx.stroke();
 
-    if (!this.AI)
-    {
-        ctx.strokeStyle = '#FFF';
-        ctx.lineWidth = 4;
-        ctx.stroke();
-    }
-    
     ctx.restore(); 
 }
 

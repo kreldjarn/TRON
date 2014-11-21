@@ -141,8 +141,7 @@ var g_AI = {
 	{
 		if (this.illegalMove(grid, P1dir, P1cx, P1cy)) return beta;
 		m = m-1;
-		if (m===0) return this.terminalValue(grid,AIdir, AIcx,AIcy,
-			P1dir, P1cx, P1cy);
+		if (m===0) return this.terminalValue(grid,AIdir, AIcx,AIcy);
 		var P1dirs = this.directionOptions(P1dir, P1cx, P1cy);
 
 		var newgrid = this.copyGrid(grid, P1cx, P1cy);
@@ -167,7 +166,7 @@ var g_AI = {
 	},
 	
 	// Returns a terminal value estimating the best move
-	terminalValue : function(grid,AIdir, AIcx,AIcy,P1dir, P1cx, P1cy)
+	terminalValue : function(grid,AIdir, AIcx,AIcy)
 	{
 		return this.freeVertex(grid, AIdir, AIcx, AIcy);
 	},

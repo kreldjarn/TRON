@@ -15,7 +15,8 @@
 var KEY_QUIT = 'Q'.charCodeAt(0);
 function requestedQuit()
 {
-    return keys.getState(KEY_QUIT);
+    false;
+    //return keys.getState(KEY_QUIT);
 }
 
 // Annoying shim for Firefox and Safari

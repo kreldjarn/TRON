@@ -72,35 +72,5 @@ function renderSimulation(ctx)
 }
 
 
-// =============
-// PRELOAD STUFF
-// =============
-
-var g_images = {};
-
-function requestPreloads() {
-
-    var requiredImages = {};
-
-    imagesPreload(requiredImages, g_images, preloadDone);
-}
-
-var g_sprites = {};
-
-function preloadDone() {
-
-    g_sprites.ship  = new Sprite(g_images.ship);
-    g_sprites.ship2 = new Sprite(g_images.ship2);
-    g_sprites.rock  = new Sprite(g_images.rock);
-
-    g_sprites.bullet = new Sprite(g_images.ship);
-    g_sprites.bullet.scale = 0.25;
-
-    entityManager.init();
-    createInitialShips();
-
-    main.init();
-}
-
 // Kick it off
 main.init();

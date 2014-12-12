@@ -41,6 +41,10 @@ Player.prototype.keys = {
     DN: 'S'.charCodeAt(0),
     LT: 'A'.charCodeAt(0),
     RT: 'D'.charCodeAt(0),
+    A_UP: 38,
+    A_DN: 40,
+    A_LT: 37,
+    A_RT: 39,
 }
 
 Player.prototype.KEY_TURBO   = ' '.charCodeAt(0);
@@ -232,22 +236,26 @@ Player.prototype.takeStep = function()
 
 Player.prototype.handleInputs = function()
 {
-    if (keys.getState(this.keys['UP']))
+    if (keys.getState(this.keys['UP']) ||
+        keys.getState(this.keys['A_UP']))
     {
         this.requestedVelX = 0;
         this.requestedVelY = -1;
     }
-    else if (keys.getState(this.keys['DN']))
+    else if (keys.getState(this.keys['DN']) ||
+             keys.getState(this.keys['A_DN']))
     {
         this.requestedVelX = 0;
         this.requestedVelY = 1;
     }
-    else if (keys.getState(this.keys['LT']))
+    else if (keys.getState(this.keys['LT']) ||
+             keys.getState(this.keys['A_LT']))
     {
         this.requestedVelX = -1;
         this.requestedVelY = 0;
     }
-    else if (keys.getState(this.keys['RT']))
+    else if (keys.getState(this.keys['RT']) ||
+             keys.getState(this.keys['A_RT']))
     {
         this.requestedVelX = 1;
         this.requestedVelY = 0;

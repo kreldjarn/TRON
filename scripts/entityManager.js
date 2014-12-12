@@ -29,12 +29,6 @@ var entityManager = {
                              //halo_color: 'rgba(50, 255, 255, 0.15)',
                              wallVertices: [{cx: 0, cy: 0}],
                              sequencer: null,
-                             keys: {
-                                 UP: 'W'.charCodeAt(0),
-                                 DN: 'S'.charCodeAt(0),
-                                 LT: 'A'.charCodeAt(0),
-                                 RT: 'D'.charCodeAt(0),
-                             },
                              AI: false});
         // AI
         this.generatePlayer({cx: VERTICES_PER_ROW-1,
